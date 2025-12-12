@@ -38,29 +38,40 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar>
+    <Sidebar className="flex flex-col justify-between h-full bg-red-200">
       <SidebarHeader className="border-b">
-        <Link href="/dashboard" className="flex items-center gap-2 font-bold text-base">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">
+        <Link 
+          href="/dashboard" 
+          className="flex items-center gap-2 font-bold text-base"
+        >
+          <div className="w-8 h-8 rounded-lg bg-linear-to-br from-blue-600 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">
             ✓
           </div>
-          <span className="text-foreground">HabitFlow</span>
+          <span className="text-foreground text-2xl">HabitFlow</span>
         </Link>
       </SidebarHeader>
 
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
+      <SidebarContent className="flex flex-col justify-between overflow-hidden my-6">
+        {/* <SidebarGroup className="space-y-3 w-full mx-auto text-center">
+          <SidebarGroupContent className="flex flex-col items-center justify-center">
+            <SidebarGroupLabel className="">Navigation</SidebarGroupLabel>
+          </SidebarGroupContent>
+        </SidebarGroup> */}
+
+        {/* <SidebarGroupLabel className=" flex flex-col items-center justify-center text-center">Navigation</SidebarGroupLabel> */}
+
+        <SidebarGroup className="space-y-3">
+          <SidebarGroupLabel className="">Navigation</SidebarGroupLabel>
+          <SidebarGroupContent className="space-y-0">
+            <SidebarMenu className="space-y-1">
               {navigationItems.map((item) => {
                 const isActive = pathname.startsWith(item.href)
                 return (
-                  <SidebarMenuItem key={item.href}>
+                  <SidebarMenuItem key={item.href} className="flex items-center gap-2">
                     <SidebarMenuButton asChild isActive={isActive} tooltip={item.label}>
                       <Link href={item.href} className="flex items-center gap-2">
                         <item.icon className="w-4 h-4" />
-                        <span>{item.label}</span>
+                        <span className="text-foreground text-xl">{item.label}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -70,14 +81,14 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator />
+        <SidebarSeparator className="border-t border-b border-gray-200" />
 
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
+        <SidebarGroup className="space-y-3">
+          <SidebarGroupContent className="space-y-2">
+            <SidebarMenu className="space-y-1">
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/create-habit" className="flex items-center gap-2">
+                <SidebarMenuButton asChild className="font-bold">
+                  <Link href="/create-habit" className="flex items-center gap-2 bg-primary/60 text-foreground justify-center">
                     <Plus className="w-4 h-4" />
                     <span>New Habit</span>
                   </Link>
@@ -87,13 +98,13 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator />
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/" className="flex items-center gap-2">
+        <SidebarSeparator className="border-t border-b border-gray-200" />
+        <SidebarGroup className="space-y-3">
+          <SidebarGroupContent className="space-y-2">
+            <SidebarMenu className="space-y-1">
+              <SidebarMenuItem className="">
+                <SidebarMenuButton asChild className="font-semibold">
+                  <Link href="/" className="flex items-center gap-2 bg-primary/20 justify-center">
                     <Home className="w-4 h-4" />
                     <span>Home</span>
                   </Link>
@@ -102,12 +113,13 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        <SidebarSeparator className="border-t border-b border-gray-200" />
       </SidebarContent>
 
       <SidebarFooter className="border-t">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleSignOut} className="cursor-pointer">
+            <SidebarMenuButton onClick={handleSignOut} className="cursor-pointer flex items-center gap-2 bg-destructive/10 justify-center font-medium">
               <LogOut className="w-4 h-4" />
               <span>Sign Out</span>
             </SidebarMenuButton>
