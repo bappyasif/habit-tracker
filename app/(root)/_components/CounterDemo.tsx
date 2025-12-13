@@ -1,4 +1,4 @@
-import { useCounter } from "@/app/context-reducers/counterDemo";
+import { useCounter } from "@/context-reducers/counterDemo";
 
 export const CounterDemo = () => {
     const { state, dispatch } = useCounter();

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "../../../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card"
 import { Input } from "../../../components/ui/input"
@@ -8,6 +8,7 @@ import { Label } from "../../../components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select"
 import { Switch } from "../../../components/ui/switch"
 import { Plus, Trash2, Wand2 } from "lucide-react"
+import { useHabitCtx } from "@/context-reducers/habitCtxr"
 
 interface Step {
   id: string
@@ -35,20 +36,20 @@ interface HabitCreationModalProps {
 export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps) {
   const [stage, setStage] = useState<"preview" | "edit">("preview")
   const [isLoading, setIsLoading] = useState(false)
-  const [form, setForm] = useState<HabitCreationForm>({
-    title: "Morning Workout",
-    frequency: "daily",
-    duration: 30,
-    steps: [
-      { id: "1", title: "Warm up", time: "06:00", completed: false },
-      { id: "2", title: "Main exercise", time: "06:15", completed: false },
-      { id: "3", title: "Cool down", time: "06:45", completed: false },
-    ],
-    metric: "minutes",
-    target: 30,
-    successPercentage: 80,
-    successEnabled: true,
-  })
+  // const [form, setForm] = useState<HabitCreationForm>({
+  //   title: "Morning Workout",
+  //   frequency: "daily",
+  //   duration: 30,
+  //   steps: [
+  //     { id: "1", title: "Warm up", time: "06:00", completed: false },
+  //     { id: "2", title: "Main exercise", time: "06:15", completed: false },
+  //     { id: "3", title: "Cool down", time: "06:45", completed: false },
+  //   ],
+  //   metric: "minutes",
+  //   target: 30,
+  //   successPercentage: 80,
+  //   successEnabled: true,
+  // })
 
   const handleAddStep = () => {
     const newStep: Step = {
@@ -57,46 +58,71 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
       time: "06:00",
       completed: false,
     }
-    setForm({
-      ...form,
-      steps: [...form.steps, newStep],
-    })
+    // setForm({
+    //   ...form,
+    //   steps: [...form.steps, newStep],
+    // })
   }
 
   const handleRemoveStep = (id: string) => {
-    setForm({
-      ...form,
-      steps: form.steps.filter((s) => s.id !== id),
-    })
+    // setForm({
+    //   ...form,
+    //   steps: form.steps.filter((s) => s.id !== id),
+    // })
   }
 
   const handleUpdateStep = (id: string, field: string, value: any) => {
-    setForm({
-      ...form,
-      steps: form.steps.map((s) => (s.id === id ? { ...s, [field]: value } : s)),
-    })
+    // setForm({
+    //   ...form,
+    //   steps: form.steps.map((s) => (s.id === id ? { ...s, [field]: value } : s)),
+    // })
   }
 
   const handleRegenerateWithAI = async () => {
     setIsLoading(true)
     // Simulate AI generation
     await new Promise((resolve) => setTimeout(resolve, 800))
-    setForm({
-      ...form,
-      steps: [
-        { id: "1", title: "Meditation", time: "06:00", completed: false },
-        { id: "2", title: "Cardio", time: "06:15", completed: false },
-        { id: "3", title: "Strength Training", time: "06:35", completed: false },
-        { id: "4", title: "Stretching", time: "06:55", completed: false },
-      ],
-    })
+    // setForm({
+    //   ...form,
+    //   steps: [
+    //     { id: "1", title: "Meditation", time: "06:00", completed: false },
+    //     { id: "2", title: "Cardio", time: "06:15", completed: false },
+    //     { id: "3", title: "Strength Training", time: "06:35", completed: false },
+    //     { id: "4", title: "Stretching", time: "06:55", completed: false },
+    //   ],
+    // })
     setIsLoading(false)
   }
 
   const handleSave = () => {
-    onSave(form)
+    // onSave(form)
     onClose()
   }
+
+  const { state, dispatch } = useHabitCtx()
+
+  useEffect(() => {
+    // dispatch({type: "CREATE_HABIT", payload: form})
+    dispatch({
+      type: "CREATE_HABIT", payload: {
+        title: "Morning Workout>>><<<<",
+        frequency: "daily",
+        duration: 30,
+        steps: [
+          { id: "1", title: "Warm up", time: "06:00", completed: false },
+          { id: "2", title: "Main exercise", time: "06:15", completed: false },
+          { id: "3", title: "Cool down", time: "06:45", completed: false },
+        ],
+        metric: "minutes",
+        target: 30,
+        successPercentage: 80,
+        successEnabled: true,
+      }
+    })
+  }, [])
+
+  console.log(state)
+
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
@@ -131,12 +157,12 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
             <div className="space-y-6">
               {/* Habit Title */}
               <div>
-                <h3 className="text-2xl font-bold mb-2">{form.title}</h3>
+                <h3 className="text-2xl font-bold mb-2">{state.title}</h3>
                 <div className="flex gap-4 text-sm text-muted-foreground">
-                  <span>📅 {form.frequency.charAt(0).toUpperCase() + form.frequency.slice(1)}</span>
-                  <span>⏱️ {form.duration} days</span>
+                  <span>📅 {state.frequency.charAt(0).toUpperCase() + state.frequency.slice(1)}</span>
+                  <span>⏱️ {state.duration} days</span>
                   <span>
-                    🎯 {form.target} {form.metric}
+                    🎯 {state.target} {state.metric}
                   </span>
                 </div>
               </div>
@@ -145,7 +171,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
               <div>
                 <h4 className="font-semibold mb-3">Daily Steps</h4>
                 <div className="space-y-2 bg-muted/30 rounded-lg p-4">
-                  {form.steps.map((step, idx) => (
+                  {state.steps.map((step, idx) => (
                     <div key={step.id} className="flex items-center gap-3">
                       <div className="flex-1">
                         <p className="text-sm font-medium">
@@ -164,16 +190,16 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                 <p className="text-sm text-muted-foreground">
                   Target:{" "}
                   <span className="font-semibold text-foreground">
-                    {form.target} {form.metric}
+                    {state.target} {state.metric}
                   </span>
                 </p>
               </div>
 
               {/* Success Definition */}
-              {form.successEnabled && (
+              {state.successEnabled && (
                 <div className="bg-accent/10 rounded-lg p-4">
                   <p className="text-sm font-semibold text-accent-foreground">
-                    Success Definition: {form.successPercentage}% completion
+                    Success Definition: {state.successPercentage}% completion
                   </p>
                 </div>
               )}
@@ -202,8 +228,11 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                 <Label htmlFor="title">Habit Title</Label>
                 <Input
                   id="title"
-                  value={form.title}
-                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                  value={state.title}
+                  // onChange={(e) => setForm({ ...form, title: e.target.value })}
+                  onChange={(e) => {
+                    dispatch({ type: "UPDATE_TITLE", payload: e.target.value })
+                  }}
                   placeholder="e.g., Morning Workout"
                   className="mt-1.5"
                 />
@@ -213,7 +242,13 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Frequency</Label>
-                  <Select value={form.frequency} onValueChange={(v: any) => setForm({ ...form, frequency: v })}>
+                  <Select 
+                  value={state.frequency} 
+                  // onValueChange={(v: any) => setForm({ ...form, frequency: v })}
+                  onValueChange={(v: any) => {
+                    dispatch({ type: "UPDATE_FREQUENCY", payload: v })
+                  }}
+                  >
                     <SelectTrigger className="mt-1.5">
                       <SelectValue />
                     </SelectTrigger>
@@ -229,8 +264,11 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                   <Input
                     id="duration"
                     type="number"
-                    value={form.duration}
-                    onChange={(e) => setForm({ ...form, duration: Number.parseInt(e.target.value) })}
+                    value={state.duration}
+                    // onChange={(e) => setForm({ ...form, duration: Number.parseInt(e.target.value) })}
+                    onChange={(e) => {
+                      dispatch({ type: "UPDATE_DURATION", payload: Number.parseInt(e.target.value) })
+                    }}
                     className="mt-1.5"
                   />
                 </div>
@@ -245,7 +283,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                   </Button>
                 </div>
                 <div className="space-y-3 bg-muted/30 rounded-lg p-4">
-                  {form.steps.map((step, idx) => (
+                  {state.steps.map((step, idx) => (
                     <div key={step.id} className="flex items-center gap-2 bg-card p-3 rounded-lg border">
                       <span className="text-sm font-semibold text-muted-foreground min-w-6">{idx + 1}.</span>
                       <Input
@@ -274,8 +312,11 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                   <Label htmlFor="metric">Metric</Label>
                   <Input
                     id="metric"
-                    value={form.metric}
-                    onChange={(e) => setForm({ ...form, metric: e.target.value })}
+                    value={state.metric}
+                    // onChange={(e) => setForm({ ...form, metric: e.target.value })}
+                    onChange={(e) => {
+                      dispatch({ type: "UPDATE_METRIC", payload: e.target.value })
+                    }}
                     placeholder="e.g., minutes"
                     className="mt-1.5"
                   />
@@ -285,8 +326,11 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                   <Input
                     id="target"
                     type="number"
-                    value={form.target}
-                    onChange={(e) => setForm({ ...form, target: Number.parseInt(e.target.value) })}
+                    value={state.target}
+                    // onChange={(e) => setForm({ ...form, target: Number.parseInt(e.target.value) })}
+                    onChange={(e) => {
+                      dispatch({ type: "UPDATE_TARGET", payload: Number.parseInt(e.target.value) })
+                    }}
                     className="mt-1.5"
                   />
                 </div>
@@ -297,11 +341,14 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                 <div className="flex items-center justify-between">
                   <Label>Enable Success Definition</Label>
                   <Switch
-                    checked={form.successEnabled}
-                    onCheckedChange={(checked) => setForm({ ...form, successEnabled: checked })}
+                    checked={state.successEnabled}
+                    // onCheckedChange={(checked) => setForm({ ...form, successEnabled: checked })}
+                    onCheckedChange={(checked) => {
+                      dispatch({ type: "UPDATE_SUCCESS_ENABLED", payload: checked })
+                    }}
                   />
                 </div>
-                {form.successEnabled && (
+                {state.successEnabled && (
                   <div>
                     <Label htmlFor="success">Success Percentage</Label>
                     <Input
@@ -309,8 +356,11 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                       type="number"
                       min="0"
                       max="100"
-                      value={form.successPercentage}
-                      onChange={(e) => setForm({ ...form, successPercentage: Number.parseInt(e.target.value) })}
+                      value={state.successPercentage}
+                      // onChange={(e) => setForm({ ...form, successPercentage: Number.parseInt(e.target.value) })}
+                      onChange={(e) => {
+                        dispatch({ type: "UPDATE_SUCCESS_PERCENTAGE", payload: Number.parseInt(e.target.value) })
+                      }}
                       className="mt-1.5"
                     />
                   </div>

@@ -5,7 +5,7 @@ import { FeaturesSection } from "./_components/FeaturesSection"
 import { FooterSection } from "./_components/FooterSection"
 import { HeroSection } from "./_components/HeroSection"
 import { LanguageToggler } from "./_components/LanguageToggler"
-import CounterContextDemoProvider from "../context-reducers/counterDemo"
+import CounterContextDemoProvider from "../../context-reducers/counterDemo"
 import { CounterDemo } from "./_components/CounterDemo"
 
 export default function Home() {
