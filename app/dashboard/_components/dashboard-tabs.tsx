@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "../../../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card"
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { useTrackCtx } from "@/context-reducers/trackCtx"
 
 const dailyData = [
   { day: "Mon", step: "Warm up", time: "06:00", completed: true },
@@ -30,23 +31,32 @@ const monthData = [
 ]
 
 interface DashboardTabsProps {
-  habitTitle: string
-  currentStreak: number
+  // habitTitle: string
+  // currentStreak: number
+  selectedHabitId: string
 }
 
-export function DashboardTabs({ habitTitle, currentStreak }: DashboardTabsProps) {
+export function DashboardTabs(
+  // { habitTitle, currentStreak }: DashboardTabsProps
+  { selectedHabitId }: DashboardTabsProps
+) {
   const [activeTab, setActiveTab] = useState<"today" | "week" | "month">("today")
+
+  const { state } = useTrackCtx()
+  const { habits } = state
+
+  const currentHabit = habits.find((h) => h?.id == selectedHabitId) || habits[0]
 
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>{habitTitle}</CardTitle>
+            <CardTitle>{currentHabit.title}</CardTitle>
             <CardDescription>Track your daily progress</CardDescription>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-bold text-primary">{currentStreak}</p>
+            <p className="text-2xl font-bold text-primary">{currentHabit.currentStreak}</p>
             <p className="text-xs text-muted-foreground">Day Streak</p>
           </div>
         </div>

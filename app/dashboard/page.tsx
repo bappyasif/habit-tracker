@@ -10,23 +10,28 @@ import { mockHabits, mockInsights } from "@/lib/mock-data"
 import Link from "next/link"
 import { Plus, CheckCircle2 } from "lucide-react"
 import { TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
+import { TodaysFocus } from "./_components/todays-focus"
 
 export default function DashboardPage() {
   // const [habits, setHabits] = useState(mockHabits)
   const [habits, setHabits] = useState<TrackTypes[]>([])
-  const [selectedHabitId, setSelectedHabitId] = useState(habits[0]?.id)
+  const [selectedHabitId, setSelectedHabitId] = useState("1")
 
-  const currentHabit = habits.find((h) => h?.id === selectedHabitId) || habits[0]
+  // const currentHabit = habits.find((h) => h?.id === selectedHabitId) || habits[0]
 
-  const {dispatch, state} = useTrackCtx()
+  const { dispatch, state } = useTrackCtx()
 
   useEffect(() => {
     mockHabits.forEach((habit) => {
-      dispatch({type: "CREATE_HABIT", payload: habit})
+      dispatch({ type: "CREATE_HABIT", payload: habit })
     })
 
     setHabits(state.habits)
   }, [])
+
+  useEffect(() => {
+    setHabits(state.habits)
+  }, [state.habits])
 
   if (!habits.length) return null
 
@@ -49,7 +54,7 @@ export default function DashboardPage() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Active Habit Card */}
-          <Card className="border-2 border-primary/20">
+          {/* <Card className="border-2 border-primary/20">
             <CardHeader>
               <CardTitle className="text-2xl">Today's Focus: {currentHabit.title}</CardTitle>
               <CardDescription>Complete your habit and build momentum</CardDescription>
@@ -82,10 +87,13 @@ export default function DashboardPage() {
                 </Button>
               </Link>
             </CardContent>
-          </Card>
+          </Card> */}
+
+          <TodaysFocus selectedHabitId={selectedHabitId} />
 
           {/* Dashboard Tabs */}
-          <DashboardTabs habitTitle={currentHabit.title} currentStreak={currentHabit.currentStreak} />
+          <DashboardTabs selectedHabitId={selectedHabitId} />
+          {/* <DashboardTabs habitTitle={currentHabit.title} currentStreak={currentHabit.currentStreak} /> */}
         </div>
 
         {/* Right Sidebar */}
@@ -109,8 +117,8 @@ export default function DashboardPage() {
                     key={habit.id}
                     onClick={() => setSelectedHabitId(habit.id)}
                     className={`w-full text-left p-3 rounded-lg border-2 transition-colors ${selectedHabitId === habit.id
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50"
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/50"
                       }`}
                   >
                     <p className="font-semibold text-sm">{habit.title}</p>
