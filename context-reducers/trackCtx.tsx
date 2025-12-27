@@ -32,7 +32,13 @@ type initialStateTypes = {
 
 const trackReducer = (state: initialStateTypes, action: { type: string, payload: any }) => {
     switch (action.type) {
+        case 'IINITIALIZE':
+            return {
+                ...state,
+                habits: action.payload
+            }
         case 'CREATE_HABIT':
+            console.log(action.payload, "action.payload")
             return {
                 ...state,
                 habits: [...state.habits, action.payload]
@@ -42,27 +48,28 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
     }
 }
 const initialState: initialStateTypes = {
-    habits: [
-        {
-            id: '',
-            title: '',
-            description: '',
-            frequency: 'daily',
-            duration: 0,
-            measurement: {
-                metric: '',
-                target: 0,
-            },
-            steps: [],
-            successDefinition: {
-                enabled: false,
-                percentage: 0,
-            },
-            createdAt: new Date(),
-            currentStreak: 0,
-            totalCompleted: 0
-        }
-    ]
+    habits: [],
+    // habits: [
+    //     {
+    //         id: '',
+    //         title: '',
+    //         description: '',
+    //         frequency: 'daily',
+    //         duration: 0,
+    //         measurement: {
+    //             metric: '',
+    //             target: 0,
+    //         },
+    //         steps: [],
+    //         successDefinition: {
+    //             enabled: false,
+    //             percentage: 0,
+    //         },
+    //         createdAt: new Date(),
+    //         currentStreak: 0,
+    //         totalCompleted: 0
+    //     }
+    // ]
 }
 
 const TrackContext = createContext<{

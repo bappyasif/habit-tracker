@@ -14,6 +14,7 @@ import { TodaysFocus } from "./_components/todays-focus"
 
 export default function DashboardPage() {
   // const [habits, setHabits] = useState(mockHabits)
+  // const [habits, setHabits] = useState<TrackTypes[] | undefined>(undefined)
   const [habits, setHabits] = useState<TrackTypes[]>([])
   const [selectedHabitId, setSelectedHabitId] = useState("1")
 
@@ -22,18 +23,24 @@ export default function DashboardPage() {
   const { dispatch, state } = useTrackCtx()
 
   useEffect(() => {
-    mockHabits.forEach((habit) => {
-      dispatch({ type: "CREATE_HABIT", payload: habit })
-    })
+    // mockHabits.forEach((habit, idx) => {
+    //   // if(idx > mockHabits.length - 1) return
+    //   // console.log(habit, idx, mockHabits.length, "habit")
+    //   // dispatch({ type: "CREATE_HABIT", payload: habit })
+    // })
 
-    setHabits(state.habits)
-  }, [])
+    dispatch({ type: "IINITIALIZE", payload: mockHabits })
+
+    // setHabits(state.habits)
+  }, [mockHabits])
 
   useEffect(() => {
     setHabits(state.habits)
-  }, [state.habits])
+    // habits?.length! <= state.habits.length && setHabits(state.habits)
+    // console.log(habits?.length, state.habits.length, "habits", state.habits)
+  }, [habits])
 
-  if (!habits.length) return null
+  if (!habits?.length) return null
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
