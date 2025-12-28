@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { DashboardTabs } from "@/app/dashboard/_components/dashboard-tabs"
-import { AIInsightsCard } from "@/app/dashboard/_components/ai-insights-card"
-import { ProgressRing } from "@/app/dashboard/_components/progress-ring"
+import { DashboardTabs } from "@/app/(nested-navs)/dashboard/_components/dashboard-tabs"
+import { AIInsightsCard } from "@/app/(nested-navs)/dashboard/_components/ai-insights-card"
+import { ProgressRing } from "@/app/(nested-navs)/dashboard/_components/progress-ring"
 import { mockHabits, mockInsights } from "@/lib/mock-data"
 import Link from "next/link"
 import { Plus, CheckCircle2 } from "lucide-react"
@@ -29,18 +29,21 @@ export default function DashboardPage() {
     //   // dispatch({ type: "CREATE_HABIT", payload: habit })
     // })
 
-    dispatch({ type: "IINITIALIZE", payload: mockHabits })
+    state.habits.length === 0 && dispatch({ type: "IINITIALIZE", payload: mockHabits })
 
     // setHabits(state.habits)
-  }, [mockHabits])
+  }, [])
 
-  useEffect(() => {
-    setHabits(state.habits)
-    // habits?.length! <= state.habits.length && setHabits(state.habits)
-    // console.log(habits?.length, state.habits.length, "habits", state.habits)
-  }, [habits])
+  // useEffect(() => {
+  //   setHabits(state.habits)
+  //   // habits?.length! <= state.habits.length && setHabits(state.habits)
+  //   // console.log(habits?.length, state.habits.length, "habits", state.habits)
+  // }, [state])
 
-  if (!habits?.length) return null
+  console.log(habits, "habits", state)
+
+  // if (!habits?.length) return null
+  if (!state.habits?.length) return null
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -119,7 +122,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {habits.map((habit) => (
+                {state.habits.map((habit) => (
                   <button
                     key={habit.id}
                     onClick={() => setSelectedHabitId(habit.id)}

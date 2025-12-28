@@ -1,12 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Button } from "../../../components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card"
-import { Input } from "../../../components/ui/input"
-import { Label } from "../../../components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select"
-import { Switch } from "../../../components/ui/switch"
+import { Button } from "../../../../components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card"
+import { Input } from "../../../../components/ui/input"
+import { Label } from "../../../../components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select"
+import { Switch } from "../../../../components/ui/switch"
 import { Plus, Trash2, Wand2 } from "lucide-react"
 import { useHabitCtx } from "@/context-reducers/habitCtxr"
 
@@ -18,6 +18,7 @@ interface Step {
 }
 
 interface HabitCreationForm {
+  id: string
   title: string
   frequency: "daily" | "weekly" | "monthly"
   duration: number
@@ -97,6 +98,24 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
   const handleSave = () => {
     // onSave(form)
     onClose()
+
+    // testing!!
+    onSave({
+        // id: Math.random().toString(),
+        id: "4",
+        title: "Morning Workout>>><<<<",
+        frequency: "daily",
+        duration: 30,
+        steps: [
+          { id: "1", title: "Warm up", time: "06:00", completed: false },
+          { id: "2", title: "Main exercise", time: "06:15", completed: false },
+          { id: "3", title: "Cool down", time: "06:45", completed: false },
+        ],
+        metric: "minutes",
+        target: 30,
+        successPercentage: 80,
+        successEnabled: true,
+      })
   }
 
   const { state, dispatch } = useHabitCtx()

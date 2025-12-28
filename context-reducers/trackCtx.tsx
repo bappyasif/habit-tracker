@@ -38,7 +38,7 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                 habits: action.payload
             }
         case 'CREATE_HABIT':
-            console.log(action.payload, "action.payload")
+            console.log(action.payload, "action.payload", state.habits)
             return {
                 ...state,
                 habits: [...state.habits, action.payload]
@@ -80,11 +80,11 @@ const TrackContext = createContext<{
     dispatch: () => { }
 })
 
-const TrackContextProvider = ({ Children }: { Children: React.ReactNode }) => {
+const TrackContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [state, dispatch] = useReducer(trackReducer, initialState)
     return (
         <TrackContext.Provider value={{ state, dispatch }}>
-            {Children}
+            {children}
         </TrackContext.Provider>
     )
 }
