@@ -2,15 +2,19 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { DatePicker } from "@/app/track/_components/date-picker"
-import { StepLogger } from "@/app/track/_components/step-logger"
-import { MeasurementInput } from "@/app/track/_components/measurement-input"
-import { LogHistory } from "@/app/track/_components/log-history"
+import { DatePicker } from "@/app/(nested-navs)/track/_components/date-picker"
+import { StepLogger } from "@/app/(nested-navs)/track/_components/step-logger"
+import { MeasurementInput } from "@/app/(nested-navs)/track/_components/measurement-input"
+import { LogHistory } from "@/app/(nested-navs)/track/_components/log-history"
 import { mockHabits, mockLogs } from "@/lib/mock-data"
 import { Save } from "lucide-react"
+import { useTrackCtx } from "@/context-reducers/trackCtx"
 
 export default function TrackPage() {
-  const habit = mockHabits[0]
+  const {state, dispatch} = useTrackCtx()
+  // console.log(state)
+  // const habit = mockHabits[0]
+  const habit = state.habits[0]
   const [date, setDate] = useState(new Date())
   const [measurementValue, setMeasurementValue] = useState(30)
   const [steps, setSteps] = useState(habit.steps)
@@ -23,7 +27,8 @@ export default function TrackPage() {
     await new Promise((resolve) => setTimeout(resolve, 500))
 
     const newLog = {
-      id: Math.random().toString(),
+      // id: Math.random().toString(),
+      id: state.habits[0].steps.length + 1,
       date,
       measurement: measurementValue,
       notes: "Logged from tracking page",
@@ -31,6 +36,13 @@ export default function TrackPage() {
 
     setLogs([newLog, ...logs] as any)
     setIsSaving(false)
+
+    console.log("test", habit.steps, steps)
+    habit.steps = steps
+    dispatch({
+      type: 'UPDATE_HABIT',
+      payload: habit
+    })
 
     // Show success message
     alert("Log saved successfully!")

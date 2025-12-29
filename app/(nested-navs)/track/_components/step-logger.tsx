@@ -1,11 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "../../../components/ui/button"
-import { Card, CardContent } from "../../../components/ui/card"
-import { Label } from "../../../components/ui/label"
-import { Textarea } from "../../../components/ui/textarea"
-import { Checkbox } from "../../../components/ui/checkbox"
+import { Button } from "../../../../components/ui/button"
+import { Card, CardContent } from "../../../../components/ui/card"
+import { Label } from "../../../../components/ui/label"
+import { Textarea } from "../../../../components/ui/textarea"
+import { Checkbox } from "../../../../components/ui/checkbox"
 import { ChevronDown, Mic, Camera } from "lucide-react"
 
 interface Step {

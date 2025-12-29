@@ -1,3 +1,4 @@
+import { ca } from "date-fns/locale";
 import { Children, createContext, useContext, useReducer } from "react";
 
 export type TrackTypes = {
@@ -42,6 +43,17 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
             return {
                 ...state,
                 habits: [...state.habits, action.payload]
+            }
+
+        case 'UPDATE_HABIT':
+            return {
+                ...state,
+                habits: state.habits.map((habit) => {
+                    if (habit.id === action.payload.id) {
+                        return action.payload
+                    }
+                    return habit
+                })
             }
         default:
             return state
