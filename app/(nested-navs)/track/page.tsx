@@ -17,7 +17,7 @@ export default function TrackPage() {
   const habit = state.habits[0]
   const [date, setDate] = useState(new Date())
   const [measurementValue, setMeasurementValue] = useState(30)
-  const [steps, setSteps] = useState(habit.steps)
+  const [steps, setSteps] = useState(habit?.steps)
   const [logs, setLogs] = useState(mockLogs)
   const [isSaving, setIsSaving] = useState(false)
 
@@ -52,6 +52,10 @@ export default function TrackPage() {
     if (logs.length > 0) {
       setLogs(logs.slice(1))
     }
+  }
+
+  if(!habit) {
+    return <div>Loading...</div>
   }
 
   return (

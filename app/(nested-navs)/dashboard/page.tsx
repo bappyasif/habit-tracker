@@ -101,6 +101,8 @@ export default function DashboardPage() {
 
           <TodaysFocus selectedHabitId={selectedHabitId} />
 
+          <h2 className="text-3xl font-bold my-10">Snapshots of your habits</h2>
+
           {/* Dashboard Tabs */}
           <DashboardTabs selectedHabitId={selectedHabitId} />
           {/* <DashboardTabs habitTitle={currentHabit.title} currentStreak={currentHabit.currentStreak} /> */}

@@ -47,6 +47,8 @@ export function DashboardTabs(
 
   const currentHabit = habits.find((h) => h?.id == selectedHabitId) || habits[0]
 
+  console.log(currentHabit, "currentHabit")
+
   return (
     <Card>
       <CardHeader>
@@ -84,23 +86,26 @@ export function DashboardTabs(
         {/* Today Tab */}
         {activeTab === "today" && (
           <div className="space-y-3">
-            {dailyData.map((item, idx) => (
+            {
+            // dailyData
+            currentHabit.steps
+            .map((item, idx) => (
               <div
                 key={idx}
                 className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition"
               >
-                <input
+                {/* <input
                   type="checkbox"
                   checked={item.completed}
                   className="w-5 h-5 rounded border-primary cursor-pointer"
                   readOnly
-                />
+                /> */}
                 <div className="flex-1">
-                  <p className="font-medium">{item.step}</p>
+                  <p className="font-medium">{item.title}</p>
                   <p className="text-xs text-muted-foreground">⏰ {item.time}</p>
                 </div>
                 <span className={`text-sm font-semibold ${item.completed ? "text-accent" : "text-muted-foreground"}`}>
-                  {item.completed ? "✓" : "◯"}
+                  {item.completed ? "✓" : "[]"}
                 </span>
               </div>
             ))}
