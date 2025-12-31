@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Switch } from "../../../../components/ui/switch"
 import { Plus, Trash2, Wand2 } from "lucide-react"
 import { useHabitCtx } from "@/context-reducers/habitCtxr"
+import { useTrackCtx } from "@/context-reducers/trackCtx"
 
 interface Step {
   id: string
@@ -52,13 +53,31 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
   //   successEnabled: true,
   // })
 
+  const { state: trackState, dispatch: trackDispatch } = useTrackCtx()
+
   const handleAddStep = () => {
+    // const newStep: Step = {
+    //   id: Math.random().toString(),
+    //   title: "New step",
+    //   time: "06:00",
+    //   completed: false,
+    // }
+
     const newStep: Step = {
-      id: Math.random().toString(),
+      id: 's4',
       title: "New step",
       time: "06:00",
       completed: false,
     }
+
+    trackDispatch({
+      type: 'UPDATE_HABIT_PAYLOAD',
+      payload: {
+        id: '4',
+        steps: [habit.steps, newStep]
+      }
+    })
+
     // setForm({
     //   ...form,
     //   steps: [...form.steps, newStep],
@@ -76,6 +95,32 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     // setForm({
     //   ...form,
     //   steps: form.steps.map((s) => (s.id === id ? { ...s, [field]: value } : s)),
+    // })
+
+    // console.log({
+    //     id: habit.id,
+    //     data: {
+    //       steps: habit.steps.map((s) => (s.id === id ? { ...s, [field]: value } : s)),
+    //     }
+    //   }, "handleUpdateStep")
+
+    trackDispatch({
+      type: 'UPDATE_HABIT_PAYLOAD',
+      payload: {
+        id: habit.id,
+        data: {
+          steps: habit.steps.map((s) => (s.id === id ? { ...s, [field]: value } : s)),
+        }
+      }
+    })
+    // trackDispatch({
+    //   type: 'UPDATE_HABIT_PAYLOAD',
+    //   payload: {
+    //     id: id,
+    //     data: {
+    //       [field]: value
+    //     }
+    //   }
     // })
   }
 
@@ -99,48 +144,55 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     // onSave(form)
     onClose()
 
+    trackDispatch({
+      type: "UPDATE_HABIT",
+      payload: habit
+    })
+
     // testing!!
-    onSave({
-        // id: Math.random().toString(),
-        id: "4",
-        title: "Morning Workout>>><<<<",
-        frequency: "daily",
-        duration: 30,
-        steps: [
-          { id: "1", title: "Warm up", time: "06:00", completed: false },
-          { id: "2", title: "Main exercise", time: "06:15", completed: false },
-          { id: "3", title: "Cool down", time: "06:45", completed: false },
-        ],
-        metric: "minutes",
-        target: 30,
-        successPercentage: 80,
-        successEnabled: true,
-      })
+    // onSave({
+    //   // id: Math.random().toString(),
+    //   id: "4",
+    //   title: "Morning Workout>>><<<<",
+    //   frequency: "daily",
+    //   duration: 30,
+    //   steps: [
+    //     { id: "1", title: "Warm up", time: "06:00", completed: false },
+    //     { id: "2", title: "Main exercise", time: "06:15", completed: false },
+    //     { id: "3", title: "Cool down", time: "06:45", completed: false },
+    //   ],
+    //   metric: "minutes",
+    //   target: 30,
+    //   successPercentage: 80,
+    //   successEnabled: true,
+    // })
   }
 
-  const { state, dispatch } = useHabitCtx()
+  // const { state, dispatch } = useHabitCtx()
 
-  useEffect(() => {
-    // dispatch({type: "CREATE_HABIT", payload: form})
-    dispatch({
-      type: "CREATE_HABIT", payload: {
-        title: "Morning Workout>>><<<<",
-        frequency: "daily",
-        duration: 30,
-        steps: [
-          { id: "1", title: "Warm up", time: "06:00", completed: false },
-          { id: "2", title: "Main exercise", time: "06:15", completed: false },
-          { id: "3", title: "Cool down", time: "06:45", completed: false },
-        ],
-        metric: "minutes",
-        target: 30,
-        successPercentage: 80,
-        successEnabled: true,
-      }
-    })
-  }, [])
+  // useEffect(() => {
+  //   // dispatch({type: "CREATE_HABIT", payload: form})
+  //   dispatch({
+  //     type: "CREATE_HABIT", payload: {
+  //       title: "Morning Workout>>><<<<",
+  //       frequency: "daily",
+  //       duration: 30,
+  //       steps: [
+  //         { id: "1", title: "Warm up", time: "06:00", completed: false },
+  //         { id: "2", title: "Main exercise", time: "06:15", completed: false },
+  //         { id: "3", title: "Cool down", time: "06:45", completed: false },
+  //       ],
+  //       metric: "minutes",
+  //       target: 30,
+  //       successPercentage: 80,
+  //       successEnabled: true,
+  //     }
+  //   })
+  // }, [])
 
-  console.log(state)
+  // console.log(state)
+
+  const habit = trackState.habits[0]
 
 
   return (
@@ -176,12 +228,12 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
             <div className="space-y-6">
               {/* Habit Title */}
               <div>
-                <h3 className="text-2xl font-bold mb-2">{state.title}</h3>
+                <h3 className="text-2xl font-bold mb-2">{habit.title}</h3>
                 <div className="flex gap-4 text-sm text-muted-foreground">
-                  <span>📅 {state.frequency.charAt(0).toUpperCase() + state.frequency.slice(1)}</span>
-                  <span>⏱️ {state.duration} days</span>
+                  <span>📅 {habit.frequency.charAt(0).toUpperCase() + habit.frequency.slice(1)}</span>
+                  <span>⏱️ {habit.duration} days</span>
                   <span>
-                    🎯 {state.target} {state.metric}
+                    🎯 {habit.measurement.target} {habit.measurement.metric}
                   </span>
                 </div>
               </div>
@@ -190,7 +242,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
               <div>
                 <h4 className="font-semibold mb-3">Daily Steps</h4>
                 <div className="space-y-2 bg-muted/30 rounded-lg p-4">
-                  {state.steps.map((step, idx) => (
+                  {habit.steps.map((step, idx) => (
                     <div key={step.id} className="flex items-center gap-3">
                       <div className="flex-1">
                         <p className="text-sm font-medium">
@@ -209,16 +261,16 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                 <p className="text-sm text-muted-foreground">
                   Target:{" "}
                   <span className="font-semibold text-foreground">
-                    {state.target} {state.metric}
+                    {habit.measurement.target} {habit.measurement.metric}
                   </span>
                 </p>
               </div>
 
               {/* Success Definition */}
-              {state.successEnabled && (
+              {habit.successDefinition.enabled && (
                 <div className="bg-accent/10 rounded-lg p-4">
                   <p className="text-sm font-semibold text-accent-foreground">
-                    Success Definition: {state.successPercentage}% completion
+                    Success Definition: {habit.successDefinition.enabled}% completion
                   </p>
                 </div>
               )}
@@ -247,10 +299,11 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                 <Label htmlFor="title">Habit Title</Label>
                 <Input
                   id="title"
-                  value={state.title}
+                  value={habit.title}
                   // onChange={(e) => setForm({ ...form, title: e.target.value })}
                   onChange={(e) => {
-                    dispatch({ type: "UPDATE_TITLE", payload: e.target.value })
+                    // dispatch({ type: "UPDATE_TITLE", payload: e.target.value })
+                    trackDispatch({ type: 'UPDATE_HABIT_PAYLOAD', payload: { id: habit.id, data: { title: e.target.value } } })
                   }}
                   placeholder="e.g., Morning Workout"
                   className="mt-1.5"
@@ -261,12 +314,13 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Frequency</Label>
-                  <Select 
-                  value={state.frequency} 
-                  // onValueChange={(v: any) => setForm({ ...form, frequency: v })}
-                  onValueChange={(v: any) => {
-                    dispatch({ type: "UPDATE_FREQUENCY", payload: v })
-                  }}
+                  <Select
+                    value={habit.frequency}
+                    // onValueChange={(v: any) => setForm({ ...form, frequency: v })}
+                    onValueChange={(v: any) => {
+                      // dispatch({ type: "UPDATE_FREQUENCY", payload: v })
+                      trackDispatch({ type: 'UPDATE_HABIT_PAYLOAD', payload: { id: habit.id, data: { frequency: v } } })
+                    }}
                   >
                     <SelectTrigger className="mt-1.5">
                       <SelectValue />
@@ -283,10 +337,11 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                   <Input
                     id="duration"
                     type="number"
-                    value={state.duration}
+                    value={habit.duration}
                     // onChange={(e) => setForm({ ...form, duration: Number.parseInt(e.target.value) })}
                     onChange={(e) => {
-                      dispatch({ type: "UPDATE_DURATION", payload: Number.parseInt(e.target.value) })
+                      // dispatch({ type: "UPDATE_DURATION", payload: Number.parseInt(e.target.value) })
+                      trackDispatch({ type: 'UPDATE_HABIT_PAYLOAD', payload: { id: habit.id, data: { duration: Number.parseInt(e.target.value) } } })
                     }}
                     className="mt-1.5"
                   />
@@ -302,7 +357,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                   </Button>
                 </div>
                 <div className="space-y-3 bg-muted/30 rounded-lg p-4">
-                  {state.steps.map((step, idx) => (
+                  {habit.steps.map((step, idx) => (
                     <div key={step.id} className="flex items-center gap-2 bg-card p-3 rounded-lg border">
                       <span className="text-sm font-semibold text-muted-foreground min-w-6">{idx + 1}.</span>
                       <Input
@@ -331,10 +386,21 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                   <Label htmlFor="metric">Metric</Label>
                   <Input
                     id="metric"
-                    value={state.metric}
+                    value={habit.measurement.metric}
                     // onChange={(e) => setForm({ ...form, metric: e.target.value })}
                     onChange={(e) => {
-                      dispatch({ type: "UPDATE_METRIC", payload: e.target.value })
+                      // dispatch({ type: "UPDATE_METRIC", payload: e.target.value })
+                      // trackDispatch({ type: 'UPDATE_HABIT_PAYLOAD', payload: { id: habit.id, data: { metric: e.target.value } } })
+                      trackDispatch({
+                        type: 'UPDATE_HABIT_PAYLOAD', payload: {
+                          id: habit.id, data: {
+                            measurement: {
+                              target: habit.measurement.target,
+                              metric: e.target.value
+                            }
+                          }
+                        }
+                      })
                     }}
                     placeholder="e.g., minutes"
                     className="mt-1.5"
@@ -345,10 +411,21 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                   <Input
                     id="target"
                     type="number"
-                    value={state.target}
+                    // value={state.target}
+                    value={habit.measurement.target}
                     // onChange={(e) => setForm({ ...form, target: Number.parseInt(e.target.value) })}
                     onChange={(e) => {
-                      dispatch({ type: "UPDATE_TARGET", payload: Number.parseInt(e.target.value) })
+                      // dispatch({ type: "UPDATE_TARGET", payload: Number.parseInt(e.target.value) })
+                      trackDispatch({
+                        type: 'UPDATE_HABIT_PAYLOAD', payload: {
+                          id: habit.id, data: {
+                            measurement: {
+                              target: Number.parseInt(e.target.value),
+                              metric: habit.measurement.metric
+                            }
+                          }
+                        }
+                      })
                     }}
                     className="mt-1.5"
                   />
@@ -360,30 +437,55 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                 <div className="flex items-center justify-between">
                   <Label>Enable Success Definition</Label>
                   <Switch
-                    checked={state.successEnabled}
+                    // checked={state.successEnabled}
+                    checked={habit.successDefinition.enabled}
                     // onCheckedChange={(checked) => setForm({ ...form, successEnabled: checked })}
                     onCheckedChange={(checked) => {
-                      dispatch({ type: "UPDATE_SUCCESS_ENABLED", payload: checked })
+                      // dispatch({ type: "UPDATE_SUCCESS_ENABLED", payload: checked })
+                      trackDispatch({
+                        type: 'UPDATE_HABIT_PAYLOAD', payload: {
+                          id: habit.id, data: {
+                            successDefinition: {
+                              enabled: checked,
+                              percentage: habit.successDefinition.percentage
+                            }
+                          }
+                        }
+                      })
                     }}
                   />
                 </div>
-                {state.successEnabled && (
-                  <div>
-                    <Label htmlFor="success">Success Percentage</Label>
-                    <Input
-                      id="success"
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={state.successPercentage}
-                      // onChange={(e) => setForm({ ...form, successPercentage: Number.parseInt(e.target.value) })}
-                      onChange={(e) => {
-                        dispatch({ type: "UPDATE_SUCCESS_PERCENTAGE", payload: Number.parseInt(e.target.value) })
-                      }}
-                      className="mt-1.5"
-                    />
-                  </div>
-                )}
+                {
+                  habit.successDefinition.enabled &&
+                  // state.successEnabled && 
+                  (
+                    <div>
+                      <Label htmlFor="success">Success Percentage</Label>
+                      <Input
+                        id="success"
+                        type="number"
+                        min="0"
+                        max="100"
+                        // value={state.successPercentage}
+                        value={habit.successDefinition.percentage}
+                        // onChange={(e) => setForm({ ...form, successPercentage: Number.parseInt(e.target.value) })}
+                        onChange={(e) => {
+                          // dispatch({ type: "UPDATE_SUCCESS_PERCENTAGE", payload: Number.parseInt(e.target.value) })
+                          trackDispatch({
+                            type: 'UPDATE_HABIT_PAYLOAD', payload: {
+                              id: habit.id, data: {
+                                successDefinition: {
+                                  enabled: habit.successDefinition.enabled,
+                                  percentage: Number.parseInt(e.target.value)
+                                }
+                              }
+                            }
+                          })
+                        }}
+                        className="mt-1.5"
+                      />
+                    </div>
+                  )}
               </div>
             </div>
           )}

@@ -55,6 +55,21 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                     return habit
                 })
             }
+
+        case 'UPDATE_HABIT_PAYLOAD':
+            return {
+                ...state,
+                habits: state.habits.map((habit) => {
+                    if (habit.id === action.payload.id) {
+                        return {
+                            ...habit,
+                            ...action.payload.data
+                        }
+                    }
+                    return habit
+                })
+
+            }
         default:
             return state
     }
