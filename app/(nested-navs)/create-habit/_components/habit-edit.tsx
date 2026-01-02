@@ -8,7 +8,8 @@ import { Plus, Trash2 } from "lucide-react"
 
 export const HabitEdit = (
     { habit, handleAddStep, handleUpdateStep, handleRemoveStep }
-        : { habit: TrackTypes, handleAddStep: () => void, handleUpdateStep: (id: string, field: string, value: any) => void, handleRemoveStep: (id: string) => void }) => {
+        : { habit: TrackTypes, handleAddStep: () => void, handleUpdateStep: (id: string, field: string, value: any) => void, handleRemoveStep: (id: string) => void }
+) => {
 
     const { state: trackState, dispatch: trackDispatch } = useTrackCtx()
 
@@ -23,7 +24,10 @@ export const HabitEdit = (
                     // onChange={(e) => setForm({ ...form, title: e.target.value })}
                     onChange={(e) => {
                         // dispatch({ type: "UPDATE_TITLE", payload: e.target.value })
-                        trackDispatch({ type: 'UPDATE_HABIT_PAYLOAD', payload: { id: habit.id, data: { title: e.target.value } } })
+                        trackDispatch({ 
+                            type: 'UPDATE_HABIT_PAYLOAD', 
+                            payload: { id: habit.id, data: { title: e.target.value } } 
+                        })
                     }}
                     placeholder="e.g., Morning Workout"
                     className="mt-1.5"

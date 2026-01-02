@@ -8,7 +8,7 @@ import { AIInsightsCard } from "@/app/(nested-navs)/dashboard/_components/ai-ins
 import { ProgressRing } from "@/app/(nested-navs)/dashboard/_components/progress-ring"
 import { mockHabits, mockInsights } from "@/lib/mock-data"
 import Link from "next/link"
-import { Plus, CheckCircle2 } from "lucide-react"
+import { Plus, CheckCircle2, Pencil } from "lucide-react"
 import { TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
 import { TodaysFocus } from "./_components/todays-focus"
 
@@ -33,6 +33,15 @@ export default function DashboardPage() {
 
     // setHabits(state.habits)
   }, [])
+
+  // useEffect(() => {
+  //   dispatch({
+  //     type: 'UPDATE_HABIT_VIEWING',
+  //     payload: selectedHabitId
+  //   })
+
+  //   console.log(selectedHabitId, "selectedHabitId")
+  // }, [selectedHabitId])
 
   // useEffect(() => {
   //   setHabits(state.habits)
@@ -125,17 +134,29 @@ export default function DashboardPage() {
             <CardContent>
               <div className="space-y-2">
                 {state.habits.map((habit) => (
-                  <button
-                    key={habit.id}
-                    onClick={() => setSelectedHabitId(habit.id)}
-                    className={`w-full text-left p-3 rounded-lg border-2 transition-colors ${selectedHabitId === habit.id
-                      ? "border-primary bg-primary/5"
-                      : "border-border hover:border-primary/50"
-                      }`}
-                  >
-                    <p className="font-semibold text-sm">{habit.title}</p>
-                    <p className="text-xs text-muted-foreground mt-1">🔥 {habit.currentStreak} day streak</p>
-                  </button>
+                  <div key={habit.id} className="relative flex flex-col self-center justify-center">
+                    <button
+                      onClick={() => setSelectedHabitId(habit.id)}
+                      className={`w-full text-left p-3 rounded-lg border-2 transition-colors ${selectedHabitId === habit.id
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
+                        }`}
+                    >
+                      <p className="font-semibold text-sm">{habit.title}</p>
+                      <p className="text-xs text-muted-foreground mt-1">🔥 {habit.currentStreak} day streak</p>
+                    </button>
+
+                    <Link
+                      className="absolute right-1.5 bg-secondary w-1/4 h-9 rounded-full flex gap-2 items-center justify-center text-primary hover:bg-secondary transition-colors"
+                      href="/create-habit"
+                      onClick={() => {
+                        dispatch({ type: "UPDATE_HABIT_VIEWING", payload: habit.id })
+                      }}
+                    >
+                      <Pencil className="w-4 h-4" />
+                      <span>Edit</span>
+                    </Link>
+                  </div>
                 ))}
               </div>
             </CardContent>

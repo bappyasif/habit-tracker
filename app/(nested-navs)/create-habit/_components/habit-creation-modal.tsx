@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "../../../../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { HabitPreview } from "./habit-preview"
 import { HabitEdit } from "./habit-edit"
+import { NewHabit } from "./new-habit"
 
 interface Step {
   id: string
@@ -32,7 +33,7 @@ interface HabitCreationModalProps {
 }
 
 export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps) {
-  const [stage, setStage] = useState<"preview" | "edit">("preview")
+  const [stage, setStage] = useState<"preview" | "edit" | "new">("preview")
   const [isLoading, setIsLoading] = useState(false)
   const { state: trackState, dispatch: trackDispatch } = useTrackCtx()
 
@@ -149,7 +150,21 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     // })
   }
 
-  const habit = trackState.habits[0]
+  const habit = trackState.habits[trackState.habitViewing - 1]
+
+  useEffect(() => {
+    if (trackState.habitViewing === -1) {
+      setStage("new")
+
+      console.log("RUNNING!! NOTTTT")
+    }
+
+    console.log("RUNNING!!")
+  }, [trackState.habitViewing])
+
+  // if(!habit) return (
+  //   <NewHabit />
+  // )
 
 
   return (
@@ -178,26 +193,34 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
             <Button variant={stage === "edit" ? "default" : "outline"} size="sm" onClick={() => setStage("edit")}>
               Edit Details
             </Button>
+            <Button variant={stage === "new" ? "default" : "outline"} size="sm" onClick={() => setStage("new")}>
+              Create New
+            </Button>
           </div>
 
-          {stage === "preview" ? (
-            <HabitPreview
-              habit={habit}
-              // onSave={onSave}
-              // onClose={}
-              handleRegenerateWithAI={handleRegenerateWithAI}
-              isLoading={isLoading}
-              setStage={setStage}
+          {
+            stage === "preview" && habit ? (
+              <HabitPreview
+                habit={habit}
+                // onSave={onSave}
+                // onClose={}
+                handleRegenerateWithAI={handleRegenerateWithAI}
+                isLoading={isLoading}
+                setStage={setStage}
               />
-          ) : (
-            // Edit Stage
-            <HabitEdit
-              habit={habit}
-              handleAddStep={handleAddStep}
-              handleUpdateStep={handleUpdateStep}
-              handleRemoveStep={handleRemoveStep}
-            />
-          )}
+            ) : stage === "edit"  && habit ? (
+              // Edit Stage
+              <HabitEdit
+                habit={habit}
+                handleAddStep={handleAddStep}
+                handleUpdateStep={handleUpdateStep}
+                handleRemoveStep={handleRemoveStep}
+              />
+            ) : stage === "new" && (
+              // New Stage
+              <NewHabit />
+            )
+          }
 
           {/* Footer Buttons */}
           <div className="flex gap-3 pt-6 border-t mt-6">

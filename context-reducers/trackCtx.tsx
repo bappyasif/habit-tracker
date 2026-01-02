@@ -27,7 +27,8 @@ export type TrackTypes = {
 }
 
 type initialStateTypes = {
-    habits: TrackTypes[]
+    habits: TrackTypes[],
+    habitViewing: number
 }
 
 
@@ -70,12 +71,20 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                 })
 
             }
+
+        case "UPDATE_HABIT_VIEWING":
+            return {
+                ...state,
+                habitViewing: action.payload
+            }
+
         default:
             return state
     }
 }
 const initialState: initialStateTypes = {
     habits: [],
+    habitViewing: -1
     // habits: [
     //     {
     //         id: '',
