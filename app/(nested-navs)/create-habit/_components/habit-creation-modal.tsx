@@ -36,6 +36,18 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
   const [stage, setStage] = useState<"preview" | "edit" | "new">("preview")
   const [isLoading, setIsLoading] = useState(false)
   const { state: trackState, dispatch: trackDispatch } = useTrackCtx()
+  const [tabs, setTabs] = useState<{
+    label: string;
+    value: string;
+  }[]>([])
+
+  const handleClose = () => {
+    onClose()
+    trackDispatch({
+      type: "UPDATE_HABIT_VIEWING",
+      payload: -1
+    })
+  }
 
   const handleAddStep = () => {
     // const newStep: Step = {
@@ -166,6 +178,16 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
   //   <NewHabit />
   // )
 
+  // const tabs = trackState.habitViewing === -1 ? [{ label: "Preview", value: "preview" }, { label: "New", value: "new" }] : [{ label: "Preview", value: "preview" }, { label: "Edit", value: "edit" }, { label: "New", value: "new" } ]
+
+  useEffect(() => {
+    const ts = trackState.habitViewing === -1
+      ? [{ label: "New", value: "new" }] : [{ label: "Preview", value: "preview" }, { label: "Edit", value: "edit" }]
+
+    setTabs(ts)
+
+  }, [trackState.habitViewing])
+
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
@@ -173,12 +195,12 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
         <CardHeader className="sticky top-0 bg-card border-b">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Create New Habit</CardTitle>
+              <CardTitle>{habit ? "Edit Current Habit" : "Create New Habit"}</CardTitle>
               <CardDescription>
                 {stage === "preview" ? "Review your habit plan before saving" : "Edit your habit details"}
               </CardDescription>
             </div>
-            <Button variant="ghost" size="sm" onClick={onClose}>
+            <Button variant="ghost" size="sm" onClick={handleClose}>
               ✕
             </Button>
           </div>
@@ -187,7 +209,22 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
         <CardContent className="pt-6">
           {/* Stage Tabs */}
           <div className="flex gap-2 mb-6">
-            <Button variant={stage === "preview" ? "default" : "outline"} size="sm" onClick={() => setStage("preview")}>
+            {
+              trackState.habitViewing === -1
+              ? null
+              :tabs.map(
+                (tab) => (
+                  <Button
+                    key={tab.value}
+                    variant={stage === tab.value ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setStage(tab.value as typeof stage)}
+                  >
+                    {tab.label}
+                  </Button>
+                ))
+            }
+            {/* <Button variant={stage === "preview" ? "default" : "outline"} size="sm" onClick={() => setStage("preview")}>
               Preview
             </Button>
             <Button variant={stage === "edit" ? "default" : "outline"} size="sm" onClick={() => setStage("edit")}>
@@ -195,7 +232,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
             </Button>
             <Button variant={stage === "new" ? "default" : "outline"} size="sm" onClick={() => setStage("new")}>
               Create New
-            </Button>
+            </Button> */}
           </div>
 
           {
@@ -208,7 +245,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                 isLoading={isLoading}
                 setStage={setStage}
               />
-            ) : stage === "edit"  && habit ? (
+            ) : stage === "edit" && habit ? (
               // Edit Stage
               <HabitEdit
                 habit={habit}
@@ -223,14 +260,34 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
           }
 
           {/* Footer Buttons */}
-          <div className="flex gap-3 pt-6 border-t mt-6">
-            <Button variant="outline" onClick={onClose} className="flex-1 bg-transparent">
+          {
+            trackState.habitViewing === -1
+              ? null
+              : (
+                <div className="flex gap-3 pt-6 border-t mt-6">
+                  <Button variant="outline"
+                    onClick={handleClose}
+                    className="flex-1 bg-transparent"
+                  >
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSave} className="flex-1">
+                    Save Habit
+                  </Button>
+                </div>
+              )
+          }
+          {/* <div className="flex gap-3 pt-6 border-t mt-6">
+            <Button variant="outline"
+              onClick={handleClose}
+              className="flex-1 bg-transparent"
+            >
               Cancel
             </Button>
             <Button onClick={handleSave} className="flex-1">
               Save Habit
             </Button>
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </div>

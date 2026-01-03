@@ -1,22 +1,26 @@
 import { ca } from "date-fns/locale";
 import { Children, createContext, useContext, useReducer } from "react";
 
+type Frequency = "daily" | "weekly" | "monthly"
+
+export type Steps = {
+    id: string;
+    title: string;
+    time: string;
+    completed: boolean;
+}
+
 export type TrackTypes = {
     id: string;
     title: string;
     description: string;
-    frequency: "daily";
+    frequency: Frequency;
     duration: number;
     measurement: {
         metric: string;
         target: number;
     };
-    steps: {
-        id: string;
-        title: string;
-        time: string;
-        completed: boolean;
-    }[];
+    steps: Steps[];
     successDefinition: {
         enabled: boolean;
         percentage: number;
