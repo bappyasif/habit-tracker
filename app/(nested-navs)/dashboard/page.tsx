@@ -49,6 +49,14 @@ export default function DashboardPage() {
   //   // console.log(habits?.length, state.habits.length, "habits", state.habits)
   // }, [state])
 
+  useEffect(() => {
+    console.log(selectedHabitId, "selectedHabitId")
+    dispatch({
+      type: 'UPDATE_HABIT_VIEWING',
+      payload: Number(selectedHabitId)
+    })
+  }, [selectedHabitId])
+
   console.log(habits, "habits", state)
 
   // if (!habits?.length) return null
@@ -124,7 +132,12 @@ export default function DashboardPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Your Habits</CardTitle>
-                <Link href="/create-habit">
+                <Link href="/create-habit" onClick={() => {
+                  dispatch({
+                    type: 'UPDATE_HABIT_VIEWING',
+                    payload: -1
+                  })
+                }}>
                   <Button size="sm" variant="ghost">
                     <Plus className="w-4 h-4" />
                   </Button>

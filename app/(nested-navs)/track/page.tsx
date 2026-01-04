@@ -14,7 +14,9 @@ export default function TrackPage() {
   const {state, dispatch} = useTrackCtx()
   // console.log(state)
   // const habit = mockHabits[0]
-  const habit = state.habits[0]
+  // const habit = state.habits[0]
+  const habit = state.habits[ state.habitViewing === -1 ? 0 : state.habitViewing - 1]
+  console.log(habit, state.habitViewing, state.habits, "habit")
   const [date, setDate] = useState(new Date())
   const [measurementValue, setMeasurementValue] = useState(30)
   const [steps, setSteps] = useState(habit?.steps)
