@@ -25,13 +25,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans antialiased`}>
-        <SidebarProvider>
+        {/* <SidebarProvider>
           <AppSidebar />
           <div className="flex flex-col flex-1 w-full">
             <AppHeader />
             {children}
           </div>
-        </SidebarProvider>
+        </SidebarProvider> */}
+        <div className="flex flex-col flex-1 w-full">
+          <AppHeader />
+          {children}
+        </div>
         <Analytics />
       </body>
     </html>

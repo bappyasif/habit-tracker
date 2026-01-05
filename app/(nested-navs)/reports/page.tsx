@@ -2,9 +2,9 @@
 
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { InsightCards } from "@/app/reports/_components/insight-cards"
-import { SuggestionsList } from "@/app/reports/_components/suggestions-list"
-import { HeatmapCalendar } from "@/app/reports/_components/heatmap-calendar"
+import { InsightCards } from "@/app/(nested-navs)/reports/_components/insight-cards"
+import { SuggestionsList } from "@/app/(nested-navs)/reports/_components/suggestions-list"
+import { HeatmapCalendar } from "@/app/(nested-navs)/reports/_components/heatmap-calendar"
 import { mockInsights } from "@/lib/mock-data"
 import { CalendarDays } from "lucide-react"
 

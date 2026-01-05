@@ -16,6 +16,7 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "@/components/ui/sidebar"
+import { useTrackCtx } from "@/context-reducers/trackCtx"
 
 const navigationItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -27,6 +28,8 @@ const navigationItems = [
 export function AppSidebar() {
   const pathname = usePathname()
   const router = useRouter()
+
+  const { dispatch } = useTrackCtx()
 
   // Hide sidebar on landing page
   if (pathname === "/") {
@@ -40,8 +43,8 @@ export function AppSidebar() {
   return (
     <Sidebar className="flex flex-col justify-between h-full bg-red-200">
       <SidebarHeader className="border-b">
-        <Link 
-          href="/dashboard" 
+        <Link
+          href="/dashboard"
           className="flex items-center gap-2 font-bold text-base"
         >
           <div className="w-8 h-8 rounded-lg bg-linear-to-br from-blue-600 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">
@@ -88,7 +91,13 @@ export function AppSidebar() {
             <SidebarMenu className="space-y-1">
               <SidebarMenuItem>
                 <SidebarMenuButton asChild className="font-bold">
-                  <Link href="/create-habit" className="flex items-center gap-2 bg-primary/60 text-foreground justify-center">
+                  <Link href="/create-habit" className="flex items-center gap-2 bg-primary/60 text-foreground justify-center" onClick={() => {
+                    dispatch({
+                      type: 'UPDATE_HABIT_VIEWING',
+                      payload: -1
+                    })
+                    console.log("clicked")
+                  }}>
                     <Plus className="w-4 h-4" />
                     <span>New Habit</span>
                   </Link>

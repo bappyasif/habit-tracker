@@ -1,6 +1,6 @@
 "use client"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card"
-import { Button } from "../../../components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card"
+import { Button } from "../../../../components/ui/button"
 import { CheckCircle2, Plus, Trash2 } from "lucide-react"
 
 interface Suggestion {
