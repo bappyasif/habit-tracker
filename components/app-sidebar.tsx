@@ -40,6 +40,20 @@ export function AppSidebar() {
     router.push("/")
   }
 
+  const handleNewHabit = () => {
+    dispatch({
+      type: 'UPDATE_HABIT_VIEWING',
+      payload: -1
+    })
+    console.log("clicked")
+  }
+
+  const grps = [
+    { path: "/", label: "Home", icon: Home, handler: () => router.push("/") },
+    { path: "/create-habit", label: "New Habit", icon: Home, handler: handleNewHabit }
+
+  ]
+
   return (
     <Sidebar className="flex flex-col justify-between h-full bg-red-200">
       <SidebarHeader className="border-b">
@@ -86,43 +100,26 @@ export function AppSidebar() {
 
         <SidebarSeparator className="border-t border-b border-gray-200" />
 
-        <SidebarGroup className="space-y-3">
-          <SidebarGroupContent className="space-y-2">
-            <SidebarMenu className="space-y-1">
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild className="font-bold">
-                  <Link href="/create-habit" className="flex items-center gap-2 bg-primary/60 text-foreground justify-center" onClick={() => {
-                    dispatch({
-                      type: 'UPDATE_HABIT_VIEWING',
-                      payload: -1
-                    })
-                    console.log("clicked")
-                  }}>
-                    <Plus className="w-4 h-4" />
-                    <span>New Habit</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {
+          grps.map((grp) => (
+            <SidebarGroup className="space-y-3" key={grp.path}>
+              <SidebarGroupContent className="space-y-2">
+                <SidebarMenu className="space-y-1">
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild className="font-bold">
+                      <Link href={grp.path} className="flex items-center gap-2 bg-primary/60 text-foreground justify-center" onClick={grp.handler}>
+                        <grp.icon className="w-4 h-4" />
+                        <span>{grp.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          ))
+        }
+        <SidebarSeparator className="border-t border-b border-gray-200" />
 
-        <SidebarSeparator className="border-t border-b border-gray-200" />
-        <SidebarGroup className="space-y-3">
-          <SidebarGroupContent className="space-y-2">
-            <SidebarMenu className="space-y-1">
-              <SidebarMenuItem className="">
-                <SidebarMenuButton asChild className="font-semibold">
-                  <Link href="/" className="flex items-center gap-2 bg-primary/20 justify-center">
-                    <Home className="w-4 h-4" />
-                    <span>Home</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarSeparator className="border-t border-b border-gray-200" />
       </SidebarContent>
 
       <SidebarFooter className="border-t">
