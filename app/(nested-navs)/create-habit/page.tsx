@@ -3,14 +3,12 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { HabitCreationModal } from "@/app/(nested-navs)/create-habit/_components/habit-creation-modal"
-import HabitContextProvider, { useHabitCtx } from "../../../context-reducers/habitCtxr"
-import TrackContextProvider, { useTrackCtx } from "@/context-reducers/trackCtx"
+import { useTrackCtx } from "@/context-reducers/trackCtx"
 
 export default function CreateHabitPage() {
   const router = useRouter()
   const [showModal, setShowModal] = useState(true)
 
-  // const {dispatch} = useHabitCtx()
   const {dispatch, state} = useTrackCtx()
 
   const handleClose = () => {
@@ -28,10 +26,6 @@ export default function CreateHabitPage() {
 
 
   return (
-    // <TrackContextProvider Children={null}>
-      <HabitContextProvider>
-        {showModal ? <HabitCreationModal onClose={handleClose} onSave={handleSave} /> : null}
-      </HabitContextProvider>
-    // </TrackContextProvider>
+    showModal ? <HabitCreationModal onClose={handleClose} onSave={handleSave} /> : null 
   )
 }

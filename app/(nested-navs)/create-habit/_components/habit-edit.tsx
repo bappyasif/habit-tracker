@@ -21,9 +21,7 @@ export const HabitEdit = (
                 <Input
                     id="title"
                     value={habit.title}
-                    // onChange={(e) => setForm({ ...form, title: e.target.value })}
                     onChange={(e) => {
-                        // dispatch({ type: "UPDATE_TITLE", payload: e.target.value })
                         trackDispatch({ 
                             type: 'UPDATE_HABIT_PAYLOAD', 
                             payload: { id: habit.id, data: { title: e.target.value } } 
@@ -40,9 +38,7 @@ export const HabitEdit = (
                     <Label>Frequency</Label>
                     <Select
                         value={habit.frequency}
-                        // onValueChange={(v: any) => setForm({ ...form, frequency: v })}
                         onValueChange={(v: any) => {
-                            // dispatch({ type: "UPDATE_FREQUENCY", payload: v })
                             trackDispatch({ type: 'UPDATE_HABIT_PAYLOAD', payload: { id: habit.id, data: { frequency: v } } })
                         }}
                     >
@@ -62,9 +58,7 @@ export const HabitEdit = (
                         id="duration"
                         type="number"
                         value={habit.duration}
-                        // onChange={(e) => setForm({ ...form, duration: Number.parseInt(e.target.value) })}
                         onChange={(e) => {
-                            // dispatch({ type: "UPDATE_DURATION", payload: Number.parseInt(e.target.value) })
                             trackDispatch({ type: 'UPDATE_HABIT_PAYLOAD', payload: { id: habit.id, data: { duration: Number.parseInt(e.target.value) } } })
                         }}
                         className="mt-1.5"
@@ -111,10 +105,7 @@ export const HabitEdit = (
                     <Input
                         id="metric"
                         value={habit.measurement.metric}
-                        // onChange={(e) => setForm({ ...form, metric: e.target.value })}
                         onChange={(e) => {
-                            // dispatch({ type: "UPDATE_METRIC", payload: e.target.value })
-                            // trackDispatch({ type: 'UPDATE_HABIT_PAYLOAD', payload: { id: habit.id, data: { metric: e.target.value } } })
                             trackDispatch({
                                 type: 'UPDATE_HABIT_PAYLOAD', payload: {
                                     id: habit.id, data: {
@@ -135,11 +126,8 @@ export const HabitEdit = (
                     <Input
                         id="target"
                         type="number"
-                        // value={state.target}
                         value={habit.measurement.target}
-                        // onChange={(e) => setForm({ ...form, target: Number.parseInt(e.target.value) })}
                         onChange={(e) => {
-                            // dispatch({ type: "UPDATE_TARGET", payload: Number.parseInt(e.target.value) })
                             trackDispatch({
                                 type: 'UPDATE_HABIT_PAYLOAD', payload: {
                                     id: habit.id, data: {
@@ -161,11 +149,8 @@ export const HabitEdit = (
                 <div className="flex items-center justify-between">
                     <Label>Enable Success Definition</Label>
                     <Switch
-                        // checked={state.successEnabled}
                         checked={habit.successDefinition.enabled}
-                        // onCheckedChange={(checked) => setForm({ ...form, successEnabled: checked })}
                         onCheckedChange={(checked) => {
-                            // dispatch({ type: "UPDATE_SUCCESS_ENABLED", payload: checked })
                             trackDispatch({
                                 type: 'UPDATE_HABIT_PAYLOAD', payload: {
                                     id: habit.id, data: {
@@ -181,7 +166,6 @@ export const HabitEdit = (
                 </div>
                 {
                     habit.successDefinition.enabled &&
-                    // state.successEnabled && 
                     (
                         <div>
                             <Label htmlFor="success">Success Percentage</Label>
@@ -190,11 +174,8 @@ export const HabitEdit = (
                                 type="number"
                                 min="0"
                                 max="100"
-                                // value={state.successPercentage}
                                 value={habit.successDefinition.percentage}
-                                // onChange={(e) => setForm({ ...form, successPercentage: Number.parseInt(e.target.value) })}
                                 onChange={(e) => {
-                                    // dispatch({ type: "UPDATE_SUCCESS_PERCENTAGE", payload: Number.parseInt(e.target.value) })
                                     trackDispatch({
                                         type: 'UPDATE_HABIT_PAYLOAD', payload: {
                                             id: habit.id, data: {

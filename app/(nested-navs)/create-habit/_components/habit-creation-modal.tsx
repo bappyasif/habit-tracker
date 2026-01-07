@@ -50,13 +50,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
   }
 
   const handleAddStep = () => {
-    // const newStep: Step = {
-    //   id: Math.random().toString(),
-    //   title: "New step",
-    //   time: "06:00",
-    //   completed: false,
-    // }
-
     const newStep: Step = {
       id: 's4',
       title: "New step",
@@ -71,33 +64,21 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
         steps: [habit.steps, newStep]
       }
     })
-
-    // setForm({
-    //   ...form,
-    //   steps: [...form.steps, newStep],
-    // })
   }
 
   const handleRemoveStep = (id: string) => {
-    // setForm({
-    //   ...form,
-    //   steps: form.steps.filter((s) => s.id !== id),
-    // })
+    trackDispatch({
+      type: 'UPDATE_HABIT_PAYLOAD',
+      payload: {
+        id: habit.id,
+        data: {
+          steps: habit.steps.filter((s) => s.id !== id),
+        }
+      }
+    })
   }
 
   const handleUpdateStep = (id: string, field: string, value: any) => {
-    // setForm({
-    //   ...form,
-    //   steps: form.steps.map((s) => (s.id === id ? { ...s, [field]: value } : s)),
-    // })
-
-    // console.log({
-    //     id: habit.id,
-    //     data: {
-    //       steps: habit.steps.map((s) => (s.id === id ? { ...s, [field]: value } : s)),
-    //     }
-    //   }, "handleUpdateStep")
-
     trackDispatch({
       type: 'UPDATE_HABIT_PAYLOAD',
       payload: {
@@ -107,15 +88,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
         }
       }
     })
-    // trackDispatch({
-    //   type: 'UPDATE_HABIT_PAYLOAD',
-    //   payload: {
-    //     id: id,
-    //     data: {
-    //       [field]: value
-    //     }
-    //   }
-    // })
   }
 
   const handleRegenerateWithAI = async () => {
@@ -142,24 +114,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
       type: "UPDATE_HABIT",
       payload: habit
     })
-
-    // testing!!
-    // onSave({
-    //   // id: Math.random().toString(),
-    //   id: "4",
-    //   title: "Morning Workout>>><<<<",
-    //   frequency: "daily",
-    //   duration: 30,
-    //   steps: [
-    //     { id: "1", title: "Warm up", time: "06:00", completed: false },
-    //     { id: "2", title: "Main exercise", time: "06:15", completed: false },
-    //     { id: "3", title: "Cool down", time: "06:45", completed: false },
-    //   ],
-    //   metric: "minutes",
-    //   target: 30,
-    //   successPercentage: 80,
-    //   successEnabled: true,
-    // })
   }
 
   const habit = trackState.habits[trackState.habitViewing - 1]
@@ -173,12 +127,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
     console.log("RUNNING!!")
   }, [trackState.habitViewing])
-
-  // if(!habit) return (
-  //   <NewHabit />
-  // )
-
-  // const tabs = trackState.habitViewing === -1 ? [{ label: "Preview", value: "preview" }, { label: "New", value: "new" }] : [{ label: "Preview", value: "preview" }, { label: "Edit", value: "edit" }, { label: "New", value: "new" } ]
 
   useEffect(() => {
     const ts = trackState.habitViewing === -1
@@ -224,23 +172,12 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                   </Button>
                 ))
             }
-            {/* <Button variant={stage === "preview" ? "default" : "outline"} size="sm" onClick={() => setStage("preview")}>
-              Preview
-            </Button>
-            <Button variant={stage === "edit" ? "default" : "outline"} size="sm" onClick={() => setStage("edit")}>
-              Edit Details
-            </Button>
-            <Button variant={stage === "new" ? "default" : "outline"} size="sm" onClick={() => setStage("new")}>
-              Create New
-            </Button> */}
           </div>
 
           {
             stage === "preview" && habit ? (
               <HabitPreview
                 habit={habit}
-                // onSave={onSave}
-                // onClose={}
                 handleRegenerateWithAI={handleRegenerateWithAI}
                 isLoading={isLoading}
                 setStage={setStage}
@@ -277,17 +214,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                 </div>
               )
           }
-          {/* <div className="flex gap-3 pt-6 border-t mt-6">
-            <Button variant="outline"
-              onClick={handleClose}
-              className="flex-1 bg-transparent"
-            >
-              Cancel
-            </Button>
-            <Button onClick={handleSave} className="flex-1">
-              Save Habit
-            </Button>
-          </div> */}
         </CardContent>
       </Card>
     </div>

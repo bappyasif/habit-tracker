@@ -69,14 +69,6 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="flex flex-col justify-between overflow-hidden my-6">
-        {/* <SidebarGroup className="space-y-3 w-full mx-auto text-center">
-          <SidebarGroupContent className="flex flex-col items-center justify-center">
-            <SidebarGroupLabel className="">Navigation</SidebarGroupLabel>
-          </SidebarGroupContent>
-        </SidebarGroup> */}
-
-        {/* <SidebarGroupLabel className=" flex flex-col items-center justify-center text-center">Navigation</SidebarGroupLabel> */}
-
         <SidebarGroup className="space-y-3">
           <SidebarGroupLabel className="">Navigation</SidebarGroupLabel>
           <SidebarGroupContent className="space-y-0">

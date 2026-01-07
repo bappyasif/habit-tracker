@@ -5,8 +5,6 @@ import { FeaturesSection } from "./_components/FeaturesSection"
 import { FooterSection } from "./_components/FooterSection"
 import { HeroSection } from "./_components/HeroSection"
 import { LanguageToggler } from "./_components/LanguageToggler"
-import CounterContextDemoProvider from "../../context-reducers/counterDemo"
-import { CounterDemo } from "./_components/CounterDemo"
 
 export default function Home() {
   // later on move this to context or global state using redux so that we can make this page ssr
@@ -18,21 +16,18 @@ export default function Home() {
 
 
   return (
-    <CounterContextDemoProvider>
-      <main className="flex-1 min-h-screen">
-        <CounterDemo />
-        {/* Language Toggle */}
-        <LanguageToggler language={language} updateLanguage={updateLanguage} />
+    <main className="flex-1 min-h-screen">
+      {/* Language Toggle */}
+      <LanguageToggler language={language} updateLanguage={updateLanguage} />
 
-        {/* Hero Section */}
-        <HeroSection language={language} />
+      {/* Hero Section */}
+      <HeroSection language={language} />
 
-        {/* Features Section */}
-        <FeaturesSection language={language} />
+      {/* Features Section */}
+      <FeaturesSection language={language} />
 
-        {/* CTA Footer */}
-        <FooterSection language={language} />
-      </main>
-    </CounterContextDemoProvider>
+      {/* CTA Footer */}
+      <FooterSection language={language} />
+    </main>
   )
 }

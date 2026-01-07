@@ -2,9 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
 import { Steps, TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
-import { fr } from "date-fns/locale"
 import { Plus, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -114,38 +112,6 @@ export const NewHabit = () => {
 
             <HandleSteps handleUpdateSteps={handleUpdateSteps} />
 
-            {/* <div>
-                <div className="flex items-center justify-between mb-3">
-                    <Label>Daily Steps</Label>
-                    <Button size="sm" variant="outline" onClick={() => null}>
-                        <Plus className="w-4 h-4 mr-1" /> Add Step
-                    </Button>
-                </div>
-                <HandleSteps />
-                <div className="space-y-3 bg-muted/30 rounded-lg p-4">
-                    {[1, 2].map((_, idx) => (
-                        <div key={idx + 1} className="flex items-center gap-2 bg-card p-3 rounded-lg border">
-                            <span className="text-sm font-semibold text-muted-foreground min-w-6">{idx + 1}.</span>
-                            <Input
-                                placeholder="Step title"
-                                className="flex-1 h-8"
-                            />
-                            <Input
-                                type="time"
-                                placeholder="00:00"
-                                className="w-24 h-8"
-                            />
-                            <Button
-                                size="sm" variant="ghost"
-                            // onClick={() => handleRemoveStep(step.id)}
-                            >
-                                <Trash2 className="w-4 h-4" />
-                            </Button>
-                        </div>
-                    ))}
-                </div>
-            </div> */}
-
             <div className="grid grid-cols-2 gap-4">
                 <div>
                     <Label htmlFor="metric">Metric</Label>
@@ -179,29 +145,6 @@ export const NewHabit = () => {
                     />
                 </div>
             </div>
-
-            {/* <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                    <Label>Enable Success Definition</Label>
-                    <Switch
-                        defaultChecked={true}
-                    />
-                </div>
-                {
-                    (
-                        <div>
-                            <Label htmlFor="success">Success Percentage</Label>
-                            <Input
-                                id="success"
-                                type="number"
-                                min="0"
-                                max="100"
-                                placeholder="e.g., 80"
-                                className="mt-1.5"
-                            />
-                        </div>
-                    )}
-            </div> */}
 
             <div className="flex gap-3 pt-6 border-t mt-6">
                 <Button variant="outline" onClick={handleCancel} className="flex-1 bg-transparent">
@@ -244,7 +187,6 @@ const HandleSteps = ({handleUpdateSteps}: {handleUpdateSteps: (newSteps: Steps[]
             </div>
             <div className="space-y-3 bg-muted/30 rounded-lg p-4">
                 {
-                    // [1, 2]
                     steps
                         .map((step) => (
                             <div key={step.id} className="flex items-center gap-2 bg-card p-3 rounded-lg border">
