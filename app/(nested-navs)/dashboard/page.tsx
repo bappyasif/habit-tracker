@@ -2,64 +2,31 @@
 
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardTabs } from "@/app/(nested-navs)/dashboard/_components/dashboard-tabs"
 import { AIInsightsCard } from "@/app/(nested-navs)/dashboard/_components/ai-insights-card"
-import { ProgressRing } from "@/app/(nested-navs)/dashboard/_components/progress-ring"
 import { mockHabits, mockInsights } from "@/lib/mock-data"
 import Link from "next/link"
-import { Plus, CheckCircle2, Pencil } from "lucide-react"
-import { TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
+import { Plus, Pencil } from "lucide-react"
+import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { TodaysFocus } from "./_components/todays-focus"
 
 export default function DashboardPage() {
-  // const [habits, setHabits] = useState(mockHabits)
-  // const [habits, setHabits] = useState<TrackTypes[] | undefined>(undefined)
-  const [habits, setHabits] = useState<TrackTypes[]>([])
   const [selectedHabitId, setSelectedHabitId] = useState("1")
-
-  // const currentHabit = habits.find((h) => h?.id === selectedHabitId) || habits[0]
 
   const { dispatch, state } = useTrackCtx()
 
   useEffect(() => {
-    // mockHabits.forEach((habit, idx) => {
-    //   // if(idx > mockHabits.length - 1) return
-    //   // console.log(habit, idx, mockHabits.length, "habit")
-    //   // dispatch({ type: "CREATE_HABIT", payload: habit })
-    // })
-
     state.habits.length === 0 && dispatch({ type: "IINITIALIZE", payload: mockHabits })
-
-    // setHabits(state.habits)
   }, [])
 
-  // useEffect(() => {
-  //   dispatch({
-  //     type: 'UPDATE_HABIT_VIEWING',
-  //     payload: selectedHabitId
-  //   })
-
-  //   console.log(selectedHabitId, "selectedHabitId")
-  // }, [selectedHabitId])
-
-  // useEffect(() => {
-  //   setHabits(state.habits)
-  //   // habits?.length! <= state.habits.length && setHabits(state.habits)
-  //   // console.log(habits?.length, state.habits.length, "habits", state.habits)
-  // }, [state])
-
   useEffect(() => {
-    console.log(selectedHabitId, "selectedHabitId")
     dispatch({
       type: 'UPDATE_HABIT_VIEWING',
       payload: Number(selectedHabitId)
     })
   }, [selectedHabitId])
 
-  console.log(habits, "habits", state)
-
-  // if (!habits?.length) return null
   if (!state.habits?.length) return null
 
   return (
@@ -80,41 +47,6 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Active Habit Card */}
-          {/* <Card className="border-2 border-primary/20">
-            <CardHeader>
-              <CardTitle className="text-2xl">Today's Focus: {currentHabit.title}</CardTitle>
-              <CardDescription>Complete your habit and build momentum</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between mb-6">
-                <ProgressRing
-                  percentage={Math.round(
-                    (currentHabit.steps.filter((s) => s.completed).length / currentHabit.steps.length) * 100,
-                  )}
-                />
-                <div className="flex-1 ml-6">
-                  <h3 className="font-semibold mb-4">Next Step</h3>
-                  {currentHabit.steps.find((s) => !s.completed) ? (
-                    <div className="space-y-2">
-                      <p className="text-lg font-bold">{currentHabit.steps.find((s) => !s.completed)?.title}</p>
-                      <p className="text-sm text-muted-foreground">
-                        ⏰ {currentHabit.steps.find((s) => !s.completed)?.time}
-                      </p>
-                    </div>
-                  ) : (
-                    <p className="text-lg font-bold text-accent">All done for today! 🎉</p>
-                  )}
-                </div>
-              </div>
-              <Link href="/track">
-                <Button className="w-full">
-                  <CheckCircle2 className="w-4 h-4 mr-2" />
-                  Log Progress
-                </Button>
-              </Link>
-            </CardContent>
-          </Card> */}
 
           <TodaysFocus selectedHabitId={selectedHabitId} />
 
@@ -122,7 +54,6 @@ export default function DashboardPage() {
 
           {/* Dashboard Tabs */}
           <DashboardTabs selectedHabitId={selectedHabitId} />
-          {/* <DashboardTabs habitTitle={currentHabit.title} currentStreak={currentHabit.currentStreak} /> */}
         </div>
 
         {/* Right Sidebar */}

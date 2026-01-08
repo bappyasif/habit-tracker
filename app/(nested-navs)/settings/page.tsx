@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-// import { HabitEditorModal } from "@/app/settings/_components/habit-editor-modal"
 import { mockHabits } from "@/lib/mock-data"
 import { Edit2, LogOut, Bell, Globe, Eye } from "lucide-react"
 import { HabitEditorModal } from "./_components/habit-editor-modal"

@@ -53,47 +53,45 @@ export default function ReportsPage() {
   }
 
   return (
-    <>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Reports & Insights</h1>
-          <p className="text-muted-foreground">Weekly summaries, trends, and AI-powered recommendations</p>
-        </div>
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold mb-2">Reports & Insights</h1>
+        <p className="text-muted-foreground">Weekly summaries, trends, and AI-powered recommendations</p>
+      </div>
 
-        {/* Insight Cards */}
-        <div className="mb-8">
-          <InsightCards
-            weeklySummary={mockInsights.weeklyText}
-            monthlyTrend={mockInsights.monthlyText}
-            goalStatus={82}
-            onRegenerateSummary={handleRegenerateSummary}
-            onRequestAdjustment={handleRequestAdjustment}
-          />
-        </div>
-
-        {/* Monthly Heatmap */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CalendarDays className="w-5 h-5" />
-              Monthly Activity Heatmap
-            </CardTitle>
-            <CardDescription>Color intensity shows your daily completion percentage</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <HeatmapCalendar month={currentMonth} data={heatmapData} />
-          </CardContent>
-        </Card>
-
-        {/* Suggestions */}
-        <SuggestionsList
-          suggestions={suggestions}
-          onAcceptSuggestion={handleAcceptSuggestion}
-          onRejectSuggestion={handleRejectSuggestion}
-          onCreateNewHabit={handleCreateNewHabit}
+      {/* Insight Cards */}
+      <div className="mb-8">
+        <InsightCards
+          weeklySummary={mockInsights.weeklyText}
+          monthlyTrend={mockInsights.monthlyText}
+          goalStatus={82}
+          onRegenerateSummary={handleRegenerateSummary}
+          onRequestAdjustment={handleRequestAdjustment}
         />
-      </main>
-    </>
+      </div>
+
+      {/* Monthly Heatmap */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <CalendarDays className="w-5 h-5" />
+            Monthly Activity Heatmap
+          </CardTitle>
+          <CardDescription>Color intensity shows your daily completion percentage</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <HeatmapCalendar month={currentMonth} data={heatmapData} />
+        </CardContent>
+      </Card>
+
+      {/* Suggestions */}
+      <SuggestionsList
+        suggestions={suggestions}
+        onAcceptSuggestion={handleAcceptSuggestion}
+        onRejectSuggestion={handleRejectSuggestion}
+        onCreateNewHabit={handleCreateNewHabit}
+      />
+    </main>
   )
 }

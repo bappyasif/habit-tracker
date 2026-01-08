@@ -2,8 +2,6 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
-import { SidebarProvider } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
 import "./globals.css"
 
@@ -24,14 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`font-sans antialiased`}>
-        {/* <SidebarProvider>
-          <AppSidebar />
-          <div className="flex flex-col flex-1 w-full">
-            <AppHeader />
-            {children}
-          </div>
-        </SidebarProvider> */}
+      <body className={`font-sans antialiased flex h-screen bg-background text-foreground ${_geist.className} ${_geistMono.className}`}>
         <div className="flex flex-col flex-1 w-full">
           <AppHeader />
           {children}
