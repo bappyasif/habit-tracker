@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "../../../../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card"
 import { ChevronDown, Lightbulb, RotateCw } from "lucide-react"
@@ -15,11 +15,53 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
   const [isExpanded, setIsExpanded] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
+  const fetchAiInsights = async () => {
+    const hobbyNamne = "Your Hobby Name" // Replace with actual hobby name
+    const hobbyDescription = "Your Hobby Description" // Replace with actual hobby description
+    const hoobyFeedback = "Your Hobby Feedback" // Replace with actual hobby feedback
+
+    try {
+      const response = await fetch('/api/ai-generate-insights', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          hobbyName: hobbyNamne,
+          hobbyDescription: hobbyDescription,
+          hobbyFeedback: hoobyFeedback,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch AI insights')
+      }
+
+      const data = await response.json()
+      console.log(data, "ai insghts!!")
+      // return data
+    } catch (error) {
+      console.error('Error fetching AI insights:', error)
+      return null
+    }
+  }
+
   const handleRefresh = async () => {
     setIsLoading(true)
+    fetchAiInsights()
     await new Promise((resolve) => setTimeout(resolve, 600))
     setIsLoading(false)
   }
+
+  const handleOnAdjustPlan = () => {
+    onAdjustPlan()
+  }
+
+  useEffect(() => {
+    handleRefresh()
+    isLoading && setIsExpanded(true)
+  }, [isLoading])
+
 
   return (
     <Card className="bg-linear-to-br from-primary/10 to-accent/10 border-primary/20">
@@ -67,7 +109,7 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
 
         {/* CTA Buttons */}
         <div className="flex gap-2 pt-2">
-          <Button size="sm" variant="outline" onClick={onAdjustPlan} className="flex-1 bg-transparent">
+          <Button size="sm" variant="outline" onClick={handleOnAdjustPlan} className="flex-1 bg-transparent">
             Adjust Plan
           </Button>
           <Button size="sm" onClick={handleRefresh} disabled={isLoading} className="flex-1">
