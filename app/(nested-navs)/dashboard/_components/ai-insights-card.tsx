@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { Button } from "../../../../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card"
 import { ChevronDown, Lightbulb, RotateCw } from "lucide-react"
+import { fetchAiInsights } from "../_utils/fetch-insights"
+import { useTrackCtx } from "@/context-reducers/trackCtx"
 
 interface AIInsightsCardProps {
   weeklyText: string
@@ -15,40 +17,15 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
   const [isExpanded, setIsExpanded] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const fetchAiInsights = async () => {
-    const hobbyNamne = "Your Hobby Name" // Replace with actual hobby name
-    const hobbyDescription = "Your Hobby Description" // Replace with actual hobby description
-    const hoobyFeedback = "Your Hobby Feedback" // Replace with actual hobby feedback
+  const {state, dispatch} = useTrackCtx()
 
-    try {
-      const response = await fetch('/api/ai-generate-insights', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          hobbyName: hobbyNamne,
-          hobbyDescription: hobbyDescription,
-          hobbyFeedback: hoobyFeedback,
-        }),
-      })
+  const habitData = state.habits.find(habit => Number(habit.id) === state.habitViewing)
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch AI insights')
-      }
-
-      const data = await response.json()
-      console.log(data, "ai insghts!!")
-      // return data
-    } catch (error) {
-      console.error('Error fetching AI insights:', error)
-      return null
-    }
-  }
+  console.log(state, "state in ai insights card", habitData)
 
   const handleRefresh = async () => {
     setIsLoading(true)
-    fetchAiInsights()
+    fetchAiInsights(habitData?.title || "", habitData?.description || "", `completed about ${habitData?.totalCompleted.toString()} percent of the steps` || "")
     await new Promise((resolve) => setTimeout(resolve, 600))
     setIsLoading(false)
   }
@@ -60,7 +37,7 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
   useEffect(() => {
     handleRefresh()
     isLoading && setIsExpanded(true)
-  }, [isLoading])
+  }, [])
 
 
   return (
