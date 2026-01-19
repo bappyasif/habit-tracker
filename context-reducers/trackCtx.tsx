@@ -3,6 +3,12 @@ import { Children, createContext, useContext, useReducer } from "react";
 
 type Frequency = "daily" | "weekly" | "monthly"
 
+type  insights = {
+    suggestions: string[];
+    areasOfImprovement: string[];
+    strengths: string[];
+}
+
 export type Steps = {
     id: string;
     title: string;
@@ -32,7 +38,11 @@ export type TrackTypes = {
 
 type initialStateTypes = {
     habits: TrackTypes[],
-    habitViewing: number
+    habitViewing: number,
+    habitInsights: {
+        insights: insights | null,
+        habitId: number | string | null
+    }[]
 }
 
 
@@ -82,13 +92,36 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                 habitViewing: action.payload
             }
 
+        case "SET_INSIGHTS":
+            console.log(action.payload, "action.payload", state.habitInsights)
+            return {
+                ...state,
+                habitInsights: state.habitInsights.length > 0 ? state.habitInsights.map((insight) => {
+                    if (insight.habitId === action.payload.habitId) {
+                        return {
+                            ...insight,
+                            insights: action.payload.insights
+                        }
+                    }
+                    return insight
+                }) : [{
+                    insights: action.payload.insights,
+                    habitId: action.payload.habitId
+                }]
+            }
+
         default:
             return state
     }
 }
 const initialState: initialStateTypes = {
     habits: [],
-    habitViewing: -1
+    habitViewing: -1,
+    habitInsights: []
+    // habitInsights: [{
+    //     insights: null,
+    //     habitId: null
+    // }]
     // habits: [
     //     {
     //         id: '',

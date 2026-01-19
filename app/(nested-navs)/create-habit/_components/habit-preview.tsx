@@ -56,8 +56,8 @@ export const HabitPreview = (
             {/* Success Definition */}
             {habit.successDefinition.enabled && (
                 <div className="bg-accent/10 rounded-lg p-4">
-                    <p className="text-sm font-semibold text-accent-foreground">
-                        Success Definition: {habit.successDefinition.enabled}% completion
+                    <p className="text-sm font-semibold text-primary">
+                        Success Definition: {habit.successDefinition.percentage}% completion
                     </p>
                 </div>
             )}

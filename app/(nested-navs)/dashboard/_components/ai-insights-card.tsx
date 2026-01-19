@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../..
 import { ChevronDown, Lightbulb, RotateCw } from "lucide-react"
 import { fetchAiInsights } from "../_utils/fetch-insights"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
+import Link from "next/link"
 
 interface AIInsightsCardProps {
   weeklyText: string
@@ -17,16 +18,16 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
   const [isExpanded, setIsExpanded] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const [insights, setInsights] = useState<{
-    suggestions: string[];
-    areasOfImprovement: string[];
-    strengths: string[];
-  } | null>({
-    suggestions: suggestions,
-    areasOfImprovement: [],
-    strengths: [],
-    // weeklySummary: "",
-  })
+  // const [insights, setInsights] = useState<{
+  //   suggestions: string[];
+  //   areasOfImprovement: string[];
+  //   strengths: string[];
+  // } | null>({
+  //   suggestions: suggestions,
+  //   areasOfImprovement: [],
+  //   strengths: [],
+  //   // weeklySummary: "",
+  // })
 
   const { state, dispatch } = useTrackCtx()
 
@@ -38,13 +39,26 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
     setIsLoading(true)
     const data = await fetchAiInsights(habitData?.title || "", habitData?.description || "", `completed about ${habitData?.totalCompleted.toString()} percent of the steps` || "")
     console.log(data, "data")
-    if (data) {
-      setInsights({
-        suggestions: data.response?.actionable_steps,
-        areasOfImprovement: data.response?.areas_for_improvement,
-        strengths: data.response?.strengths,
-        // weeklySummary: data.weeklySummary,
+    if (data?.response) {
+      dispatch({
+        type: "SET_INSIGHTS",
+        payload: {
+          insights: {
+            suggestions: data.response?.actionable_steps || [],
+            areasOfImprovement: data.response?.areas_for_improvement || [],
+            strengths: data.response?.strengths || [],
+          },
+          habitId: state.habitViewing
+        }
       })
+
+      console.log(state, "state after dispatching insights data")
+      // setInsights({
+      //   suggestions: data.response?.actionable_steps,
+      //   areasOfImprovement: data.response?.areas_for_improvement,
+      //   strengths: data.response?.strengths,
+      //   // weeklySummary: data.weeklySummary,
+      // })
     }
     await new Promise((resolve) => setTimeout(resolve, 600))
     setIsLoading(false)
@@ -55,9 +69,11 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
   }
 
   useEffect(() => {
-    handleRefresh()
+    // handleRefresh()
     isLoading && setIsExpanded(true)
   }, [])
+
+  const insights = state.habitInsights?.find(insight => insight.habitId === state.habitViewing)?.insights
 
 
   return (
@@ -85,8 +101,8 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
 
         {/* Expandables Data */}
         <ShowInformationOnExapand data={insights?.suggestions || suggestions} label="Actionable Suggestions" />
-          <ShowInformationOnExapand data={insights?.areasOfImprovement || []} label="Areas of Improvement" />
-          <ShowInformationOnExapand data={insights?.strengths || []} label="Strengths" />
+        <ShowInformationOnExapand data={insights?.areasOfImprovement || []} label="Areas of Improvement" />
+        <ShowInformationOnExapand data={insights?.strengths || []} label="Strengths" />
         {/* <div>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
@@ -110,7 +126,14 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
         {/* CTA Buttons */}
         <div className="flex gap-2 pt-2">
           <Button size="sm" variant="outline" onClick={handleOnAdjustPlan} className="flex-1 bg-transparent">
-            Adjust Plan
+            <Link
+              href="/create-habit"
+            // onClick={() => {
+            //   dispatch({ type: "UPDATE_HABIT_VIEWING", payload: state.habitViewing })
+            // }}
+            >
+              Adjust plan
+            </Link>
           </Button>
           <Button size="sm" onClick={handleRefresh} disabled={isLoading} className="flex-1">
             {isLoading ? "Regenerating..." : "Regenerate"}
