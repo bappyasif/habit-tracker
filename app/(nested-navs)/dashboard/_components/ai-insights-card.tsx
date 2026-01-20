@@ -37,7 +37,10 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
 
   const handleRefresh = async () => {
     setIsLoading(true)
-    const data = await fetchAiInsights(habitData?.title || "", habitData?.description || "", `completed about ${habitData?.totalCompleted.toString()} percent of the steps` || "")
+    // console.log(habitData?.title || "", habitData?.description || "", `completed about ${habitData?.totalCompleted.toString()} percent of the steps` || "",  habitData?.steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(", ") || "", "fetching new insights...")
+    // const data = await fetchAiInsights(habitData?.title || "", habitData?.description || "", `completed about ${habitData?.totalCompleted.toString()} percent of the steps` || "")
+
+    const data = await fetchAiInsights(habitData?.title || "", habitData?.steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(", ") || "", `completed about ${habitData?.totalCompleted.toString()} percent of the steps` || "")
     console.log(data, "data")
     if (data?.response) {
       dispatch({
@@ -68,10 +71,10 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
     onAdjustPlan()
   }
 
-  useEffect(() => {
-    // handleRefresh()
-    isLoading && setIsExpanded(true)
-  }, [])
+  // useEffect(() => {
+  //   // handleRefresh()
+  //   isLoading && setIsExpanded(true)
+  // }, [])
 
   const insights = state.habitInsights?.find(insight => insight.habitId === state.habitViewing)?.insights
 
