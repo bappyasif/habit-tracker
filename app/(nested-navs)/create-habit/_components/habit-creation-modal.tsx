@@ -7,6 +7,7 @@ import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { HabitPreview } from "./habit-preview"
 import { HabitEdit } from "./habit-edit"
 import { NewHabit } from "./new-habit"
+import { fetchAiInsights } from "../../dashboard/_utils/fetch-insights"
 
 interface Step {
   id: string
@@ -92,6 +93,21 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
   const handleRegenerateWithAI = async () => {
     setIsLoading(true)
+    const data = await fetchAiInsights(habit?.title || "", habit?.steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(", ") || "", `completed about ${habit?.totalCompleted.toString()} percent of the steps` || "")
+    console.log(data, "data")
+    if (data?.response) {
+      trackDispatch({
+        type: "SET_INSIGHTS",
+        payload: {
+          insights: {
+            suggestions: data.response?.actionable_steps || [],
+            areasOfImprovement: data.response?.areas_for_improvement || [],
+            strengths: data.response?.strengths || [],
+          },
+          habitId: habit.id
+        }
+      })
+    }
     // Simulate AI generation
     await new Promise((resolve) => setTimeout(resolve, 800))
     // setForm({
@@ -159,18 +175,18 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
           <div className="flex gap-2 mb-6">
             {
               trackState.habitViewing === -1
-              ? null
-              :tabs.map(
-                (tab) => (
-                  <Button
-                    key={tab.value}
-                    variant={stage === tab.value ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setStage(tab.value as typeof stage)}
-                  >
-                    {tab.label}
-                  </Button>
-                ))
+                ? null
+                : tabs.map(
+                  (tab) => (
+                    <Button
+                      key={tab.value}
+                      variant={stage === tab.value ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setStage(tab.value as typeof stage)}
+                    >
+                      {tab.label}
+                    </Button>
+                  ))
             }
           </div>
 
