@@ -1,12 +1,13 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { act, useEffect, useState } from "react"
 import { Button } from "../../../../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card"
 import { ChevronDown, Lightbulb, RotateCw } from "lucide-react"
 import { fetchAiInsights } from "../_utils/fetch-insights"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import Link from "next/link"
+import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
 
 interface AIInsightsCardProps {
   weeklyText: string
@@ -35,36 +36,45 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
 
   console.log(state, "state in ai insights card", habitData)
 
+  const { fetchAiInsightsData } = useToFetchInsights()
+
   const handleRefresh = async () => {
     setIsLoading(true)
     // console.log(habitData?.title || "", habitData?.description || "", `completed about ${habitData?.totalCompleted.toString()} percent of the steps` || "",  habitData?.steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(", ") || "", "fetching new insights...")
     // const data = await fetchAiInsights(habitData?.title || "", habitData?.description || "", `completed about ${habitData?.totalCompleted.toString()} percent of the steps` || "")
 
-    const data = await fetchAiInsights(habitData?.title || "", habitData?.steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(", ") || "", `completed about ${habitData?.totalCompleted.toString()} percent of the steps` || "")
-    console.log(data, "data")
-    if (data?.response) {
-      dispatch({
-        type: "SET_INSIGHTS",
-        payload: {
-          insights: {
-            suggestions: data.response?.actionable_steps || [],
-            areasOfImprovement: data.response?.areas_for_improvement || [],
-            strengths: data.response?.strengths || [],
-          },
-          habitId: state.habitViewing
-        }
-      })
+    fetchAiInsightsData(habitData?.title || "", habitData?.steps || [], habitData?.totalCompleted || 0).then(async () => {
+      // await new Promise((resolve) => setTimeout(resolve, 600))
+      setIsLoading(false)
+    })
 
-      console.log(state, "state after dispatching insights data")
-      // setInsights({
-      //   suggestions: data.response?.actionable_steps,
-      //   areasOfImprovement: data.response?.areas_for_improvement,
-      //   strengths: data.response?.strengths,
-      //   // weeklySummary: data.weeklySummary,
-      // })
-    }
-    await new Promise((resolve) => setTimeout(resolve, 600))
-    setIsLoading(false)
+
+    // const data = await fetchAiInsights(habitData?.title || "", habitData?.steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(", ") || "", `completed about ${habitData?.totalCompleted.toString()} percent of the steps` || "")
+    // console.log(data, "data")
+    // if (data?.response) {
+    //   dispatch({
+    //     type: "SET_INSIGHTS",
+    //     payload: {
+    //       insights: {
+    //         suggestions: data.response?.actionable_steps || [],
+    //         areasOfImprovement: data.response?.areas_for_improvement || [],
+    //         strengths: data.response?.strengths || [],
+    //         actions: data.response?.actions || [],
+    //       },
+    //       habitId: state.habitViewing
+    //     }
+    //   })
+
+    //   console.log(state, "state after dispatching insights data")
+    // setInsights({
+    //   suggestions: data.response?.actionable_steps,
+    //   areasOfImprovement: data.response?.areas_for_improvement,
+    //   strengths: data.response?.strengths,
+    //   // weeklySummary: data.weeklySummary,
+    // })
+    // }
+    // await new Promise((resolve) => setTimeout(resolve, 600))
+    // setIsLoading(false)
   }
 
   const handleOnAdjustPlan = () => {

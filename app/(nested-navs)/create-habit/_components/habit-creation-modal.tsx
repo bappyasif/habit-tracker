@@ -8,6 +8,7 @@ import { HabitPreview } from "./habit-preview"
 import { HabitEdit } from "./habit-edit"
 import { NewHabit } from "./new-habit"
 import { fetchAiInsights } from "../../dashboard/_utils/fetch-insights"
+import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
 
 interface Step {
   id: string
@@ -91,25 +92,34 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     })
   }
 
+  const {fetchAiInsightsData} = useToFetchInsights()
+
   const handleRegenerateWithAI = async () => {
     setIsLoading(true)
-    const data = await fetchAiInsights(habit?.title || "", habit?.steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(", ") || "", `completed about ${habit?.totalCompleted.toString()} percent of the steps` || "")
-    console.log(data, "data")
-    if (data?.response) {
-      trackDispatch({
-        type: "SET_INSIGHTS",
-        payload: {
-          insights: {
-            suggestions: data.response?.actionable_steps || [],
-            areasOfImprovement: data.response?.areas_for_improvement || [],
-            strengths: data.response?.strengths || [],
-          },
-          habitId: habit.id
-        }
-      })
-    }
+
+    fetchAiInsightsData(habit?.title || "", habit?.steps || [], habit?.totalCompleted || 0).then(async () => {
+      // await new Promise((resolve) => setTimeout(resolve, 600))
+      setIsLoading(false)
+    })
+    
+    // const data = await fetchAiInsights(habit?.title || "", habit?.steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(", ") || "", `completed about ${habit?.totalCompleted.toString()} percent of the steps` || "")
+    // console.log(data, "data")
+    // if (data?.response) {
+    //   trackDispatch({
+    //     type: "SET_INSIGHTS",
+    //     payload: {
+    //       insights: {
+    //         suggestions: data.response?.actionable_steps || [],
+    //         areasOfImprovement: data.response?.areas_for_improvement || [],
+    //         strengths: data.response?.strengths || [],
+    //         actions: data.response?.actions || [],
+    //       },
+    //       habitId: habit.id
+    //     }
+    //   })
+    // }
     // Simulate AI generation
-    await new Promise((resolve) => setTimeout(resolve, 800))
+    // await new Promise((resolve) => setTimeout(resolve, 800))
     // setForm({
     //   ...form,
     //   steps: [
@@ -119,7 +129,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     //     { id: "4", title: "Stretching", time: "06:55", completed: false },
     //   ],
     // })
-    setIsLoading(false)
+    // setIsLoading(false)
   }
 
   const handleSave = () => {

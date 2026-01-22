@@ -7,6 +7,7 @@ type  insights = {
     suggestions: string[];
     areasOfImprovement: string[];
     strengths: string[];
+    actions: string[];
 }
 
 export type Steps = {
