@@ -23,6 +23,17 @@ export const useToFetchInsights = () => {
                 }
             })
 
+            // updating actionable steps in reducers state
+            dispatch({
+                type: "ADD_HABIT_STEPS_FROM_AI_INSIGHTS",
+                payload: {
+                    habitId: state.habitViewing,
+                    data: {
+                        steps: data.response?.actions
+                    }
+                }
+            })
+
             console.log(state, "state after dispatching insights data")
         }
     }

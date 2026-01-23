@@ -93,6 +93,23 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                 habitViewing: action.payload
             }
 
+        case "ADD_HABIT_STEPS_FROM_AI_INSIGHTS":
+            console.log(action.payload, "action.payload: add habit steps from ai insights",)
+            return {
+                ...state,
+                habits: state.habits.map((habit) => {
+                    if (habit.id === action.payload.habitId) {
+                        console.log(habit, "habit >><<", action.payload.steps)
+                        return {
+                            ...habit,
+                            steps: action.payload.data.steps
+                        }
+                    }
+                    return habit
+                })
+            }
+
+
         case "SET_INSIGHTS":
             console.log(action.payload, "action.payload", state.habitInsights)
             return {

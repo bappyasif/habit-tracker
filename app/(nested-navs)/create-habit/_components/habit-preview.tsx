@@ -29,7 +29,7 @@ export const HabitPreview = (
             <div>
                 <h4 className="font-semibold mb-3">Daily Steps</h4>
                 <div className="space-y-2 bg-muted/30 rounded-lg p-4">
-                    {habit.steps.map((step, idx) => (
+                    {habit?.steps?.map((step, idx) => (
                         <div key={step.id} className="flex items-center gap-3">
                             <div className="flex-1">
                                 <p className="text-sm font-medium">
