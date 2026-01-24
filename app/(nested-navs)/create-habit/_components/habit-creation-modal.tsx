@@ -53,17 +53,23 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
   const handleAddStep = () => {
     const newStep: Step = {
-      id: 's4',
+      // id: 's4',
+      id: (habit.steps.length + 1).toString(),
       title: "New step",
       time: "06:00",
       completed: false,
     }
 
     trackDispatch({
-      type: 'UPDATE_HABIT_PAYLOAD',
+      // type: 'UPDATE_HABIT_PAYLOAD',
+      // type: 'CREATE_HABIT',
+      type: 'ADD_A_HABIT_STEP',
       payload: {
-        id: '4',
-        steps: [habit.steps, newStep]
+        // id: '4',
+        // id: trackState.habits.length + 1,
+        habitId: habit.id,
+        // steps: [habit.steps, newStep]
+        newStep
       }
     })
   }

@@ -128,6 +128,22 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                 }]
             }
 
+        case "ADD_A_HABIT_STEP":
+            console.log(action.payload, "action.payload: ADD NEW")
+            return {
+                ...state,
+                habits: state.habits.map((habit) => {
+                    if (habit.id === action.payload.habitId) {
+                        return {
+                            ...habit,
+                            steps: [...habit.steps, action.payload.newStep]
+                        }
+                    }
+                    return habit
+                })
+
+            }
+
         default:
             return state
     }
