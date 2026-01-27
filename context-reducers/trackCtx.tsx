@@ -98,8 +98,9 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
             return {
                 ...state,
                 habits: state.habits.map((habit) => {
-                    if (habit.id === action.payload.habitId) {
-                        console.log(habit, "habit >><<", action.payload.steps)
+                    // console.log(habit, "habit >><<", action.payload.data.steps, habit.id, action.payload.habitId)
+                    if (habit.id == action.payload.habitId) {
+                        console.log(habit, "habit >><<", action.payload.data.steps)
                         return {
                             ...habit,
                             steps: action.payload.data.steps

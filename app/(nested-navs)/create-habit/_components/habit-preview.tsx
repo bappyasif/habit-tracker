@@ -1,16 +1,43 @@
 import { Button } from "@/components/ui/button"
-import { TrackTypes } from "@/context-reducers/trackCtx"
+import { Steps, TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
 import { Wand2 } from "lucide-react"
+import { useEffect, useState } from "react"
 
 export const HabitPreview = (
-    { habit, handleRegenerateWithAI, isLoading, setStage }
+    { 
+        habit, 
+        handleRegenerateWithAI, isLoading, setStage 
+    }
         :
         {
-            habit: TrackTypes, handleRegenerateWithAI: () => void,
+            habit: TrackTypes, 
+            handleRegenerateWithAI: () => void,
             isLoading: boolean,
             setStage: (stage: "preview" | "edit") => void
         }
 ) => {
+    // const [habit, setHabit] = useState<TrackTypes | null>()
+
+    // const [steps, setSteps] = useState<Steps[] | null>([])
+
+    // const { state: trackState, dispatch: trackDispatch } = useTrackCtx()
+
+    // useEffect(() => {
+    //     setHabit(trackState.habits[trackState.habitViewing - 1])
+    // }, [trackState.habits, trackState.habitViewing, trackState.habitInsights])
+
+    // useEffect(() => {
+    //     if(habit) {
+    //         trackState.habitInsights.forEach(insight => {
+    //             if(insight.habitId === habit.id) {
+    //                 setSteps(insight.insights?.actions as any)
+    //             }
+    //         })
+    //     }
+    // }, [trackState.habitInsights])
+    
+    if(!habit) return null
+
     return (
         <div className="space-y-6">
             {/* Habit Title */}
