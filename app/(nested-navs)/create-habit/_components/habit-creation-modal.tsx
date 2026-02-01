@@ -103,7 +103,13 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
   const handleRegenerateWithAI = async () => {
     setIsLoading(true)
 
-    fetchAiInsightsData(habit?.title || "", habit?.steps || [], habit?.totalCompleted || 0).then(async () => {
+    const props = { title: habit?.title || "", steps: habit?.steps || [], totalCompleted: habit?.totalCompleted || 0}
+
+    // const props = { title: habit?.title || "", steps: habit?.steps || [], totalCompleted: habit?.totalCompleted || 0, whattoFetch: "daily-insights"}
+
+    // fetchAiInsightsData(habit?.title || "", habit?.steps || [], habit?.totalCompleted || 0)
+    fetchAiInsightsData(props)
+    .then(async () => {
       // await new Promise((resolve) => setTimeout(resolve, 600))
       setIsLoading(false)
     })

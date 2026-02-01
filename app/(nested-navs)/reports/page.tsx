@@ -7,6 +7,8 @@ import { SuggestionsList } from "@/app/(nested-navs)/reports/_components/suggest
 import { HeatmapCalendar } from "@/app/(nested-navs)/reports/_components/heatmap-calendar"
 import { mockInsights } from "@/lib/mock-data"
 import { CalendarDays } from "lucide-react"
+import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
+import { useTrackCtx } from "@/context-reducers/trackCtx"
 
 interface Suggestion {
   id: string
@@ -42,9 +44,34 @@ export default function ReportsPage() {
     alert(`New habit created: "${suggestion}"`)
   }
 
+  const {state, dispatch} = useTrackCtx()
+
+  const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
+
+  const {fetchWeeklySummary} = useToFetchInsights()
+
   const handleRegenerateSummary = async () => {
     // Simulate AI regeneration
     alert("Summary regenerated!")
+    console.log(habit, "state in reports page")
+    fetchWeeklySummary({
+      title: habit?.title || "",
+      steps: habit?.steps || [],
+      totalCompleted: habit?.totalCompleted || 0,
+      // whattoFetch: "weekly-summary"
+    }).then(data => {
+      console.log(data, "data-weekly-summary-insights")
+      dispatch({
+        type: "add-weekly-summary-insights",
+        payload: {
+          habitId: habit?.id,
+          data: {
+            // steps: data.response?.actions
+            data
+          }
+        }
+      })
+    }).catch(err => console.log(err))
   }
 
   const handleRequestAdjustment = async () => {

@@ -1,18 +1,31 @@
-export const fetchAiInsights = async (name: string, description: string, feedback: string) => {
-    const hobbyNamne = name ?? "Your Hobby Name" // Replace with actual hobby name
+export const fetchAiInsights = async (name: string, description: string, feedback: string, url: string = 'ai-generate-insights') => {
+    const hobbyName = name ?? "Your Hobby Name" // Replace with actual hobby name
     const hobbyDescription = description ?? "Your Hobby Description" // Replace with actual hobby description
-    const hoobyFeedback = feedback ?? "Your Hobby Feedback" // Replace with actual hobby feedback
+    const hobbyFeedback = feedback ?? "Your Hobby Feedback" // Replace with actual hobby feedback
+
+    const urlStr = `/api/${url}`
+
+    console.log(urlStr, hobbyName)
 
     try {
-      const response = await fetch('/api/ai-generate-insights', {
+
+      if(!hobbyName || !hobbyDescription || !hobbyFeedback) {
+        console.log("Missing required fields")
+        return null
+      }
+      
+      const response = await fetch(
+        // '/api/ai-generate-insights', 
+        urlStr,
+        {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          hobbyName: hobbyNamne,
+          hobbyName: hobbyName,
           hobbyDescription: hobbyDescription,
-          hobbyFeedback: hoobyFeedback,
+          hobbyFeedback: hobbyFeedback,
         }),
       })
 

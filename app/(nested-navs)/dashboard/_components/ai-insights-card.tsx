@@ -43,7 +43,13 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
     // console.log(habitData?.title || "", habitData?.description || "", `completed about ${habitData?.totalCompleted.toString()} percent of the steps` || "",  habitData?.steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(", ") || "", "fetching new insights...")
     // const data = await fetchAiInsights(habitData?.title || "", habitData?.description || "", `completed about ${habitData?.totalCompleted.toString()} percent of the steps` || "")
 
-    fetchAiInsightsData(habitData?.title || "", habitData?.steps || [], habitData?.totalCompleted || 0).then(async () => {
+    // const props = { title: habitData?.title || "", steps: habitData?.steps || [], totalCompleted: habitData?.totalCompleted || 0, whattoFetch: "daily-insights"}
+
+    const props = { title: habitData?.title || "", steps: habitData?.steps || [], totalCompleted: habitData?.totalCompleted || 0}
+
+    // fetchAiInsightsData(habitData?.title || "", habitData?.steps || [], habitData?.totalCompleted || 0)
+    fetchAiInsightsData(props)
+    .then(async () => {
       // await new Promise((resolve) => setTimeout(resolve, 600))
       setIsLoading(false)
     })
