@@ -43,12 +43,12 @@ export type initialStateTypes = {
     habitInsights: {
         insights: insights | null,
         habitId: number | string | null,
-        // weekly: string | null
+        weekly: string | null
     }[],
-    weeklyInsights: {
-        habitId: number | string | null,
-        summary: string
-    }[]
+    // weeklyInsights: {
+    //     habitId: number | string | null,
+    //     summary: string
+    // }[]
 }
 
 
@@ -131,7 +131,7 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                 }) : [{
                     insights: action.payload.insights,
                     habitId: action.payload.habitId,
-                    // weekly: null
+                    weekly: state.habitInsights.find(insight => insight.habitId === action.payload.habitId)?.weekly || null
                 }]
             }
 
@@ -154,38 +154,38 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
             case "add-weekly-summary-insights":
                 console.log(action.payload, "action.payload: ADD NEW WEEKLY SUMMARY INSIGHTS")
 
-                return {
-                    ...state,
-                    weeklyInsights: state.weeklyInsights.length > 0 ? state.weeklyInsights.map((insight) => {
-                        if (insight.habitId === action.payload.habitId) {
-                            return {
-                                ...insight,
-                                summary: action.payload.data
-                            }
-                        }
-                        return insight
-                    }) : [{
-                        habitId: action.payload.habitId,
-                        summary: action.payload.data
-                    }]
-                }
-
                 // return {
                 //     ...state,
-                //     habitInsights: state.habitInsights.length > 0 ? state.habitInsights.map((insight) => {
+                //     weeklyInsights: state.weeklyInsights.length > 0 ? state.weeklyInsights.map((insight) => {
                 //         if (insight.habitId === action.payload.habitId) {
                 //             return {
                 //                 ...insight,
-                //                 weekly: action.payload.data
+                //                 summary: action.payload.data
                 //             }
                 //         }
                 //         return insight
                 //     }) : [{
-                //         insights: null,
                 //         habitId: action.payload.habitId,
-                //         // weekly: action.payload.data
+                //         summary: action.payload.data
                 //     }]
                 // }
+
+                return {
+                    ...state,
+                    habitInsights: state.habitInsights.length > 0 ? state.habitInsights.map((insight) => {
+                        if (insight.habitId === action.payload.habitId) {
+                            return {
+                                ...insight,
+                                weekly: action.payload.data
+                            }
+                        }
+                        return insight
+                    }) : [{
+                        insights: state.habitInsights.find(insight => insight.habitId === action.payload.habitId)?.insights || null,
+                        habitId: action.payload.habitId,
+                        weekly: action.payload.data
+                    }]
+                }
 
 
         default:
@@ -196,7 +196,7 @@ const initialState: initialStateTypes = {
     habits: [],
     habitViewing: -1,
     habitInsights: [],
-    weeklyInsights: [],
+    // weeklyInsights: [],
     // habitInsights: [{
     //     insights: null,
     //     habitId: null

@@ -80,7 +80,9 @@ export default function ReportsPage() {
     alert("Adjustment request sent to AI!")
   }
 
-  const habitWeeklyData = state.weeklyInsights.find(insight => Number(insight.habitId) === state.habitViewing)
+  // const habitWeeklyData = state.weeklyInsights.find(insight => Number(insight.habitId) === state.habitViewing)
+
+  const habitWeeklyData = state.habitInsights.find(insight => Number(insight.habitId) === state.habitViewing)
   
   console.log(state, "state in reports page")
 
@@ -96,7 +98,8 @@ export default function ReportsPage() {
       <div className="mb-8">
         <InsightCards
           // weeklySummary={mockInsights.weeklyText}
-          weeklySummary={habitWeeklyData?.summary || mockInsights.weeklyText}
+          // weeklySummary={habitWeeklyData?.summary || mockInsights.weeklyText}
+          weeklySummary={habitWeeklyData?.weekly || mockInsights.weeklyText}
           monthlyTrend={mockInsights.monthlyText}
           goalStatus={82}
           onRegenerateSummary={handleRegenerateSummary}
