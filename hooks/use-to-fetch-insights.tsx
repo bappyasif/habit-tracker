@@ -80,7 +80,7 @@ export const useToFetchInsights = () => {
         console.log(data, "data-weekly", props)
 
         if (data?.response) {
-
+            return data.response?.summary
         }
     }
 

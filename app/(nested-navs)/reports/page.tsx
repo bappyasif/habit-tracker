@@ -65,10 +65,11 @@ export default function ReportsPage() {
         type: "add-weekly-summary-insights",
         payload: {
           habitId: habit?.id,
-          data: {
-            // steps: data.response?.actions
-            data
-          }
+          data
+          // data: {
+          //   // steps: data.response?.actions
+          //   data
+          // }
         }
       })
     }).catch(err => console.log(err))
@@ -78,6 +79,10 @@ export default function ReportsPage() {
     // Simulate AI adjustment request
     alert("Adjustment request sent to AI!")
   }
+
+  const habitWeeklyData = state.weeklyInsights.find(insight => Number(insight.habitId) === state.habitViewing)
+  
+  console.log(state, "state in reports page")
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -90,7 +95,8 @@ export default function ReportsPage() {
       {/* Insight Cards */}
       <div className="mb-8">
         <InsightCards
-          weeklySummary={mockInsights.weeklyText}
+          // weeklySummary={mockInsights.weeklyText}
+          weeklySummary={habitWeeklyData?.summary || mockInsights.weeklyText}
           monthlyTrend={mockInsights.monthlyText}
           goalStatus={82}
           onRegenerateSummary={handleRegenerateSummary}

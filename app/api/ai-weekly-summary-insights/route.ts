@@ -15,8 +15,10 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
     try {
         const { hobbyName, hobbyDescription, hobbyFeedback } = await request.json();
+        
+        // console.log(hobbyName, hobbyDescription, hobbyFeedback, "INSIGHTS API CALL WEEKLY")
 
-        if (!hobbyName) {
+        if (!hobbyName || !hobbyDescription || !hobbyFeedback) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
@@ -31,14 +33,14 @@ export async function POST(request: Request) {
             },
             body: JSON.stringify({
                 // prompt: `Generate weekly insights for a hobby with the following details:\n\nHobby Name: ${hobbyName}\nHobby Description: ${hobbyDescription}\nHobby Feedback: ${hobbyFeedback}\n\nProvide a weekly summary and suggestions for improvement.`,
-                hobby: hobbyName,
-                description: hobbyDescription || "",
-                feedback: hobbyFeedback || "",
+                hobbyName,
+                hobbyDescription,
+                hobbyFeedback,
             }),
         })
         .then((res) => res.json());
 
-        console.log(insights, "INSIGHTS WEEKLY")
+        // console.log(insights, "INSIGHTS WEEKLY")
 
         return NextResponse.json(insights, { status: 200 });
     } catch (error) {
