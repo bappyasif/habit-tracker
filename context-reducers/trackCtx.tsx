@@ -173,7 +173,7 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                 return {
                     ...state,
                     habitInsights: state.habitInsights.length > 0 ? state.habitInsights.map((insight) => {
-                        if (insight.habitId === action.payload.habitId) {
+                        if (insight.habitId == action.payload.habitId) {
                             return {
                                 ...insight,
                                 weekly: action.payload.data

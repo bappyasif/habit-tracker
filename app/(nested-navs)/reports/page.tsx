@@ -9,6 +9,7 @@ import { mockInsights } from "@/lib/mock-data"
 import { CalendarDays } from "lucide-react"
 import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
+import { useToBooleanLock } from "@/hooks/useToBooleanLock"
 
 interface Suggestion {
   id: string
@@ -50,10 +51,14 @@ export default function ReportsPage() {
 
   const {fetchWeeklySummary} = useToFetchInsights()
 
+  const {lock, toggleLock} = useToBooleanLock()
+
   const handleRegenerateSummary = async () => {
     // Simulate AI regeneration
-    alert("Summary regenerated!")
-    console.log(habit, "state in reports page")
+    // alert("Summary regenerated!")
+    // ensures lock
+    toggleLock()
+    console.log(habit, "state in reports page", lock, "LOCK")
     fetchWeeklySummary({
       title: habit?.title || "",
       steps: habit?.steps || [],
@@ -71,8 +76,14 @@ export default function ReportsPage() {
           //   data
           // }
         }
+        
       })
     }).catch(err => console.log(err))
+    .finally(() => {
+      // releases lock
+      toggleLock()
+      console.log(lock, "LOCK done?!")
+    })
   }
 
   const handleRequestAdjustment = async () => {
@@ -97,6 +108,7 @@ export default function ReportsPage() {
       {/* Insight Cards */}
       <div className="mb-8">
         <InsightCards
+          btnLocked={lock}
           // weeklySummary={mockInsights.weeklyText}
           // weeklySummary={habitWeeklyData?.summary || mockInsights.weeklyText}
           weeklySummary={habitWeeklyData?.weekly || mockInsights.weeklyText}

@@ -10,6 +10,7 @@ interface InsightCardsProps {
   goalStatus: number
   onRegenerateSummary: () => void
   onRequestAdjustment: () => void
+  btnLocked: boolean
 }
 
 export function InsightCards({
@@ -18,6 +19,7 @@ export function InsightCards({
   goalStatus,
   onRegenerateSummary,
   onRequestAdjustment,
+  btnLocked,
 }: InsightCardsProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -32,7 +34,7 @@ export function InsightCards({
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-foreground leading-relaxed">{weeklySummary}</p>
-          <Button size="sm" variant="outline" className="w-full bg-transparent" onClick={onRegenerateSummary}>
+          <Button disabled={btnLocked} size="sm" variant="outline" className="w-full bg-transparent" onClick={onRegenerateSummary}>
             <RotateCw className="w-4 h-4 mr-2" />
             Regenerate
           </Button>
