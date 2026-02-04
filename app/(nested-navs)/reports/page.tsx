@@ -18,13 +18,25 @@ interface Suggestion {
 }
 
 export default function ReportsPage() {
-  const [suggestions, setSuggestions] = useState<Suggestion[]>(
-    mockInsights.suggestions.map((text, idx) => ({
-      id: Math.random().toString(),
-      text,
-      accepted: false,
-    })),
-  )
+  const {state, dispatch} = useTrackCtx()
+
+  const sugg = state?.habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.suggestions
+  
+  console.log(sugg, "sugg")
+
+  // const [suggestions, setSuggestions] = useState<Suggestion[]>(
+  //   mockInsights.suggestions.map((text, idx) => ({
+  //     id: Math.random().toString(),
+  //     text,
+  //     accepted: false,
+  //   })),
+  // )
+
+  const [suggestions, setSuggestions] = useState<Suggestion[]>((sugg || mockInsights.suggestions)?.map((text: string, idx: number) => ({
+    id: Math.random().toString(),
+    text,
+    accepted: false,
+  })) || [])
 
   const currentMonth = new Date()
   const heatmapData = Array.from({ length: 30 }, (_, i) => ({
@@ -44,8 +56,6 @@ export default function ReportsPage() {
     console.log("Creating new habit from suggestion:", suggestion)
     alert(`New habit created: "${suggestion}"`)
   }
-
-  const {state, dispatch} = useTrackCtx()
 
   const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
 
