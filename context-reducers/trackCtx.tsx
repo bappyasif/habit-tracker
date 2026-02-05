@@ -140,7 +140,7 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
             return {
                 ...state,
                 habits: state.habits.map((habit) => {
-                    if (habit.id === action.payload.habitId) {
+                    if (habit.id == action.payload.habitId) {
                         return {
                             ...habit,
                             steps: [...habit.steps, action.payload.newStep]
@@ -150,6 +150,24 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                 })
 
             }
+
+            case "remove-from-habit-suggestions":
+                console.log(action.payload, "action.payload: REMOVE FROM HABIT SUGGESTIONS")
+                return {
+                    ...state,
+                    habitInsights: state.habitInsights.map((insight) => {
+                        if (insight.habitId == action.payload.habitId) {
+                            return {
+                                ...insight,
+                                insights: {
+                                    ...insight.insights,
+                                    suggestions: insight.insights?.suggestions.filter((suggestion) => suggestion !== action.payload.suggestion)
+                                }
+                            }
+                        }
+                        return insight
+                    })
+                }
 
             case "add-weekly-summary-insights":
                 console.log(action.payload, "action.payload: ADD NEW WEEKLY SUMMARY INSIGHTS")

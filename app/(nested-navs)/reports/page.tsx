@@ -54,7 +54,27 @@ export default function ReportsPage() {
 
   const handleCreateNewHabit = (suggestion: string) => {
     console.log("Creating new habit from suggestion:", suggestion)
-    alert(`New habit created: "${suggestion}"`)
+    dispatch({
+      type:"ADD_A_HABIT_STEP",
+      payload: {
+        habitId: state.habitViewing,
+        newStep: {
+          id: Math.random().toString(),
+          title: suggestion,
+          completed: false,
+          time: new Date().toISOString()
+        }
+      }
+    })
+
+    dispatch({
+      type: "remove-from-habit-suggestions",
+      payload: {
+        habitId: state.habitViewing,
+        suggestion
+      }
+    })
+    // alert(`New habit created: "${suggestion}"`)
   }
 
   const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
@@ -129,6 +149,14 @@ export default function ReportsPage() {
         />
       </div>
 
+      {/* Suggestions */}
+      <SuggestionsList
+        suggestions={suggestions}
+        onAcceptSuggestion={handleAcceptSuggestion}
+        onRejectSuggestion={handleRejectSuggestion}
+        onCreateNewHabit={handleCreateNewHabit}
+      />
+
       {/* Monthly Heatmap */}
       <Card className="mb-8">
         <CardHeader>
@@ -142,14 +170,6 @@ export default function ReportsPage() {
           <HeatmapCalendar month={currentMonth} data={heatmapData} />
         </CardContent>
       </Card>
-
-      {/* Suggestions */}
-      <SuggestionsList
-        suggestions={suggestions}
-        onAcceptSuggestion={handleAcceptSuggestion}
-        onRejectSuggestion={handleRejectSuggestion}
-        onCreateNewHabit={handleCreateNewHabit}
-      />
     </main>
   )
 }
