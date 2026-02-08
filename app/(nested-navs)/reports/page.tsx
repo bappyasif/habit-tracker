@@ -38,6 +38,19 @@ export default function ReportsPage() {
     accepted: false,
   })) || [])
 
+  // do we go for a monthly, weekly tracking reducers?
+  // consderation1: if we want to show historical insights, we need to store them in the state, which means we need a reducer for that
+  // consideration2: if we want to keep it simple, we can just store the latest insights in the state, and update them whenever we fetch new insights. This way we don't need a reducer for historical insights, but we also won't be able to show historical insights in the UI.
+
+  // data for heatmap - should maintain what it is heatmap-calendar component expects, which means an array of objects with date representing each day of month and value representing completion percentage for that day.
+
+  // how do we update monthly data?
+  // consideration1: we can add this functionality within our tracking functionality, so whenver we update our habit steps tracking data, we also update our monthly data for that day in reducers state. This way we can ensure that our heatmap is always up to date with the latest tracking data.
+  // consideration2: we can have a separate functionality that runs at the end of each day (using something like node-cron or setTimeout) to calculate the completion percentage for that day and update the monthly data in reducers state. This way we can decouple the heatmap data updating from the tracking functionality, but it also adds some complexity in terms of ensuring the cron job runs reliably.
+
+  // heatmap initial data: 
+  // for now we will just use a random number between 0 and 100 for each day of the month to simulate the completion percentage. In a real application, we would calculate this based on the user's habit tracking data.
+  
   const currentMonth = new Date()
   const heatmapData = Array.from({ length: 30 }, (_, i) => ({
     date: new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i + 1),
