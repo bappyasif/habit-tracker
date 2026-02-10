@@ -224,9 +224,11 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                     ...state,
                     habitInsights: state.habitInsights.length > 0 ? state.habitInsights.map((insight) => {
                         if (insight.habitId == action.payload.habitId) {
+                            console.log("UPDATED MONTHLY: INITIALIZED")
                             return {
                                 ...insight,
-                                monthly: action.payload.data
+                                monthly: action.payload.data,
+                                habitId: action.payload.habitId
                             }
                         }
                         return insight
