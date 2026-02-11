@@ -51,11 +51,11 @@ export default function ReportsPage() {
   // heatmap initial data: 
   // for now we will just use a random number between 0 and 100 for each day of the month to simulate the completion percentage. In a real application, we would calculate this based on the user's habit tracking data.
   
-  const currentMonth = new Date()
-  const heatmapData = Array.from({ length: 30 }, (_, i) => ({
-    date: new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i + 1),
-    value: Math.floor(Math.random() * 100),
-  }))
+  // const currentMonth = new Date()
+  // const heatmapData = Array.from({ length: 30 }, (_, i) => ({
+  //   date: new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i + 1),
+  //   value: Math.floor(Math.random() * 100),
+  // }))
 
   const handleAcceptSuggestion = (id: string) => {
     setSuggestions(suggestions.map((s) => (s.id === id ? { ...s, accepted: true } : s)))
@@ -180,7 +180,9 @@ export default function ReportsPage() {
           <CardDescription>Color intensity shows your daily completion percentage</CardDescription>
         </CardHeader>
         <CardContent>
-          <HeatmapCalendar month={currentMonth} data={heatmapData} />
+          <HeatmapCalendar 
+            // month={currentMonth} data={heatmapData} 
+          />
         </CardContent>
       </Card>
     </main>
