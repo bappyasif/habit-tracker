@@ -6,13 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../..
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 
-const dailyData = [
-  { day: "Mon", step: "Warm up", time: "06:00", completed: true },
-  { day: "Mon", step: "Cardio", time: "06:15", completed: true },
-  { day: "Mon", step: "Strength", time: "06:35", completed: false },
-  { day: "Mon", step: "Cool down", time: "06:55", completed: false },
-]
-
 const weekData = [
   { day: "Mon", completion: 75 },
   { day: "Tue", completion: 85 },
@@ -37,17 +30,15 @@ interface DashboardTabsProps {
 }
 
 export function DashboardTabs(
-  // { habitTitle, currentStreak }: DashboardTabsProps
   { selectedHabitId }: DashboardTabsProps
 ) {
   const [activeTab, setActiveTab] = useState<"today" | "week" | "month">("today")
 
   const { state } = useTrackCtx()
+
   const { habits } = state
 
   const currentHabit = habits.find((h) => h?.id == selectedHabitId) || habits[0]
-
-  console.log(currentHabit, "currentHabit")
 
   return (
     <Card>
@@ -94,12 +85,6 @@ export function DashboardTabs(
                 key={idx}
                 className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition"
               >
-                {/* <input
-                  type="checkbox"
-                  checked={item.completed}
-                  className="w-5 h-5 rounded border-primary cursor-pointer"
-                  readOnly
-                /> */}
                 <div className="flex-1">
                   <p className="font-medium">{item.title}</p>
                   <p className="text-xs text-muted-foreground">⏰ {item.time}</p>

@@ -1,10 +1,9 @@
 "use client"
 
-import { act, useEffect, useState } from "react"
+import { useState } from "react"
 import { Button } from "../../../../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card"
 import { ChevronDown, Lightbulb, RotateCw } from "lucide-react"
-import { fetchAiInsights } from "../_utils/fetch-insights"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import Link from "next/link"
 import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
@@ -16,81 +15,28 @@ interface AIInsightsCardProps {
 }
 
 export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsightsCardProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  // const [insights, setInsights] = useState<{
-  //   suggestions: string[];
-  //   areasOfImprovement: string[];
-  //   strengths: string[];
-  // } | null>({
-  //   suggestions: suggestions,
-  //   areasOfImprovement: [],
-  //   strengths: [],
-  //   // weeklySummary: "",
-  // })
-
-  const { state, dispatch } = useTrackCtx()
+  const { state } = useTrackCtx()
 
   const habitData = state.habits.find(habit => Number(habit.id) === state.habitViewing)
-
-  console.log(state, "state in ai insights card", habitData)
 
   const { fetchAiInsightsData } = useToFetchInsights()
 
   const handleRefresh = async () => {
     setIsLoading(true)
-    // console.log(habitData?.title || "", habitData?.description || "", `completed about ${habitData?.totalCompleted.toString()} percent of the steps` || "",  habitData?.steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(", ") || "", "fetching new insights...")
-    // const data = await fetchAiInsights(habitData?.title || "", habitData?.description || "", `completed about ${habitData?.totalCompleted.toString()} percent of the steps` || "")
-
-    // const props = { title: habitData?.title || "", steps: habitData?.steps || [], totalCompleted: habitData?.totalCompleted || 0, whattoFetch: "daily-insights"}
 
     const props = { title: habitData?.title || "", steps: habitData?.steps || [], totalCompleted: habitData?.totalCompleted || 0}
 
-    // fetchAiInsightsData(habitData?.title || "", habitData?.steps || [], habitData?.totalCompleted || 0)
     fetchAiInsightsData(props)
     .then(async () => {
-      // await new Promise((resolve) => setTimeout(resolve, 600))
       setIsLoading(false)
     })
-
-
-    // const data = await fetchAiInsights(habitData?.title || "", habitData?.steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(", ") || "", `completed about ${habitData?.totalCompleted.toString()} percent of the steps` || "")
-    // console.log(data, "data")
-    // if (data?.response) {
-    //   dispatch({
-    //     type: "SET_INSIGHTS",
-    //     payload: {
-    //       insights: {
-    //         suggestions: data.response?.actionable_steps || [],
-    //         areasOfImprovement: data.response?.areas_for_improvement || [],
-    //         strengths: data.response?.strengths || [],
-    //         actions: data.response?.actions || [],
-    //       },
-    //       habitId: state.habitViewing
-    //     }
-    //   })
-
-    //   console.log(state, "state after dispatching insights data")
-    // setInsights({
-    //   suggestions: data.response?.actionable_steps,
-    //   areasOfImprovement: data.response?.areas_for_improvement,
-    //   strengths: data.response?.strengths,
-    //   // weeklySummary: data.weeklySummary,
-    // })
-    // }
-    // await new Promise((resolve) => setTimeout(resolve, 600))
-    // setIsLoading(false)
   }
 
   const handleOnAdjustPlan = () => {
     onAdjustPlan()
   }
-
-  // useEffect(() => {
-  //   // handleRefresh()
-  //   isLoading && setIsExpanded(true)
-  // }, [])
 
   const insights = state.habitInsights?.find(insight => insight.habitId === state.habitViewing)?.insights
 
@@ -122,34 +68,12 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
         <ShowInformationOnExapand data={insights?.suggestions || suggestions} label="Actionable Suggestions" />
         <ShowInformationOnExapand data={insights?.areasOfImprovement || []} label="Areas of Improvement" />
         <ShowInformationOnExapand data={insights?.strengths || []} label="Strengths" />
-        {/* <div>
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center justify-between w-full mb-2 text-sm font-semibold hover:text-primary transition"
-          >
-            <span>Actionable Suggestions</span>
-            <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
-          </button>
-          {isExpanded && (
-            <ul className="space-y-2 text-sm">
-              {suggestions.map((suggestion, idx) => (
-                <li key={idx} className="flex gap-2">
-                  <span className="text-accent font-bold">•</span>
-                  <span className="text-muted-foreground">{suggestion}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div> */}
 
         {/* CTA Buttons */}
         <div className="flex gap-2 pt-2">
           <Button size="sm" variant="outline" onClick={handleOnAdjustPlan} className="flex-1 bg-transparent">
             <Link
               href="/create-habit"
-            // onClick={() => {
-            //   dispatch({ type: "UPDATE_HABIT_VIEWING", payload: state.habitViewing })
-            // }}
             >
               Adjust plan
             </Link>

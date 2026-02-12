@@ -17,13 +17,9 @@ export default function CreateHabitPage() {
   }
 
   const handleSave = (habit: any) => {
-    console.log("Habit saved:", habit)
     handleClose()
     dispatch({type: "CREATE_HABIT", payload: habit})
   }
-
-  console.log(state, "state")
-
 
   return (
     showModal ? <HabitCreationModal onClose={handleClose} onSave={handleSave} /> : null 

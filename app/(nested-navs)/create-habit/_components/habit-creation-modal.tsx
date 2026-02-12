@@ -7,7 +7,6 @@ import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { HabitPreview } from "./habit-preview"
 import { HabitEdit } from "./habit-edit"
 import { NewHabit } from "./new-habit"
-import { fetchAiInsights } from "../../dashboard/_utils/fetch-insights"
 import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
 
 interface Step {
@@ -61,14 +60,9 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     }
 
     trackDispatch({
-      // type: 'UPDATE_HABIT_PAYLOAD',
-      // type: 'CREATE_HABIT',
       type: 'ADD_A_HABIT_STEP',
       payload: {
-        // id: '4',
-        // id: trackState.habits.length + 1,
         habitId: habit.id,
-        // steps: [habit.steps, newStep]
         newStep
       }
     })
@@ -105,47 +99,13 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
     const props = { title: habit?.title || "", steps: habit?.steps || [], totalCompleted: habit?.totalCompleted || 0}
 
-    // const props = { title: habit?.title || "", steps: habit?.steps || [], totalCompleted: habit?.totalCompleted || 0, whattoFetch: "daily-insights"}
-
-    // fetchAiInsightsData(habit?.title || "", habit?.steps || [], habit?.totalCompleted || 0)
     fetchAiInsightsData(props)
     .then(async () => {
-      // await new Promise((resolve) => setTimeout(resolve, 600))
       setIsLoading(false)
     })
-    
-    // const data = await fetchAiInsights(habit?.title || "", habit?.steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(", ") || "", `completed about ${habit?.totalCompleted.toString()} percent of the steps` || "")
-    // console.log(data, "data")
-    // if (data?.response) {
-    //   trackDispatch({
-    //     type: "SET_INSIGHTS",
-    //     payload: {
-    //       insights: {
-    //         suggestions: data.response?.actionable_steps || [],
-    //         areasOfImprovement: data.response?.areas_for_improvement || [],
-    //         strengths: data.response?.strengths || [],
-    //         actions: data.response?.actions || [],
-    //       },
-    //       habitId: habit.id
-    //     }
-    //   })
-    // }
-    // Simulate AI generation
-    // await new Promise((resolve) => setTimeout(resolve, 800))
-    // setForm({
-    //   ...form,
-    //   steps: [
-    //     { id: "1", title: "Meditation", time: "06:00", completed: false },
-    //     { id: "2", title: "Cardio", time: "06:15", completed: false },
-    //     { id: "3", title: "Strength Training", time: "06:35", completed: false },
-    //     { id: "4", title: "Stretching", time: "06:55", completed: false },
-    //   ],
-    // })
-    // setIsLoading(false)
   }
 
   const handleSave = () => {
-    // onSave(form)
     onClose()
 
     trackDispatch({
@@ -159,11 +119,8 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
   useEffect(() => {
     if (trackState.habitViewing === -1) {
       setStage("new")
-
-      console.log("RUNNING!! NOTTTT")
     }
 
-    console.log("RUNNING!!")
   }, [trackState.habitViewing])
 
   useEffect(() => {

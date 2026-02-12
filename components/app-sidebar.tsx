@@ -25,42 +25,11 @@ const navigationItems = [
   { href: "/settings", label: "Settings", icon: Settings },
 ]
 
-// export function AppSidebar() {
-//   const pathname = usePathname()
-//   const router = useRouter()
-
-//   const { dispatch } = useTrackCtx()
-
-//   // Hide sidebar on landing page
-//   if (pathname === "/") {
-//     return null
-//   }
-
-//   const handleSignOut = () => {
-//     router.push("/")
-//   }
-
-//   const handleNewHabit = () => {
-//     dispatch({
-//       type: 'UPDATE_HABIT_VIEWING',
-//       payload: -1
-//     })
-//     console.log("clicked")
-//   }
-
-//   const grps = [
-//     { path: "/", label: "Home", icon: Home, handler: () => router.push("/") },
-//     { path: "/create-habit", label: "New Habit", icon: Home, handler: handleNewHabit }
-
-//   ]
-
 export const AppSidebar = () => {
   const pathname = usePathname()
   const router = useRouter()
 
   const { dispatch } = useTrackCtx()
-
-  console.log(pathname, "pathname")
 
   // Hide sidebar on landing page
   if (pathname === "/") {
@@ -116,7 +85,6 @@ export const AppSidebar = () => {
           </div>
         </div>
 
-        {/* <hr className="border-t border-b border-gray-200" /> */}
       </div>
 
       {
