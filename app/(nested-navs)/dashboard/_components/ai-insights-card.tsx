@@ -34,11 +34,16 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
     })
   }
 
+  // const router = useRouter()
+
   const handleOnAdjustPlan = () => {
     onAdjustPlan()
+    // router.push("/create-habit")
   }
 
   const insights = state.habitInsights?.find(insight => insight.habitId === state.habitViewing)?.insights
+
+  const adjustReady = state.habitInsights?.find(insight => insight.habitId === state.habitViewing)?.daily?.length || 0 > 0
 
 
   return (
@@ -71,7 +76,7 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
 
         {/* CTA Buttons */}
         <div className="flex gap-2 pt-2">
-          <Button size="sm" variant="outline" onClick={handleOnAdjustPlan} className="flex-1 bg-transparent">
+          <Button size="sm" variant="outline" onClick={handleOnAdjustPlan} className={`flex-1 bg-transparent transition ease-in-out delay-100 ${!adjustReady ? "cursor-not-allowed opacity-50" : "animate-pulse bg-primary/40"}`} disabled={!adjustReady}>
             <Link
               href="/create-habit"
             >

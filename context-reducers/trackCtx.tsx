@@ -53,7 +53,9 @@ export type initialStateTypes = {
         insights: insights | null,
         habitId: number | string | null,
         weekly: string | null,
-        monthly: MonthlyProps[] | null
+        monthly: MonthlyProps[] | null,
+        // instead of directly updating habit steps came from ai insights for habits we will keep it in insights and then await user action to add those steps to habit steps. So that user stays in control of any ddition from ai insights to its habit data.
+        daily: Steps[] | null,
     }[],
 }
 
@@ -103,18 +105,37 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                 habitViewing: action.payload
             }
 
+        // case "ADD_HABIT_STEPS_FROM_AI_INSIGHTS":
+        //     return {
+        //         ...state,
+        //         habits: state.habits.map((habit) => {
+        //             if (habit.id == action.payload.habitId) {
+        //                 return {
+        //                     ...habit,
+        //                     steps: action.payload.data.steps
+        //                 }
+        //             }
+        //             return habit
+        //         })
+        //     }
         case "ADD_HABIT_STEPS_FROM_AI_INSIGHTS":
             return {
                 ...state,
-                habits: state.habits.map((habit) => {
-                    if (habit.id == action.payload.habitId) {
+                habitInsights: state.habitInsights.length > 0 ? state.habitInsights.map((insight) => {
+                    if (insight.habitId == action.payload.habitId) {
                         return {
-                            ...habit,
-                            steps: action.payload.data.steps
+                            ...insight,
+                            daily: action.payload.data.steps
                         }
                     }
-                    return habit
-                })
+                    return insight
+                }) : [{
+                    insights: state.habitInsights.find(insight => insight.habitId === action.payload.habitId)?.insights || null,
+                    habitId: action.payload.habitId,
+                    weekly: state.habitInsights.find(insight => insight.habitId === action.payload.habitId)?.weekly || null,
+                    monthly: state.habitInsights.find(insight => insight.habitId === action.payload.habitId)?.monthly || null,
+                    daily: action.payload.data.steps
+                }]
             }
 
 
@@ -134,6 +155,7 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                     habitId: action.payload.habitId,
                     weekly: state.habitInsights.find(insight => insight.habitId === action.payload.habitId)?.weekly || null,
                     monthly: state.habitInsights.find(insight => insight.habitId === action.payload.habitId)?.monthly || null,
+                    daily: state.habitInsights.find(insight => insight.habitId === action.payload.habitId)?.daily || null
                 }]
             }
 
@@ -185,6 +207,7 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                     habitId: action.payload.habitId,
                     weekly: action.payload.data,
                     monthly: state.habitInsights.find(insight => insight.habitId === action.payload.habitId)?.monthly || null,
+                    daily: state.habitInsights.find(insight => insight.habitId === action.payload.habitId)?.daily || null
                 }]
             }
 
@@ -206,7 +229,8 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                     insights: state.habitInsights.find(insight => insight.habitId == action.payload.habitId)?.insights || null,
                     habitId: action.payload.habitId,
                     weekly: state.habitInsights.find(insight => insight.habitId == action.payload.habitId)?.weekly || null,
-                    monthly: action.payload.data
+                    monthly: action.payload.data,
+                    daily: state.habitInsights.find(insight => insight.habitId == action.payload.habitId)?.daily || null
                 }]
             }
 

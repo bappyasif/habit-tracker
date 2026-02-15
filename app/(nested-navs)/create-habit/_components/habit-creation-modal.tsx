@@ -36,7 +36,13 @@ interface HabitCreationModalProps {
 export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps) {
   const [stage, setStage] = useState<"preview" | "edit" | "new">("preview")
   const [isLoading, setIsLoading] = useState(false)
+
   const { state: trackState, dispatch: trackDispatch } = useTrackCtx()
+
+  // const [tempSteps, setTempSteps] = useState<Step[]>(trackState.habitViewing !== -1 ? trackState.habits[trackState.habitViewing - 1].steps : [])
+
+  const [tempHabit, setTempHabit] = useState(trackState.habits[trackState.habitViewing - 1])
+
   const [tabs, setTabs] = useState<{
     label: string;
     value: string;
@@ -92,17 +98,17 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     })
   }
 
-  const {fetchAiInsightsData} = useToFetchInsights()
+  const { fetchAiInsightsData } = useToFetchInsights()
 
   const handleRegenerateWithAI = async () => {
     setIsLoading(true)
 
-    const props = { title: habit?.title || "", steps: habit?.steps || [], totalCompleted: habit?.totalCompleted || 0}
+    const props = { title: habit?.title || "", steps: habit?.steps || [], totalCompleted: habit?.totalCompleted || 0 }
 
     fetchAiInsightsData(props)
-    .then(async () => {
-      setIsLoading(false)
-    })
+      .then(async () => {
+        setIsLoading(false)
+      })
   }
 
   const handleSave = () => {
@@ -110,11 +116,14 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
     trackDispatch({
       type: "UPDATE_HABIT",
-      payload: habit
+      // payload: habit
+      payload: tempHabit
     })
   }
 
   const habit = trackState.habits[trackState.habitViewing - 1]
+
+  const checkDailyStepsExists = trackState.habitInsights?.find(insight => insight.habitId === trackState.habitViewing)?.daily
 
   useEffect(() => {
     if (trackState.habitViewing === -1) {
@@ -130,6 +139,41 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     setTabs(ts)
 
   }, [trackState.habitViewing])
+
+  // useEffect(() => {
+  //   if (!checkDailyStepsExists?.length) {
+  //     const ts = trackState.habitViewing === -1
+  //       ? [{ label: "New", value: "new" }] : [{ label: "Preview", value: "preview" }, { label: "Edit", value: "edit" }]
+
+  //     setTabs(ts)
+  //   } else {
+  //     // setTabs([{ label: "Edit", value: "edit" }])
+  //     setStage("edit")
+  //   }
+
+  // }, [trackState.habitViewing])
+
+  // useEffect(() => {
+  //   const checkDailyStepsExists = trackState.habitInsights?.find(insight => insight.habitId === trackState.habitViewing)?.daily
+
+  //   if (checkDailyStepsExists?.length) {
+  //     setTempSteps(steps => [...steps, ...checkDailyStepsExists])
+  //   }
+
+  // }, [trackState.habitInsights])
+
+  useEffect(() => {
+    const checkDailyStepsExists = trackState.habitInsights?.find(insight => insight.habitId === trackState.habitViewing)?.daily
+
+    if (checkDailyStepsExists?.length) {
+      setTempHabit(habit => ({ ...habit, steps: [...habit.steps, ...checkDailyStepsExists] }))
+
+      // setTabs(tabs => [...tabs, { label: "Edit", value: "edit" }])
+
+      // setTabs([{ label: "Edit", value: "edit" }])
+      setStage("edit")
+    }
+  }, [trackState.habitInsights])
 
 
   return (
@@ -172,7 +216,8 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
           {
             stage === "preview" && habit ? (
               <HabitPreview
-                habit={habit}
+                // habit={habit}
+                habit={tempHabit}
                 handleRegenerateWithAI={handleRegenerateWithAI}
                 isLoading={isLoading}
                 setStage={setStage}
@@ -180,7 +225,8 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
             ) : stage === "edit" && habit ? (
               // Edit Stage
               <HabitEdit
-                habit={habit}
+                // habit={habit}
+                habit={tempHabit}
                 handleAddStep={handleAddStep}
                 handleUpdateStep={handleUpdateStep}
                 handleRemoveStep={handleRemoveStep}
