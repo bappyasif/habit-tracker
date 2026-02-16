@@ -163,14 +163,16 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
   // }, [trackState.habitInsights])
 
   useEffect(() => {
-    const checkDailyStepsExists = trackState.habitInsights?.find(insight => insight.habitId === trackState.habitViewing)?.daily
+    // const checkDailyStepsExists = trackState.habitInsights?.find(insight => insight.habitId === trackState.habitViewing)?.daily
 
     if (checkDailyStepsExists?.length) {
-      setTempHabit(habit => ({ ...habit, steps: [...habit.steps, ...checkDailyStepsExists] }))
+      setTempHabit(habit => ({ ...habit, steps: [...checkDailyStepsExists] }))
+
+      // setTempHabit(habit => ({ ...habit, steps: [...habit.steps, ...checkDailyStepsExists] }))
 
       // setTabs(tabs => [...tabs, { label: "Edit", value: "edit" }])
 
-      // setTabs([{ label: "Edit", value: "edit" }])
+      setTabs([{ label: "Edit", value: "edit" }])
       setStage("edit")
     }
   }, [trackState.habitInsights])
