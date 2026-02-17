@@ -9,7 +9,7 @@ export default function CreateHabitPage() {
   const router = useRouter()
   const [showModal, setShowModal] = useState(true)
 
-  const {dispatch, state} = useTrackCtx()
+  const { dispatch, state } = useTrackCtx()
 
   const handleClose = () => {
     setShowModal(false)
@@ -18,10 +18,11 @@ export default function CreateHabitPage() {
 
   const handleSave = (habit: any) => {
     handleClose()
-    dispatch({type: "CREATE_HABIT", payload: habit})
+    // dispatch({type: "CREATE_HABIT", payload: habit})
+    dispatch({ type: "UPDATE_HABIT", payload: habit })
   }
 
   return (
-    showModal ? <HabitCreationModal onClose={handleClose} onSave={handleSave} /> : null 
+    showModal ? <HabitCreationModal onClose={handleClose} onSave={handleSave} /> : null
   )
 }

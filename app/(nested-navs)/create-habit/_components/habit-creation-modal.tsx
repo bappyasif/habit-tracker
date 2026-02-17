@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Button } from "../../../../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card"
-import { useTrackCtx } from "@/context-reducers/trackCtx"
+import { TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
 import { HabitPreview } from "./habit-preview"
 import { HabitEdit } from "./habit-edit"
 import { NewHabit } from "./new-habit"
@@ -30,7 +30,7 @@ interface HabitCreationForm {
 
 interface HabitCreationModalProps {
   onClose: () => void
-  onSave: (habit: HabitCreationForm) => void
+  onSave: (habit: TrackTypes) => void
 }
 
 export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps) {
@@ -106,19 +106,21 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     const props = { title: habit?.title || "", steps: habit?.steps || [], totalCompleted: habit?.totalCompleted || 0 }
 
     fetchAiInsightsData(props)
-      .then(async () => {
+      .then(async (data) => {
         setIsLoading(false)
+        console.log(data, "AI insights data")
       })
   }
 
   const handleSave = () => {
     onClose()
 
-    trackDispatch({
-      type: "UPDATE_HABIT",
-      // payload: habit
-      payload: tempHabit
-    })
+    // trackDispatch({
+    //   type: "UPDATE_HABIT",
+    //   // payload: habit
+    //   payload: tempHabit
+    // })
+    onSave(tempHabit)
   }
 
   const habit = trackState.habits[trackState.habitViewing - 1]
@@ -249,7 +251,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                     onClick={handleClose}
                     className="flex-1 bg-transparent"
                   >
-                    Cancel
+                    Cancel!!
                   </Button>
                   <Button onClick={handleSave} className="flex-1">
                     Save Habit
