@@ -54,6 +54,13 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
       type: "UPDATE_HABIT_VIEWING",
       payload: -1
     })
+
+    trackDispatch({
+      type: "DELETE_INSIGHTS_FOR_HABIT",
+      payload: {
+        habitId: trackState.habitViewing
+      }
+    })
   }
 
   const handleAddStep = () => {
@@ -179,6 +186,10 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     }
   }, [trackState.habitInsights])
 
+  // useEffect(() => {
+  //   setTempHabit(habit)
+  // }, [])
+
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
@@ -251,7 +262,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                     onClick={handleClose}
                     className="flex-1 bg-transparent"
                   >
-                    Cancel!!
+                    [Cancel]
                   </Button>
                   <Button onClick={handleSave} className="flex-1">
                     Save Habit

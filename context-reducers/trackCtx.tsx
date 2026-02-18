@@ -105,6 +105,12 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                 habitViewing: action.payload
             }
 
+        case "DELETE_INSIGHTS_FOR_HABIT":
+            return {
+                ...state,
+                habitInsights: state.habitInsights.filter((insight) => insight.habitId != action.payload.habitId)
+            }
+
         // case "ADD_HABIT_STEPS_FROM_AI_INSIGHTS":
         //     return {
         //         ...state,
