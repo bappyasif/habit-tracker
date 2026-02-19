@@ -57,6 +57,16 @@ export type initialStateTypes = {
         // instead of directly updating habit steps came from ai insights for habits we will keep it in insights and then await user action to add those steps to habit steps. So that user stays in control of any ddition from ai insights to its habit data.
         daily: Steps[] | null,
     }[],
+    completionRate: {
+        habitId: number | string,
+        weeks: {
+            weekStart: Date,
+            weekEnd: Date,
+            totalCompleted: number,
+            totalSteps: number,
+            percentile: number, // 0-100 percentage
+        }[]
+    }[]
 }
 
 
@@ -240,6 +250,40 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                 }]
             }
 
+        case "SET_WEEKLY_COMPLETION_RATE":
+            return {
+                ...state,
+                completionRate: state.completionRate.length > 0 ? state.completionRate.map((rate) => {
+                    if (rate.habitId == action.payload.habitId) {
+                        return {
+                            ...rate,
+                            weeks: action.payload.data
+                        }
+                    }
+                    return rate
+                }) : [{
+                    habitId: action.payload.habitId,
+                    weeks: action.payload.data
+                }]
+            }
+
+        case "SET_A_WEEK_COMPLETION_RATE":
+            return {
+                ...state,
+                completionRate: state.completionRate.length > 0 ? state.completionRate.map((rate) => {
+                    if (rate.habitId == action.payload.habitId) {
+                        return {
+                            ...rate,
+                            weeks: rate.weeks.map(week => week.weekStart.getTime() >= new Date(action.payload.dateStamp).getTime() && week.weekEnd.getTime() <= new Date(action.payload.dateStamp).getTime() ? action.payload.data : week)
+                        }
+                    }
+                    return rate
+                }) : [{
+                    habitId: action.payload.habitId,
+                    weeks: [action.payload.data]
+                }]
+            }
+
 
         default:
             return state
@@ -249,6 +293,7 @@ const initialState: initialStateTypes = {
     habits: [],
     habitViewing: -1,
     habitInsights: [],
+    completionRate: []
 }
 
 const TrackContext = createContext<{
