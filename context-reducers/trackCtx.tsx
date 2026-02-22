@@ -274,7 +274,33 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                     if (rate.habitId == action.payload.habitId) {
                         return {
                             ...rate,
-                            weeks: rate.weeks.map(week => week.weekStart.getTime() >= new Date(action.payload.dateStamp).getTime() && week.weekEnd.getTime() <= new Date(action.payload.dateStamp).getTime() ? action.payload.data : week)
+                            // weeks: rate.weeks.map(week => week.weekStart.getTime() >= new Date(action.payload.dateStamp).getTime() && week.weekEnd.getTime() <= new Date(action.payload.dateStamp).getTime() ? action.payload.data : week)
+                            // weeks: rate.weeks.map(week => {
+                            //     if (week.weekStart.getTime() <= new Date(action.payload.dateStamp).getTime() && week.weekEnd.getTime() >= new Date(action.payload.dateStamp).getTime()) {
+                            //         return action.payload.data
+                            //     }
+                            //     return week
+                            // })
+
+
+                            // we will be updating weekly data based on timestamp which will be start and end of week datestamp to sdecide if it falls within week 1-4 or not and then update that particular week data with new data coming from payload
+                            weeks: rate.weeks.map(week => {
+                                const dateStamp = new Date(action.payload.dateStamp).getTime()
+                                const weekStart = new Date(week.weekStart).getTime()
+                                const weekEnd = new Date(week.weekEnd).getTime()
+                                if (dateStamp >= weekStart && dateStamp <= weekEnd) {
+                                    return action.payload.data
+                                } else if (dateStamp > weekEnd) {
+                                    return {
+                                        ...week,
+                                        totalSteps: week.totalSteps + action.payload.data.totalSteps,
+                                        totalCompleted: week.totalCompleted + action.payload.data.totalCompleted,
+                                        percentile: Math.round(((week.totalCompleted + action.payload.data.totalCompleted) / (week.totalSteps + action.payload.data.totalSteps)) * 100)
+                                    }
+                                } else {
+                                    return week
+                                }
+                            })
                         }
                     }
                     return rate
