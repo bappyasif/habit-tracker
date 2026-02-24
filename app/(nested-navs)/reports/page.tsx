@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { InsightCards } from "@/app/(nested-navs)/reports/_components/insight-cards"
 import { SuggestionsList } from "@/app/(nested-navs)/reports/_components/suggestions-list"
@@ -18,7 +18,7 @@ interface Suggestion {
 }
 
 export default function ReportsPage() {
-  const {state, dispatch} = useTrackCtx()
+  const { state, dispatch } = useTrackCtx()
 
   const sugg = state?.habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.suggestions
 
@@ -38,7 +38,7 @@ export default function ReportsPage() {
 
   const handleCreateNewHabit = (suggestion: string) => {
     dispatch({
-      type:"ADD_A_HABIT_STEP",
+      type: "ADD_A_HABIT_STEP",
       payload: {
         habitId: state.habitViewing,
         newStep: {
@@ -61,9 +61,9 @@ export default function ReportsPage() {
 
   const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
 
-  const {fetchWeeklySummary} = useToFetchInsights()
+  const { fetchWeeklySummary } = useToFetchInsights()
 
-  const {lock, toggleLock} = useToBooleanLock()
+  const { lock, toggleLock } = useToBooleanLock()
 
   const handleRegenerateSummary = async () => {
     toggleLock()
@@ -79,19 +79,65 @@ export default function ReportsPage() {
           habitId: habit?.id,
           data
         }
-        
+
       })
+
+      // dispatch({
+      //   type: "SET_WEEKLY_COMPLETION_RATE",
+      //   payload: {
+      //     habitId: habit?.id,
+      //     data: data.weeklyCompletionRate ?? null
+      //   }
+      // })
+
     }).catch(err => console.log(err))
-    .finally(() => {
-      // releases lock
-      toggleLock()
-    })
+      .finally(() => {
+        // releases lock
+        toggleLock()
+      })
   }
 
   const handleRequestAdjustment = async () => {
     // Simulate AI adjustment request
     alert("Adjustment request sent to AI!")
   }
+
+  // option 2:
+  // we could manually update state with on each log entry during habit log updates!
+
+  // option 1
+  // fetches weekly summary on initial load to populate insights section and completion rate for heatmap
+
+  // option 3:
+  // we keep this on load and also add a "refresh insights" button in the UI that triggers this when user wants to see updated insights without refreshing the page
+  useEffect(() => {
+    const completionrate = state.completionRate.find(rate => Number(rate.habitId) === state.habitViewing)?.weeks
+
+    fetchWeeklySummary({
+      title: habit?.title || "",
+      steps: habit?.steps || [],
+      totalCompleted: completionrate?.reduce((acc, curr) => acc + curr.totalCompleted, 0)|| 0,
+      // whattoFetch: "weekly-summary"
+    }).then(data => {
+      dispatch({
+        type: "add-weekly-summary-insights",
+        payload: {
+          habitId: habit?.id,
+          data
+        }
+      })
+      // this bit needs or considering to be moved within daily habit tracker log updates as it would be more suitable for real time updates to habit weekly tracker completion rate which is used for heatmap calendar and also shown in insights section as a stat.
+      // if (data?.weeklyCompletionRate !== undefined) {
+      //   dispatch({
+      //     type: "SET_A_WEEK_COMPLETION_RATE",
+      //     payload: {
+      //       habitId: habit?.id,
+      //       data: data.weeklyCompletionRate ?? null
+      //     }
+      //   })
+      // }
+    }).catch(err => console.log(err))
+  }, [])
 
   const habitWeeklyData = state.habitInsights.find(insight => Number(insight.habitId) === state.habitViewing)
 
