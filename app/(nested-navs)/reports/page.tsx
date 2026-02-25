@@ -65,13 +65,16 @@ export default function ReportsPage() {
 
   const { lock, toggleLock } = useToBooleanLock()
 
+  const completionrate = state.completionRate.find(rate => Number(rate.habitId) === state.habitViewing)?.weeks
+
   const handleRegenerateSummary = async () => {
     toggleLock()
     fetchWeeklySummary({
       title: habit?.title || "",
       steps: habit?.steps || [],
-      totalCompleted: habit?.totalCompleted || 0,
+      // totalCompleted: habit?.totalCompleted || 0,
       // whattoFetch: "weekly-summary"
+      totalCompleted: completionrate ? completionrate[completionrate.length - 1]?.percentile || 0 : 0,
     }).then(data => {
       dispatch({
         type: "add-weekly-summary-insights",
@@ -111,12 +114,13 @@ export default function ReportsPage() {
   // option 3:
   // we keep this on load and also add a "refresh insights" button in the UI that triggers this when user wants to see updated insights without refreshing the page
   useEffect(() => {
-    const completionrate = state.completionRate.find(rate => Number(rate.habitId) === state.habitViewing)?.weeks
+    // const completionrate = state.completionRate.find(rate => Number(rate.habitId) === state.habitViewing)?.weeks
 
     fetchWeeklySummary({
       title: habit?.title || "",
       steps: habit?.steps || [],
-      totalCompleted: completionrate?.reduce((acc, curr) => acc + curr.totalCompleted, 0)|| 0,
+      // totalCompleted: completionrate?.reduce((acc, curr) => acc + curr.totalCompleted, 0)|| 0,
+      totalCompleted: completionrate ? completionrate[completionrate.length - 1]?.percentile || 0 : 0,
       // whattoFetch: "weekly-summary"
     }).then(data => {
       dispatch({

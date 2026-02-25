@@ -43,6 +43,20 @@ export default function TrackPage() {
       payload: habit
     })
 
+    // update on weekly tracking as well
+    dispatch({
+      type: "SET_A_WEEK_COMPLETION_RATE",
+      payload: {
+        habitId: habit.id,
+        dateStamp: date,
+        data: {
+          totalCompleted: habit.steps.map(step => step.completed).filter(step => step).length,
+          totalSteps: habit.steps.length,
+          percentile: Math.round((habit.steps.map(step => step.completed).filter(step => step).length / habit.steps.length) * 100)
+        }
+      }
+    })
+
     // Show success message
     alert("Log saved successfully!")
   }
@@ -52,6 +66,8 @@ export default function TrackPage() {
       setLogs(logs.slice(1))
     }
   }
+
+  console.log(logs, "logs", habit, state.completionRate.find(rate => rate.habitId === habit.id))
 
   if (!habit) {
     return <div>Loading...</div>
@@ -92,7 +108,8 @@ export default function TrackPage() {
         {/* Right Column - History */}
         <div>
           <LogHistory
-            logs={logs}
+            // logs={logs}
+            logs={habit.steps.map((s) => ({ id: s.id, habitId: habit.id, date: new Date(s.time), measurement: s.time, notes: s.title })) as any}
             onUndo={handleUndoLast}
             onDelete={(id) => setLogs(logs.filter((l) => l.id !== id))}
           />

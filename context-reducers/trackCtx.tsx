@@ -288,14 +288,26 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                                 const dateStamp = new Date(action.payload.dateStamp).getTime()
                                 const weekStart = new Date(week.weekStart).getTime()
                                 const weekEnd = new Date(week.weekEnd).getTime()
-                                if (dateStamp >= weekStart && dateStamp <= weekEnd) {
+                                if (!week.weekStart || !week.weekEnd) {
+                                    return {
+                                        ...week,
+                                        weekStart: new Date(action.payload.dateStamp),
+                                        weekEnd: new Date(action.payload.dateStamp + 7 * 24 * 60 * 60 * 1000), // setting week end to 6 days after week start to make it a complete week
+                                        totalSteps: action.payload.data.totalSteps,
+                                        totalCompleted: action.payload.data.totalCompleted,
+                                        percentile: Math.round((action.payload.data.totalCompleted / action.payload.data.totalSteps) * 100)
+                                    }
+                                } else if (dateStamp >= weekStart && dateStamp <= weekEnd) {
                                     return action.payload.data
                                 } else if (dateStamp > weekEnd) {
                                     return {
                                         ...week,
-                                        totalSteps: week.totalSteps + action.payload.data.totalSteps,
-                                        totalCompleted: week.totalCompleted + action.payload.data.totalCompleted,
-                                        percentile: Math.round(((week.totalCompleted + action.payload.data.totalCompleted) / (week.totalSteps + action.payload.data.totalSteps)) * 100)
+                                        // totalSteps: week.totalSteps + action.payload.data.totalSteps,
+                                        // totalCompleted: week.totalCompleted + action.payload.data.totalCompleted,
+                                        // percentile: Math.round(((week.totalCompleted + action.payload.data.totalCompleted) / (week.totalSteps + action.payload.data.totalSteps)) * 100)
+                                        totalSteps: action.payload.data.totalSteps,
+                                        totalCompleted: action.payload.data.totalCompleted,
+                                        percentile: Math.round((action.payload.data.totalCompleted / action.payload.data.totalSteps) * 100)
                                     }
                                 } else {
                                     return week
