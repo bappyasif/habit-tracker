@@ -300,15 +300,26 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                                 } else if (dateStamp >= weekStart && dateStamp <= weekEnd) {
                                     return action.payload.data
                                 } else if (dateStamp > weekEnd) {
-                                    return {
-                                        ...week,
-                                        // totalSteps: week.totalSteps + action.payload.data.totalSteps,
-                                        // totalCompleted: week.totalCompleted + action.payload.data.totalCompleted,
-                                        // percentile: Math.round(((week.totalCompleted + action.payload.data.totalCompleted) / (week.totalSteps + action.payload.data.totalSteps)) * 100)
+                                    console.log("dateStamp is greater than weekEnd, adding new week data to the end of weeks array")
+                                    const prevWeek = rate.weeks[rate.weeks.length - 1]
+                                    return [...rate.weeks, {
+                                        weekStart: new Date((new Date(prevWeek.weekEnd).getTime() + (24 * 60 * 60 * 1000))), // setting new week start to 1 day after previous week end to avoid overlap
+                                        weekEnd: new Date((new Date(prevWeek.weekEnd).getTime() + (24 * 60 * 60 * 1000)) + (7 * 24 * 60 * 60 * 1000)), // setting new week end to 7 days after new week start to make it a complete week
+                                        // weekStart: new Date(prevWeek.weekEnd).getTime() + 1, // setting new week start to 1 ms after previous week end to avoid overlap
+                                        // weekEnd: new Date(prevWeek.weekEnd).getTime() + 7 * 24 * 60 * 60 * 1000, // setting new week end to 7 days after new week start to make it a complete week
                                         totalSteps: action.payload.data.totalSteps,
                                         totalCompleted: action.payload.data.totalCompleted,
                                         percentile: Math.round((action.payload.data.totalCompleted / action.payload.data.totalSteps) * 100)
-                                    }
+                                    }]
+                                    // return {
+                                    //     ...week,
+                                    //     // totalSteps: week.totalSteps + action.payload.data.totalSteps,
+                                    //     // totalCompleted: week.totalCompleted + action.payload.data.totalCompleted,
+                                    //     // percentile: Math.round(((week.totalCompleted + action.payload.data.totalCompleted) / (week.totalSteps + action.payload.data.totalSteps)) * 100)
+                                    //     totalSteps: action.payload.data.totalSteps,
+                                    //     totalCompleted: action.payload.data.totalCompleted,
+                                    //     percentile: Math.round((action.payload.data.totalCompleted / action.payload.data.totalSteps) * 100)
+                                    // }
                                 } else {
                                     return week
                                 }
@@ -318,7 +329,16 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                     return rate
                 }) : [{
                     habitId: action.payload.habitId,
-                    weeks: [action.payload.data]
+                    // weekStart: new Date(action.payload.dateStamp),
+                    // weekEnd: new Date(action.payload.dateStamp + 7 * 24 * 60 * 60 * 1000), // setting week end to 6 days after week start to make it a complete week
+                    // weeks: [action.payload.data]
+                    weeks: [{
+                        ...action.payload.data,
+                        weekStart: new Date(action.payload.dateStamp),
+                        // get aa date stamp for week end by adding 7 days to week start date
+                        weekEnd: new Date(new Date(action.payload.dateStamp).getTime() + (7 * 24 * 60 * 60 * 1000)),
+                        // weekEnd: new Date(action.payload.dateStamp + new Date(7 * 24 * 60 * 60 * 1000).getUTCDate()), // setting week end to 6 days after week start to make it a complete week
+                    }]
                 }]
             }
 
