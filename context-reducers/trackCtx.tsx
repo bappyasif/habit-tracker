@@ -289,16 +289,29 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                                 const weekStart = new Date(week.weekStart).getTime()
                                 const weekEnd = new Date(week.weekEnd).getTime()
                                 if (!week.weekStart || !week.weekEnd) {
+                                    console.log("weekStart or weekEnd is null, adding new week data")
                                     return {
                                         ...week,
                                         weekStart: new Date(action.payload.dateStamp),
-                                        weekEnd: new Date(action.payload.dateStamp + 7 * 24 * 60 * 60 * 1000), // setting week end to 6 days after week start to make it a complete week
-                                        totalSteps: action.payload.data.totalSteps,
-                                        totalCompleted: action.payload.data.totalCompleted,
-                                        percentile: Math.round((action.payload.data.totalCompleted / action.payload.data.totalSteps) * 100)
+                                        weekEnd: new Date(action.payload.dateStamp + 7 * 24 * 60 * 60 * 1000),
                                     }
+                                    // return {
+                                    //     ...week,
+                                    //     weekStart: new Date(action.payload.dateStamp),
+                                    //     weekEnd: new Date(action.payload.dateStamp + 7 * 24 * 60 * 60 * 1000), // setting week end to 6 days after week start to make it a complete week
+                                    //     totalSteps: action.payload.data.totalSteps,
+                                    //     totalCompleted: action.payload.data.totalCompleted,
+                                    //     percentile: Math.round((action.payload.data.totalCompleted / action.payload.data.totalSteps) * 100)
+                                    // }
                                 } else if (dateStamp >= weekStart && dateStamp <= weekEnd) {
-                                    return action.payload.data
+                                    console.log("dateStamp is within weekStart and weekEnd, updating week data", (action.payload.data.totalCompleted + (week.totalCompleted || 0)), Number(action.payload.data.totalSteps) + (Number(week.totalSteps) || 0 ) * 100)
+                                    // return action.payload.data
+                                    return {
+                                        ...week,
+                                        totalSteps: action.payload.data.totalSteps + (week.totalSteps || 0), // adding new total steps to existing total steps for that week to get cumulative total steps for that week
+                                        totalCompleted: action.payload.data.totalCompleted + (week.totalCompleted || 0), // adding new total completed to existing total completed for that week to get cumulative total completed for that week
+                                        percentile: Math.round((action.payload.data.totalCompleted + (week.totalCompleted || 0) / action.payload.data.totalSteps + (week.totalSteps || 0 )) * 100)
+                                    }
                                 } else if (dateStamp > weekEnd) {
                                     console.log("dateStamp is greater than weekEnd, adding new week data to the end of weeks array")
                                     const prevWeek = rate.weeks[rate.weeks.length - 1]

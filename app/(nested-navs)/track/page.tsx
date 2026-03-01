@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { DatePicker } from "@/app/(nested-navs)/track/_components/date-picker"
 import { StepLogger } from "@/app/(nested-navs)/track/_components/step-logger"
@@ -72,6 +72,35 @@ export default function TrackPage() {
   if (!habit) {
     return <div>Loading...</div>
   }
+
+  useEffect(() => {
+    // whenver date changes we need to refresh steps for each day and not carry on from previous day
+    // setSteps(habit.steps.filter(step => new Date(step.time).toDateString() === date.toDateString()))
+    const whichDay = habit.createdAt.toDateString() === date.toDateString() ? "today" : "different day"
+
+    // const whichDay = new Date("Fri Jan 30 2026 19:19:55 GMT+0600 (Bangladesh Standard Time)").toDateString() === date.toDateString() ? "today" : "different day"
+
+    // const whichDay = date.toDateString() === date.toDateString() ? "today" : "different day"
+
+    console.log(whichDay)
+
+    if (whichDay === "different day") {
+      // if its a different day we need to reset steps to empty array or fetch steps for that day if we have a history of steps for each day
+      const todaySteps = habit.steps.map(step => {
+        return {
+          ...step,
+          completed: false,
+          // time: new Date(date.getTime() + Math.floor(Math.random() * (12 * 60 * 60 * 1000))).toISOString() // set random time for each step on that day to be within that day
+        }
+      })
+      setSteps(todaySteps)
+      return
+    } 
+    else {
+      // console.log("RUNNIG TODAY STEPS")
+      setSteps(habit.steps)
+    }
+  }, [date])
 
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
