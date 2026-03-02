@@ -37,7 +37,7 @@ export function LogHistory({ logs, onUndo, onDelete }: LogHistoryProps) {
                   <p className="font-semibold">
                     {log.measurement} {log.notes ? "- " + log.notes : ""}
                   </p>
-                  <p className="text-xs text-muted-foreground">{log.date.toLocaleString()}</p>
+                  <p className="text-xs text-muted-foreground">{log.date.toLocaleDateString()}</p>
                 </div>
                 {onDelete && (
                   <Button size="sm" variant="ghost" onClick={() => onDelete(log.id)}>

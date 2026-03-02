@@ -72,8 +72,6 @@ export default function ReportsPage() {
     fetchWeeklySummary({
       title: habit?.title || "",
       steps: habit?.steps || [],
-      // totalCompleted: habit?.totalCompleted || 0,
-      // whattoFetch: "weekly-summary"
       totalCompleted: completionrate ? completionrate[completionrate.length - 1]?.percentile || 0 : 0,
     }).then(data => {
       dispatch({
@@ -84,14 +82,6 @@ export default function ReportsPage() {
         }
 
       })
-
-      // dispatch({
-      //   type: "SET_WEEKLY_COMPLETION_RATE",
-      //   payload: {
-      //     habitId: habit?.id,
-      //     data: data.weeklyCompletionRate ?? null
-      //   }
-      // })
 
     }).catch(err => console.log(err))
       .finally(() => {
@@ -105,23 +95,11 @@ export default function ReportsPage() {
     alert("Adjustment request sent to AI!")
   }
 
-  // option 2:
-  // we could manually update state with on each log entry during habit log updates!
-
-  // option 1
-  // fetches weekly summary on initial load to populate insights section and completion rate for heatmap
-
-  // option 3:
-  // we keep this on load and also add a "refresh insights" button in the UI that triggers this when user wants to see updated insights without refreshing the page
   useEffect(() => {
-    // const completionrate = state.completionRate.find(rate => Number(rate.habitId) === state.habitViewing)?.weeks
-
     fetchWeeklySummary({
       title: habit?.title || "",
       steps: habit?.steps || [],
-      // totalCompleted: completionrate?.reduce((acc, curr) => acc + curr.totalCompleted, 0)|| 0,
       totalCompleted: completionrate ? completionrate[completionrate.length - 1]?.percentile || 0 : 0,
-      // whattoFetch: "weekly-summary"
     }).then(data => {
       dispatch({
         type: "add-weekly-summary-insights",
@@ -130,16 +108,6 @@ export default function ReportsPage() {
           data
         }
       })
-      // this bit needs or considering to be moved within daily habit tracker log updates as it would be more suitable for real time updates to habit weekly tracker completion rate which is used for heatmap calendar and also shown in insights section as a stat.
-      // if (data?.weeklyCompletionRate !== undefined) {
-      //   dispatch({
-      //     type: "SET_A_WEEK_COMPLETION_RATE",
-      //     payload: {
-      //       habitId: habit?.id,
-      //       data: data.weeklyCompletionRate ?? null
-      //     }
-      //   })
-      // }
     }).catch(err => console.log(err))
   }, [])
 

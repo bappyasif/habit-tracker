@@ -39,8 +39,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
   const { state: trackState, dispatch: trackDispatch } = useTrackCtx()
 
-  // const [tempSteps, setTempSteps] = useState<Step[]>(trackState.habitViewing !== -1 ? trackState.habits[trackState.habitViewing - 1].steps : [])
-
   const [tempHabit, setTempHabit] = useState(trackState.habits[trackState.habitViewing - 1])
 
   const [tabs, setTabs] = useState<{
@@ -121,12 +119,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
   const handleSave = () => {
     onClose()
-
-    // trackDispatch({
-    //   type: "UPDATE_HABIT",
-    //   // payload: habit
-    //   payload: tempHabit
-    // })
     onSave(tempHabit)
   }
 
@@ -149,47 +141,14 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
   }, [trackState.habitViewing])
 
-  // useEffect(() => {
-  //   if (!checkDailyStepsExists?.length) {
-  //     const ts = trackState.habitViewing === -1
-  //       ? [{ label: "New", value: "new" }] : [{ label: "Preview", value: "preview" }, { label: "Edit", value: "edit" }]
-
-  //     setTabs(ts)
-  //   } else {
-  //     // setTabs([{ label: "Edit", value: "edit" }])
-  //     setStage("edit")
-  //   }
-
-  // }, [trackState.habitViewing])
-
-  // useEffect(() => {
-  //   const checkDailyStepsExists = trackState.habitInsights?.find(insight => insight.habitId === trackState.habitViewing)?.daily
-
-  //   if (checkDailyStepsExists?.length) {
-  //     setTempSteps(steps => [...steps, ...checkDailyStepsExists])
-  //   }
-
-  // }, [trackState.habitInsights])
-
   useEffect(() => {
-    // const checkDailyStepsExists = trackState.habitInsights?.find(insight => insight.habitId === trackState.habitViewing)?.daily
 
     if (checkDailyStepsExists?.length) {
       setTempHabit(habit => ({ ...habit, steps: [...checkDailyStepsExists] }))
-
-      // setTempHabit(habit => ({ ...habit, steps: [...habit.steps, ...checkDailyStepsExists] }))
-
-      // setTabs(tabs => [...tabs, { label: "Edit", value: "edit" }])
-
       setTabs([{ label: "Edit", value: "edit" }])
       setStage("edit")
     }
   }, [trackState.habitInsights])
-
-  // useEffect(() => {
-  //   setTempHabit(habit)
-  // }, [])
-
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
@@ -231,7 +190,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
           {
             stage === "preview" && habit ? (
               <HabitPreview
-                // habit={habit}
                 habit={tempHabit}
                 handleRegenerateWithAI={handleRegenerateWithAI}
                 isLoading={isLoading}
@@ -240,7 +198,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
             ) : stage === "edit" && habit ? (
               // Edit Stage
               <HabitEdit
-                // habit={habit}
                 habit={tempHabit}
                 handleAddStep={handleAddStep}
                 handleUpdateStep={handleUpdateStep}

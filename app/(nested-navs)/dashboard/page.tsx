@@ -29,6 +29,10 @@ export default function DashboardPage() {
 
   if (!state.habits?.length) return null
 
+  const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
+
+  if (!habit) return null
+
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Greeting */}
@@ -121,11 +125,13 @@ export default function DashboardPage() {
             <CardContent className="space-y-2">
               <div className="p-3 bg-accent/10 rounded-lg text-sm">
                 <p className="font-semibold text-accent mb-1">Daily Goal Reminder</p>
-                <p className="text-xs text-muted-foreground">You have 3 habits to complete today</p>
+                <p className="text-xs text-muted-foreground">You have {habit.steps.filter(step => !step.completed).length} habits to complete today</p>
               </div>
               <div className="p-3 bg-muted/50 rounded-lg text-sm">
                 <p className="font-semibold mb-1">Weekly Review</p>
-                <p className="text-xs text-muted-foreground">Check your progress report</p>
+                <Link href="/reports" className="text-primary hover:underline">
+                  <p className="text-xs text-muted-foreground">Check your progress report</p>
+                </Link>
               </div>
             </CardContent>
           </Card>

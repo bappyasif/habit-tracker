@@ -6,18 +6,22 @@ import { DatePicker } from "@/app/(nested-navs)/track/_components/date-picker"
 import { StepLogger } from "@/app/(nested-navs)/track/_components/step-logger"
 import { MeasurementInput } from "@/app/(nested-navs)/track/_components/measurement-input"
 import { LogHistory } from "@/app/(nested-navs)/track/_components/log-history"
-import { mockHabits, mockLogs } from "@/lib/mock-data"
 import { Save } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
+import { mockLogs } from "@/lib/mock-data"
 
 export default function TrackPage() {
   const { state, dispatch } = useTrackCtx()
   const habit = state.habits[state.habitViewing === -1 ? 0 : state.habitViewing - 1]
-  // console.log(habit, state.habitViewing, state.habits, "habit")
   const [date, setDate] = useState(new Date())
   const [measurementValue, setMeasurementValue] = useState(30)
   const [steps, setSteps] = useState(habit?.steps)
+
+  // const habitStepLogs = habit.steps.map((s) => ({ id: s.id, habitId: habit.id, date: new Date(s.time), measurement: measurements.metric === "minutes" ? Number(measurements.target) / 60 : Number(measurements.target), notes: s.title }))
+
   const [logs, setLogs] = useState(mockLogs)
+  // const [logs, setLogs] = useState(habitStepLogs)
+  
   const [isSaving, setIsSaving] = useState(false)
 
   const handleSaveLog = async () => {
@@ -36,7 +40,6 @@ export default function TrackPage() {
     setLogs([newLog, ...logs] as any)
     setIsSaving(false)
 
-    // console.log("test", habit.steps, steps)
     habit.steps = steps
     dispatch({
       type: 'UPDATE_HABIT',
@@ -67,20 +70,12 @@ export default function TrackPage() {
     }
   }
 
-  console.log(logs, "logs", habit, state.completionRate.find(rate => rate.habitId === habit.id))
-
   if (!habit) {
     return <div>Loading...</div>
   }
 
   useEffect(() => {
-    // whenver date changes we need to refresh steps for each day and not carry on from previous day
-    // setSteps(habit.steps.filter(step => new Date(step.time).toDateString() === date.toDateString()))
     const whichDay = habit.createdAt.toDateString() === date.toDateString() ? "today" : "different day"
-
-    // const whichDay = new Date("Fri Jan 30 2026 19:19:55 GMT+0600 (Bangladesh Standard Time)").toDateString() === date.toDateString() ? "today" : "different day"
-
-    // const whichDay = date.toDateString() === date.toDateString() ? "today" : "different day"
 
     console.log(whichDay)
 
@@ -97,7 +92,6 @@ export default function TrackPage() {
       return
     } 
     else {
-      // console.log("RUNNIG TODAY STEPS")
       setSteps(habit.steps)
     }
   }, [date])
@@ -137,8 +131,7 @@ export default function TrackPage() {
         {/* Right Column - History */}
         <div>
           <LogHistory
-            // logs={logs}
-            logs={habit.steps.map((s) => ({ id: s.id, habitId: habit.id, date: new Date(s.time), measurement: s.time, notes: s.title })) as any}
+            logs={logs}
             onUndo={handleUndoLast}
             onDelete={(id) => setLogs(logs.filter((l) => l.id !== id))}
           />
