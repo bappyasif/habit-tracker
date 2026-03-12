@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Steps, TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
+import { createHabit } from "@/server-calls/habits"
 import { Plus, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -32,12 +33,23 @@ export const NewHabit = () => {
 
     const router = useRouter()
 
+    const saveToDb = (habitData: TrackTypes) => {
+        createHabit(habitData).then(data => {
+          console.log(data, "created habit")
+        }).catch(err => console.log(err))
+        // onSave(tempHabit)
+      }
+
     const handleSave = () => {
         if(habit.title === "") {
             alert("Please enter habit details correctly")
             return
         }
+
+        saveToDb({...habit, id: (state.habits.length + 1).toString(), createdAt: new Date(), successDefinition: { enabled: false, percentage: 0.0 }})
+
         dispatch({ type: "CREATE_HABIT", payload: {...habit, id: (state.habits.length + 1).toString(), createdAt: new Date(), currentStreak: 0, totalCompleted: 0} })
+        
         router.push("/dashboard")
     }
 

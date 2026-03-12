@@ -10,11 +10,15 @@ import Link from "next/link"
 import { Plus, Pencil } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { TodaysFocus } from "./_components/todays-focus"
+import { useToFetchHabits } from "./_hooks/fetchHabits"
 
 export default function DashboardPage() {
   const [selectedHabitId, setSelectedHabitId] = useState("1")
 
   const { dispatch, state } = useTrackCtx()
+
+  // fetching habits from server
+  useToFetchHabits()
 
   useEffect(() => {
     state.habits.length === 0 && dispatch({ type: "IINITIALIZE", payload: mockHabits })

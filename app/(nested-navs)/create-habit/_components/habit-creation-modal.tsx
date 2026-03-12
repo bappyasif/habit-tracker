@@ -8,6 +8,7 @@ import { HabitPreview } from "./habit-preview"
 import { HabitEdit } from "./habit-edit"
 import { NewHabit } from "./new-habit"
 import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
+import { createHabit } from "@/server-calls/habits"
 
 interface Step {
   id: string
@@ -117,8 +118,16 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
       })
   }
 
+  // const saveToDb = (habitData: TrackTypes) => {
+  //   createHabit(habitData).then(data => {
+  //     console.log(data, "created habit")
+  //   }).catch(err => console.log(err))
+  //   // onSave(tempHabit)
+  // }
+
   const handleSave = () => {
     onClose()
+    // saveToDb(tempHabit)
     onSave(tempHabit)
   }
 
@@ -222,7 +231,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                     [Cancel]
                   </Button>
                   <Button onClick={handleSave} className="flex-1">
-                    Save Habit
+                    Save Habit!!
                   </Button>
                 </div>
               )
