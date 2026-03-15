@@ -83,6 +83,16 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                 habits: [...state.habits, action.payload]
             }
 
+        case 'DELETE_HABIT':
+            console.log(action.payload, "DELETE_HABIT")
+            const filtered = state.habits.filter((habit) => habit.id != action.payload)
+
+            return {
+                ...state,
+                habits: filtered,
+                habitViewing: action.payload == state.habitViewing ? filtered[0] : state.habitViewing
+            }
+
         case 'UPDATE_HABIT':
             return {
                 ...state,

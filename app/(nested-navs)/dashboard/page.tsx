@@ -7,8 +7,8 @@ import { DashboardTabs } from "@/app/(nested-navs)/dashboard/_components/dashboa
 import { AIInsightsCard } from "@/app/(nested-navs)/dashboard/_components/ai-insights-card"
 import { mockHabits, mockInsights } from "@/lib/mock-data"
 import Link from "next/link"
-import { Plus, Pencil } from "lucide-react"
-import { useTrackCtx } from "@/context-reducers/trackCtx"
+import { Plus, Pencil, Trash } from "lucide-react"
+import { TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
 import { TodaysFocus } from "./_components/todays-focus"
 import { useToFetchHabits } from "./_hooks/fetchHabits"
 
@@ -29,11 +29,20 @@ export default function DashboardPage() {
       type: 'UPDATE_HABIT_VIEWING',
       payload: Number(selectedHabitId)
     })
-  }, [selectedHabitId])
+  }, [selectedHabitId, state.habits])
+
+    const ih = state.habits.find(habit => Number(habit.id) === state.habitViewing)
+
+  const [habit, setHabit] = useState<TrackTypes | undefined>()
+
+
+  useEffect(() => {
+    setHabit(ih)
+  }, [ih])
 
   if (!state.habits?.length) return null
 
-  const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
+  // const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
 
   if (!habit) return null
 
@@ -98,16 +107,37 @@ export default function DashboardPage() {
                       <p className="text-xs text-muted-foreground mt-1">🔥 {habit.currentStreak} day streak</p>
                     </button>
 
-                    <Link
-                      className="absolute right-1.5 bg-secondary w-1/4 h-9 rounded-full flex gap-2 items-center justify-center text-primary hover:bg-secondary transition-colors"
-                      href="/create-habit"
-                      onClick={() => {
-                        dispatch({ type: "UPDATE_HABIT_VIEWING", payload: habit.id })
-                      }}
-                    >
-                      <Pencil className="w-4 h-4" />
-                      <span>Edit</span>
-                    </Link>
+                    <div className="absolute right-1.5 bg-secondary min-w-1/4 h-9 flex gap-2 items-center justify-evenly text-primary rounded">
+                      <Link
+                        // className="absolute right-1.5 bg-secondary w-1/2 h-9 rounded-full flex gap-2 items-center justify-center text-primary hover:bg-secondary transition-colors"
+                        className="p-2 bg-secondary rounded-full flex gap-2 items-center justify-center text-primary hover:text-secondary hover:bg-primary transition-colors px-2.5"
+                        href="/create-habit"
+                        onClick={() => {
+                          dispatch({ type: "UPDATE_HABIT_VIEWING", payload: habit.id })
+                        }}
+                      >
+                        <Pencil className="w-4 h-4" />
+                        {/* <span>Edit</span> */}
+                      </Link>
+                      <Button
+                        onClick={() => {
+                          if(Number(habit.id) == state.habitViewing) {
+                            const fh = state.habits.filter(habit => Number(habit.id) 
+                            !== state.habitViewing)[0]
+                            setSelectedHabitId(fh.id)
+                            dispatch({ type: "UPDATE_HABIT_VIEWING", payload: fh.id })
+                            dispatch({ type: "DELETE_HABIT", payload: habit.id })
+                          } else {
+                            dispatch({ type: "DELETE_HABIT", payload: habit.id })
+                          }
+                          // alert("Habit deleted")
+                        }}
+                        className="bg-secondary w-1/4 h-9 px-2.5 rounded-full flex gap-2 items-center justify-center text-primary hover:bg-destructive transition-colors"
+                      >
+                        <Trash className="w-4 h-4" />
+                        {/* <span>Delete</span> */}
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>
