@@ -7,10 +7,11 @@ import { DashboardTabs } from "@/app/(nested-navs)/dashboard/_components/dashboa
 import { AIInsightsCard } from "@/app/(nested-navs)/dashboard/_components/ai-insights-card"
 import { mockHabits, mockInsights } from "@/lib/mock-data"
 import Link from "next/link"
-import { Plus, Pencil, Trash } from "lucide-react"
+import { Plus, Pencil, Trash, Sparkles, ArrowRight } from "lucide-react"
 import { TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
 import { TodaysFocus } from "./_components/todays-focus"
 import { useToFetchHabits } from "./_hooks/fetchHabits"
+import { useRouter } from "next/navigation"
 
 export default function DashboardPage() {
   const [selectedHabitId, setSelectedHabitId] = useState("1")
@@ -31,20 +32,27 @@ export default function DashboardPage() {
     })
   }, [selectedHabitId, state.habits])
 
-    const ih = state.habits.find(habit => Number(habit.id) === state.habitViewing)
+  // const ih = state.habits.find(habit => Number(habit.id) === state.habitViewing)
 
-  const [habit, setHabit] = useState<TrackTypes | undefined>()
+  // const [habit, setHabit] = useState<TrackTypes | undefined>()
 
 
-  useEffect(() => {
-    setHabit(ih)
-  }, [ih])
+  // useEffect(() => {
+  //   setHabit(ih)
+  // }, [ih])
+
+  const router = useRouter()
+
+  const gotoCreateNewHabit = () => {
+    alert("No habits available lets create one")
+    router.push("/create-habit")
+  }
 
   if (!state.habits?.length) return null
 
-  // const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
+  const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
 
-  if (!habit) return null
+  if (!habit) return <WhenEmpty />
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -121,9 +129,17 @@ export default function DashboardPage() {
                       </Link>
                       <Button
                         onClick={() => {
-                          if(Number(habit.id) == state.habitViewing) {
-                            const fh = state.habits.filter(habit => Number(habit.id) 
-                            !== state.habitViewing)[0]
+                          if (Number(habit.id) == state.habitViewing) {
+                            const fh = state.habits.filter(habit => Number(habit.id)
+                              !== state.habitViewing)[0]
+                            if (!fh?.id) {
+                              gotoCreateNewHabit()
+                              dispatch({
+                                type: 'UPDATE_HABIT_VIEWING',
+                                payload: -1
+                              })
+                              return
+                            }
                             setSelectedHabitId(fh.id)
                             dispatch({ type: "UPDATE_HABIT_VIEWING", payload: fh.id })
                             dispatch({ type: "DELETE_HABIT", payload: habit.id })
@@ -172,5 +188,43 @@ export default function DashboardPage() {
         </div>
       </div>
     </main>
+  )
+}
+
+const WhenEmpty = () => {
+  return (
+    <div
+      // className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col justify-between gap-4"
+      className="flex flex-col min-w-3/4 gap-40"
+    >
+      <header
+        className="mb-40 flex flex-col self-start m-10"
+      >
+        <h1 className="text-4xl font-bold mb-2">Good morning </h1>
+        <p className="text-muted-foreground">
+          {new Date().toLocaleDateString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
+        </p>
+      </header>
+      <main
+      className="self-end flex flex-col gap-4 mr-20"
+      >
+        <div className="flex flex-col items-start justify-start gap-2">
+          <Sparkles className="w-8 h-8 text-primary" />
+          <h2 className="text-3xl font-bold text-primary">Welcome To HabitFlow Dashboard</h2>
+          <p className="text-muted-foreground">Start tracking your habits now!</p>
+          <Link href="/create-habit" className="mt-4">
+            <Button size="lg" className="gap-2 bg-primary hover:bg-primary/90 cursor-pointer">
+              Create Habit
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </Link>
+        </div>
+      </main>
+    </div>
   )
 }
