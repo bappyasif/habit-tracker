@@ -21,8 +21,25 @@ export default function TrackPage() {
 
   const [logs, setLogs] = useState(mockLogs)
   // const [logs, setLogs] = useState(habitStepLogs)
-  
+
   const [isSaving, setIsSaving] = useState(false)
+
+  const saveTodb = async (data: any) => {
+    const response = await fetch("/api/habits/timeline", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+
+    if (response.ok) {
+      const responseData = await response.json()
+      console.log("Data saved successfully", data, responseData)
+    } else {
+      console.error("Failed to save data")
+    }
+  }
 
   const handleSaveLog = async () => {
     setIsSaving(true)
@@ -47,18 +64,34 @@ export default function TrackPage() {
     })
 
     // update on weekly tracking as well
+    const payloadData = {
+      habitId: habit.id,
+      dateStamp: date,
+      data: {
+        totalCompleted: habit.steps.map(step => step.completed).filter(step => step).length,
+        totalSteps: habit.steps.length,
+        percentile: Math.round((habit.steps.map(step => step.completed).filter(step => step).length / habit.steps.length) * 100)
+      }
+    }
+
     dispatch({
       type: "SET_A_WEEK_COMPLETION_RATE",
-      payload: {
-        habitId: habit.id,
-        dateStamp: date,
-        data: {
-          totalCompleted: habit.steps.map(step => step.completed).filter(step => step).length,
-          totalSteps: habit.steps.length,
-          percentile: Math.round((habit.steps.map(step => step.completed).filter(step => step).length / habit.steps.length) * 100)
-        }
-      }
+      payload: payloadData
     })
+
+    // save to db too
+    const dbrq = {
+      habitId: habit.id,
+      week: {
+        weekStart: new Date(date.getTime() - (date.getDay() - 1) * 24 * 60 * 60 * 1000),
+        weekEnd: new Date(date.getTime() + (6 - date.getDay()) * 24 * 60 * 60 * 1000),
+        totalCompleted: habit.steps.map(step => step.completed).filter(step => step).length,
+        totalSteps: habit.steps.length,
+        percentile: Math.round((habit.steps.map(step => step.completed).filter(step => step).length / habit.steps.length) * 100)
+      }
+    }
+
+    saveTodb(dbrq)
 
     // Show success message
     alert("Log saved successfully!")
@@ -90,7 +123,7 @@ export default function TrackPage() {
       })
       setSteps(todaySteps)
       return
-    } 
+    }
     else {
       setSteps(habit.steps)
     }
