@@ -4,7 +4,7 @@ export const GET = async (req: Request) => {
     const { id } = await req.json()
     console.log(id, "!!id!!")
 
-    const res = await fetch("http://0.0.0.0:8000/api/v1/weekly-timeline/habits/" + id)
+    const res = await fetch("http://0.0.0.0:8000/api/v1/weekly-timeline/habit-timeline/" + id)
     const data = await res.json()
     console.log(data, "!!data!!")
 
@@ -15,7 +15,10 @@ export const GET = async (req: Request) => {
 }
 
 export const POST = async (request: Request) => {
-    const res = await fetch("http://0.0.0.0:8000/api/v1/weekly-timeline/habits/", {
+    const userInp = await request.json()
+    console.log(userInp, "!!userinput data!!")
+
+    const res = await fetch("http://0.0.0.0:8000/api/v1/weekly-timeline/habit-timeline/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

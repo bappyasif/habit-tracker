@@ -21,6 +21,7 @@ export default function DashboardPage() {
   // fetching habits from server
   useToFetchHabits()
 
+  // initializing habits with mock data
   useEffect(() => {
     state.habits.length === 0 && dispatch({ type: "IINITIALIZE", payload: mockHabits })
   }, [])

@@ -12,7 +12,10 @@ import { mockLogs } from "@/lib/mock-data"
 
 export default function TrackPage() {
   const { state, dispatch } = useTrackCtx()
-  const habit = state.habits[state.habitViewing === -1 ? 0 : state.habitViewing - 1]
+  // const habit = state.habits[state.habitViewing === -1 ? 0 : state.habitViewing - 1]
+
+  const habit = state.habits.find((habit) => Number(habit.id) == state.habitViewing) ?? state.habits[0]
+
   const [date, setDate] = useState(new Date())
   const [measurementValue, setMeasurementValue] = useState(30)
   const [steps, setSteps] = useState(habit?.steps)
