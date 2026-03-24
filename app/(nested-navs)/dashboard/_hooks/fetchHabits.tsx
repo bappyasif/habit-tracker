@@ -7,10 +7,13 @@ export const useToFetchHabits = () => {
 
     const runOnce = () => {
         getAllHabits()
-            .then(data => {
-                console.log(data, "initializing habits from db")
+            .then(payload => {
+                console.log(payload, "initializing habits from db", payload?.data?.habits?.length, payload?.data?.habits)
                 // normalize data for frontend currently its misisng a few props requires for frontend to render correctly
                 // dispatch({ type: "IINITIALIZE", payload: data })
+                if(payload?.data?.habits?.length) {
+                    dispatch({ type: "IINITIALIZE", payload: payload?.data?.habits })
+                }
             }).catch(err => console.log(err))
     }
 

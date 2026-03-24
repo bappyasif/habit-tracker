@@ -46,7 +46,11 @@ export const NewHabit = () => {
             return
         }
 
-        saveToDb({...habit, id: (state.habits.length + 1).toString(), createdAt: new Date(), successDefinition: { enabled: false, percentage: 0.0 }})
+        // console.log(habit, "habit save!!")
+
+        // saveToDb({...habit, id: (state.habits.length + 1).toString(), createdAt: new Date(), successDefinition: { enabled: false, percentage: 0.0 }, steps: [], currentStreak: 0, totalCompleted: 0})
+
+        saveToDb({...habit, id: (state.habits.length + 1).toString()})
 
         dispatch({ type: "CREATE_HABIT", payload: {...habit, id: (state.habits.length + 1).toString(), createdAt: new Date(), currentStreak: 0, totalCompleted: 0} })
         
