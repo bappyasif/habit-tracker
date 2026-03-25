@@ -12,21 +12,27 @@ import { TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
 import { TodaysFocus } from "./_components/todays-focus"
 import { useToFetchHabits } from "./_hooks/fetchHabits"
 import { useRouter } from "next/navigation"
+import { deleteHabit } from "@/server-calls/habits"
 
 export default function DashboardPage() {
-  const [selectedHabitId, setSelectedHabitId] = useState("1")
+  const [selectedHabitId, setSelectedHabitId] = useState("")
 
   const { dispatch, state } = useTrackCtx()
+
+  // useEffect(() => {
+  //   setSelectedHabitId(state.habitViewing.toString())
+  // }, [state.habitViewing])
 
   // fetching habits from server
   useToFetchHabits()
 
   // initializing habits with mock data
-  useEffect(() => {
-    state.habits.length === 0 && dispatch({ type: "IINITIALIZE", payload: mockHabits })
-  }, [])
+  // useEffect(() => {
+  //   state.habits.length === 0 && dispatch({ type: "IINITIALIZE", payload: mockHabits })
+  // }, [])
 
   useEffect(() => {
+    if (!selectedHabitId) return
     dispatch({
       type: 'UPDATE_HABIT_VIEWING',
       payload: Number(selectedHabitId)
@@ -47,6 +53,11 @@ export default function DashboardPage() {
   const gotoCreateNewHabit = () => {
     alert("No habits available lets create one")
     router.push("/create-habit")
+  }
+
+  const deleteHabitFromDb = async (id: string) => {
+    const res = await deleteHabit(id)
+    console.log(res, "deleted habit")
   }
 
   if (!state.habits?.length) return null
@@ -133,6 +144,8 @@ export default function DashboardPage() {
                           if (Number(habit.id) == state.habitViewing) {
                             const fh = state.habits.filter(habit => Number(habit.id)
                               !== state.habitViewing)[0]
+                                                        
+                              deleteHabitFromDb(habit.id)
                             if (!fh?.id) {
                               gotoCreateNewHabit()
                               dispatch({
@@ -141,12 +154,15 @@ export default function DashboardPage() {
                               })
                               return
                             }
+                            // deleteHabitFromDb(habit.id)
                             setSelectedHabitId(fh.id)
                             dispatch({ type: "UPDATE_HABIT_VIEWING", payload: fh.id })
                             dispatch({ type: "DELETE_HABIT", payload: habit.id })
                           } else {
+                            // deleteHabitFromDb(habit.id)
                             dispatch({ type: "DELETE_HABIT", payload: habit.id })
                           }
+                          // deleteHabitFromDb(habit.id)
                           // alert("Habit deleted")
                         }}
                         className="bg-secondary w-1/4 h-9 px-2.5 rounded-full flex gap-2 items-center justify-center text-primary hover:bg-destructive transition-colors"

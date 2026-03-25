@@ -18,13 +18,51 @@ export const POST = async (request: Request) => {
         },
         body: JSON.stringify(await request.json())
     })
-    
+
     const data = await res.json()
 
     return NextResponse.json({
         message: "Habit created successfully",
         data: data
     })
+}
 
+export const PUT = async (request: Request) => {
+    const res = await fetch("http://0.0.0.0:8000/api/v1/habits/update", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(await request.json())
+    })
+
+    const data = await res.json()
+
+    return NextResponse.json({
+        message: "Habit updated successfully",
+        data: data
+    })
+}
+
+export const DELETE = async (request: Request) => {
+    const { id } = await request.json()
+
+    console.log(id, "!!DELETE id!!")
+
+    const res = await fetch("http://0.0.0.0:8000/api/v1/habits/delete/"+id, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            habit_id: id
+        })
+    })
     
+    const data = await res.json()
+    
+    return NextResponse.json({
+        message: "Habit deleted successfully",
+        data: data
+    })
 }

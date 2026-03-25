@@ -1,4 +1,5 @@
 import { TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
+import { mockHabits } from "@/lib/mock-data"
 import { createHabit, getAllHabits } from "@/server-calls/habits"
 import { useEffect } from "react"
 
@@ -12,7 +13,13 @@ export const useToFetchHabits = () => {
                 // normalize data for frontend currently its misisng a few props requires for frontend to render correctly
                 // dispatch({ type: "IINITIALIZE", payload: data })
                 if(payload?.data?.habits?.length) {
+                    console.log("habits found!!")
                     dispatch({ type: "IINITIALIZE", payload: payload?.data?.habits })
+                    dispatch({ type: "UPDATE_HABIT_VIEWING", payload: payload?.data?.habits[0]?.id })
+                } else {
+                    console.log("no habits found")
+                    // dispatch({ type: "IINITIALIZE", payload: [] })
+                    dispatch({ type: "IINITIALIZE", payload: mockHabits })
                 }
             }).catch(err => console.log(err))
     }

@@ -16,3 +16,27 @@ export const createHabit = async (habit: TrackTypes) => {
     })
     return res.json()
 }
+
+export const updateHabit = async (habit: TrackTypes) => {
+    const res = await fetch("/api/habits/", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(habit)
+    })
+    return res.json()
+}
+
+export const deleteHabit = async (id: string) => {
+    const res = await fetch(`/api/habits/`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            id: id
+        })
+    })
+    return res.json()
+}

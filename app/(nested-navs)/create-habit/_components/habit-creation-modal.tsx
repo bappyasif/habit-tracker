@@ -8,7 +8,7 @@ import { HabitPreview } from "./habit-preview"
 import { HabitEdit } from "./habit-edit"
 import { NewHabit } from "./new-habit"
 import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
-import { createHabit } from "@/server-calls/habits"
+import { createHabit, updateHabit } from "@/server-calls/habits"
 
 interface Step {
   id: string
@@ -118,17 +118,26 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
       })
   }
 
-  // const saveToDb = (habitData: TrackTypes) => {
-  //   createHabit(habitData).then(data => {
-  //     console.log(data, "created habit")
-  //   }).catch(err => console.log(err))
-  //   // onSave(tempHabit)
-  // }
+  const saveToDb = (habitData: TrackTypes) => {
+    createHabit(habitData).then(data => {
+      console.log(data, "created habit")
+      if(data) {
+        onSave(habitData)
+      }
+    }).catch(err => console.log(err))
+    // onSave(tempHabit)
+  }
 
   const handleSave = () => {
     onClose()
-    // saveToDb(tempHabit)
-    onSave(tempHabit)
+    saveToDb(habit)
+    // onSave(tempHabit)
+  }
+
+  const handleUpdate = () => {
+    alert("update")
+    updateHabit(habit)
+    onClose()
   }
 
   const habit = trackState.habits[trackState.habitViewing - 1]
@@ -207,7 +216,8 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
             ) : stage === "edit" && habit ? (
               // Edit Stage
               <HabitEdit
-                habit={tempHabit}
+                // habit={tempHabit}
+                habit={habit}
                 handleAddStep={handleAddStep}
                 handleUpdateStep={handleUpdateStep}
                 handleRemoveStep={handleRemoveStep}
@@ -230,8 +240,12 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                   >
                     [Cancel]
                   </Button>
-                  <Button onClick={handleSave} className="flex-1">
-                    Save Habit!!
+                  <Button 
+                    // onClick={handleSave} 
+                    onClick={stage === "edit" ? handleUpdate : handleSave}
+                    className="flex-1"
+                  >
+                    {stage === "edit" ? "Update" : "Save"} Habit
                   </Button>
                 </div>
               )

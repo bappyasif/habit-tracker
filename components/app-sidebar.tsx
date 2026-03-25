@@ -90,7 +90,7 @@ export const AppSidebar = () => {
       {
         grps.map((grp) => {
           const isActive = pathname === grp.path
-          console.log(grp, "grp")
+          // console.log(grp, "grp")
           return (
             (
               <div className="space-y-3" key={grp.path}>
