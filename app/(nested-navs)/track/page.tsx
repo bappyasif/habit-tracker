@@ -83,14 +83,19 @@ export default function TrackPage() {
     })
 
     // save to db too
+    const completedSteps = habit.steps.map(step => step.completed).filter(step => step)
+    const totalSteps = habit.steps
+    const percentile = Math.round((completedSteps.length / totalSteps.length) * 100)
+
     const dbrq = {
       habitId: habit.id,
       week: {
         weekStart: new Date(date.getTime() - (date.getDay() - 1) * 24 * 60 * 60 * 1000),
         weekEnd: new Date(date.getTime() + (6 - date.getDay()) * 24 * 60 * 60 * 1000),
-        totalCompleted: habit.steps.map(step => step.completed).filter(step => step).length,
-        totalSteps: habit.steps.length,
-        percentile: Math.round((habit.steps.map(step => step.completed).filter(step => step).length / habit.steps.length) * 100)
+        totalCompleted: completedSteps.length,
+        // totalSteps: totalSteps.length * habit.duration,habit.steps.map(step => step.completed).filter(step => step)
+        totalSteps: totalSteps.length,
+        percentile: percentile
       }
     }
 
@@ -111,7 +116,7 @@ export default function TrackPage() {
   }
 
   useEffect(() => {
-    const whichDay = habit.createdAt.toDateString() === date.toDateString() ? "today" : "different day"
+    const whichDay = new Date(habit?.createdAt)?.toDateString() === date.toDateString() ? "today" : "different day"
 
     console.log(whichDay)
 

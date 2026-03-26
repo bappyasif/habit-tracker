@@ -23,7 +23,7 @@ export const POST = async (request: Request) => {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(await request.json())
+        body: JSON.stringify(userInp)
     })
 
     const data = await res.json()
