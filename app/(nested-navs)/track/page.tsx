@@ -9,6 +9,7 @@ import { LogHistory } from "@/app/(nested-navs)/track/_components/log-history"
 import { Save } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { mockLogs } from "@/lib/mock-data"
+import { createHabitWeeklyTimeline } from "@/server-calls/habits"
 
 export default function TrackPage() {
   const { state, dispatch } = useTrackCtx()
@@ -28,20 +29,23 @@ export default function TrackPage() {
   const [isSaving, setIsSaving] = useState(false)
 
   const saveTodb = async (data: any) => {
-    const response = await fetch("/api/habits/timeline", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
+    // const response = await fetch("/api/habits/timeline", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(data),
+    // })
 
-    if (response.ok) {
-      const responseData = await response.json()
-      console.log("Data saved successfully", data, responseData)
-    } else {
-      console.error("Failed to save data")
-    }
+    const response = await createHabitWeeklyTimeline(data)
+    console.log(response, "response from saving timeline data")
+
+    // if (response.ok) {
+    //   const responseData = await response.json()
+    //   console.log("Data saved successfully", data, responseData)
+    // } else {
+    //   console.error("Failed to save data")
+    // }
   }
 
   const handleSaveLog = async () => {

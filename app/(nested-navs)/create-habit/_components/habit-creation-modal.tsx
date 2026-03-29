@@ -40,7 +40,18 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
   const { state: trackState, dispatch: trackDispatch } = useTrackCtx()
 
-  const [tempHabit, setTempHabit] = useState(trackState.habits[trackState.habitViewing - 1])
+  // const [tempHabit, setTempHabit] = useState(trackState.habits[trackState.habitViewing - 1])
+  // const [tempHabit, setTempHabit] = useState(trackState.habits[trackState.habitViewing])
+
+  const habit = trackState.habits.find((habit) => Number(habit.id) === trackState.habitViewing) ?? trackState.habits[0]
+
+  const [tempHabit, setTempHabit] = useState<TrackTypes>(habit)
+
+  // useEffect(() => {
+  //   setTempHabit(tempHabit)
+  // }, [tempHabit])
+
+  console.log(tempHabit, "temp habit", trackState.habits, "all habits", trackState.habitViewing, "habit viewing")
 
   const [tabs, setTabs] = useState<{
     label: string;
@@ -140,7 +151,14 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     onClose()
   }
 
-  const habit = trackState.habits[trackState.habitViewing - 1]
+  // const habit = trackState.habits[trackState.habitViewing - 1]
+  // const habit = trackState.habits[trackState.habitViewing]
+  // const habit = tempHabit
+
+  // if (!habit) {
+  //   return null
+  // }
+
 
   const checkDailyStepsExists = trackState.habitInsights?.find(insight => insight.habitId === trackState.habitViewing)?.daily
 
