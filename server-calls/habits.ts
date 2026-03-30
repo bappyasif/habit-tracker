@@ -42,6 +42,21 @@ export const deleteHabit = async (id: string) => {
 }
 
 export const createHabitWeeklyTimeline = async (habit: TrackTypes) => {
+    const res = await fetch("/api/habits/timeline/weekly", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(habit)
+    })
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.message || "Failed to create habit timeline")
+    }
+    return res.json()
+}
+
+export const createHabitDailyTimeline = async (habit: TrackTypes) => {
     const res = await fetch("/api/habits/timeline", {
         method: "POST",
         headers: {

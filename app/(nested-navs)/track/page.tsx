@@ -9,7 +9,7 @@ import { LogHistory } from "@/app/(nested-navs)/track/_components/log-history"
 import { Save } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { mockLogs } from "@/lib/mock-data"
-import { createHabitWeeklyTimeline } from "@/server-calls/habits"
+import { createHabitDailyTimeline, createHabitWeeklyTimeline } from "@/server-calls/habits"
 
 export default function TrackPage() {
   const { state, dispatch } = useTrackCtx()
@@ -37,8 +37,14 @@ export default function TrackPage() {
     //   body: JSON.stringify(data),
     // })
 
-    const response = await createHabitWeeklyTimeline(data)
-    console.log(response, "response from saving timeline data")
+    // weekly tracking
+    // const response = await createHabitWeeklyTimeline(data)
+    // console.log(response, "response from saving timeline data")
+
+    // daily tracking
+    const resp = await createHabitDailyTimeline(data)
+    console.log(resp, "response from saving daily timeline data")
+
 
     // if (response.ok) {
     //   const responseData = await response.json()
@@ -46,6 +52,15 @@ export default function TrackPage() {
     // } else {
     //   console.error("Failed to save data")
     // }
+  }
+  const saveWeeklyTrackingTodb = async (data: any) => {
+    const response = await createHabitWeeklyTimeline(data)
+    console.log(response, "response from saving timeline data for weekly tracking")
+  }
+
+  const saveDailyTrackingTodb = async (data: any) => {
+    const response = await createHabitDailyTimeline(data)
+    console.log(response, "response from saving timeline data for daily tracking")
   }
 
   const handleSaveLog = async () => {
@@ -70,7 +85,7 @@ export default function TrackPage() {
       payload: habit
     })
 
-    // update on weekly tracking as well
+    // update on daily tracking as well
     const payloadData = {
       habitId: habit.id,
       dateStamp: date,
@@ -103,7 +118,24 @@ export default function TrackPage() {
       }
     }
 
-    saveTodb(dbrq)
+    // saveTodb(dbrq)
+    // saveWeeklyTrackingTodb(dbrq)
+
+    // save to db for daily tracking as well
+    saveDailyTrackingTodb({
+      habitId: habit.id,
+      dateStamp: date,
+      totalSteps: totalSteps.length,
+      percentile: percentile,
+      completedSteps: habit.steps.filter(step => step.completed),
+      notes: "consider adding notes input in the UI for each day to log any specific notes for that day along with steps and measurement"
+      // data: {
+      //   // totalCompleted: completedSteps.length,
+      //   totalSteps: totalSteps.length,
+      //   percentile: percentile, 
+      //   completedSteps: habit.steps.filter(step => step.completed)
+      // }
+    })
 
     // Show success message
     alert("Log saved successfully!")
