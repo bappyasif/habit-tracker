@@ -126,9 +126,11 @@ export default function TrackPage() {
       habitId: habit.id,
       dateStamp: date,
       totalSteps: totalSteps.length,
-      percentile: percentile,
-      completedSteps: habit.steps.filter(step => step.completed),
-      notes: "consider adding notes input in the UI for each day to log any specific notes for that day along with steps and measurement"
+      // percentile: percentile,
+      steps: habit.steps,
+      // completedSteps: habit.steps.filter(step => step.completed),
+      // notes: "consider adding notes input in the UI for each day to log any specific notes for that day along with steps and measurement"
+      
       // data: {
       //   // totalCompleted: completedSteps.length,
       //   totalSteps: totalSteps.length,
