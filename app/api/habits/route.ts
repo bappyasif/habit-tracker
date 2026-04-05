@@ -43,12 +43,30 @@ export const POST = async (request: Request) => {
 }
 
 export const PUT = async (request: Request) => {
+    const usrInp = await request.json()
+    console.log(usrInp, "!!PUT data!!")
+
+    const siphenedData = {
+        id: usrInp.id,
+        title: usrInp.title,
+        description: usrInp.description || "None",
+        frequency: usrInp.frequency,
+        duration: usrInp.duration,
+        measurement: usrInp.measurement,
+        steps: usrInp.steps.map((step: any) => ({
+            id: step.id.toString(),
+            title: step.title,
+            time: step.time
+        }))
+    }
+
+    console.log(siphenedData, "!!siphened data!!")
     const res = await fetch("http://0.0.0.0:8000/api/v1/habits/update", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(await request.json())
+        body: JSON.stringify(siphenedData)
     })
 
     const data = await res.json()

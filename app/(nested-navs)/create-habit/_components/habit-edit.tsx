@@ -13,6 +13,8 @@ export const HabitEdit = (
 
     const { state: trackState, dispatch: trackDispatch } = useTrackCtx()
 
+    if (!habit) return null
+
     return (
         <div className="space-y-6">
             {/* Title */}
@@ -149,7 +151,7 @@ export const HabitEdit = (
                 <div className="flex items-center justify-between">
                     <Label>Enable Success Definition</Label>
                     <Switch
-                        checked={habit.successDefinition.enabled}
+                        checked={habit.successDefinition?.enabled}
                         onCheckedChange={(checked) => {
                             trackDispatch({
                                 type: 'UPDATE_HABIT_PAYLOAD', payload: {
@@ -165,7 +167,7 @@ export const HabitEdit = (
                     />
                 </div>
                 {
-                    habit.successDefinition.enabled &&
+                    habit.successDefinition?.enabled &&
                     (
                         <div>
                             <Label htmlFor="success">Success Percentage</Label>

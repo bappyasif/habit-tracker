@@ -159,7 +159,7 @@ export default function DashboardPage() {
                             dispatch({ type: "UPDATE_HABIT_VIEWING", payload: fh.id })
                             dispatch({ type: "DELETE_HABIT", payload: habit.id })
                           } else {
-                            // deleteHabitFromDb(habit.id)
+                            deleteHabitFromDb(habit.id)
                             dispatch({ type: "DELETE_HABIT", payload: habit.id })
                           }
                           // deleteHabitFromDb(habit.id)
