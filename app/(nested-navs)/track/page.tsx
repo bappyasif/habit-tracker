@@ -119,7 +119,7 @@ export default function TrackPage() {
     }
 
     // saveTodb(dbrq)
-    // saveWeeklyTrackingTodb(dbrq)
+    saveWeeklyTrackingTodb(dbrq)
 
     // save to db for daily tracking as well
     saveDailyTrackingTodb({
@@ -127,7 +127,10 @@ export default function TrackPage() {
       dateStamp: date,
       totalSteps: totalSteps.length,
       // percentile: percentile,
-      steps: habit.steps,
+      steps: habit.steps.map(step => ({
+        ...step,
+        id: step.id.toString(),
+      })),
       // completedSteps: habit.steps.filter(step => step.completed),
       // notes: "consider adding notes input in the UI for each day to log any specific notes for that day along with steps and measurement"
       
