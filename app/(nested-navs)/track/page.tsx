@@ -61,6 +61,23 @@ export default function TrackPage() {
   const saveDailyTrackingTodb = async (data: any) => {
     const response = await createHabitDailyTimeline(data)
     console.log(response, "response from saving timeline data for daily tracking")
+
+    // as track view gets updated during updates tracking logs on view but gets discarded on dashboard as it fetches data from server for all habits and habits steps or not updated but rather we are keeping daily log stored in another table called daily_traking
+    //  so i guess we need to fetch data from there for updating dashboard data to match daily tracking
+
+    
+    // dispatch({
+    //   type: "ADD_DAILY_TRACKING_LOG",
+    //   payload: {
+    //     habitId: habit.id,
+    //     log: response?.data?.entry?.steps || [{
+    //         id: Math.random().toString(),
+    //         date: new Date(Math.random().toString()),
+    //         measurement: Math.random().toString(),
+    //         notes: Math.random().toString()
+    //       }]
+    //   }
+    // })
   }
 
   const handleSaveLog = async () => {
@@ -123,17 +140,23 @@ export default function TrackPage() {
 
     // save to db for daily tracking as well
     saveDailyTrackingTodb({
-      habitId: habit.id,
+      habitId: habit.id.toString(),
       dateStamp: date,
+      // dateStamp: date.toDateString(),
       totalSteps: totalSteps.length,
       // percentile: percentile,
       steps: habit.steps.map(step => ({
         ...step,
         id: step.id.toString(),
+        note: "None",
       })),
-      // completedSteps: habit.steps.filter(step => step.completed),
+      completedSteps: habit.steps.filter(step => step.completed).map(step => ({
+        ...step,
+        id: step.id.toString(),
+        note: "None",
+      })),
       // notes: "consider adding notes input in the UI for each day to log any specific notes for that day along with steps and measurement"
-      
+
       // data: {
       //   // totalCompleted: completedSteps.length,
       //   totalSteps: totalSteps.length,
