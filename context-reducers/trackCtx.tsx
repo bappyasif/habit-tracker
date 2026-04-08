@@ -187,6 +187,49 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
 
             }
 
+        // case "ADD_DAILY_TRACKING_LOG":
+        //     console.log(action.payload, "ADD_DAILY_TRACKING_LOG")
+        //     return {
+        //         ...state,
+        //         habits: state.habits.map((habit) => {
+        //             if (habit.id == action.payload.habitId) {
+        //                 console.log(action.payload.log, "action.payload.log")
+        //                 return {
+        //                     ...habit,
+        //                     steps: [...habit.steps, ...action.payload.log]
+        //                 }
+        //             }
+        //             return habit
+        //         })
+        //     }
+
+        case "UPDATE_HABIT_DAILY_TIMELINE":
+            console.log(action.payload, "UPDATE_HABIT_DAILY_TIMELINE")
+            return {
+                ...state,
+                habits: state.habits.map((habit) => {
+                    if (habit.id == action.payload.habitId) {
+                        console.log(action.payload.log, "action.payload.log")
+                        return {
+                            ...habit,
+                            steps: habit.steps.map(step => {
+                                console.log(step.id, "step.id", action.payload.log, "action.payload.log", action.payload.log.includes(step.id), "does log include step id?")
+                                if (action.payload.log.includes(step.id)) {
+                                    console.log("marking step as completed for step id", step.id)
+                                    return {
+                                        ...step,
+                                        completed: true
+                                    }
+                                }
+                                return step
+                            })
+                        }
+                    }
+                    return habit
+                })
+            
+                        }
+
         case "remove-from-habit-suggestions":
             return {
                 ...state,

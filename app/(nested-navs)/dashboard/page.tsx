@@ -13,6 +13,7 @@ import { TodaysFocus } from "./_components/todays-focus"
 import { useToFetchHabits } from "./_hooks/fetchHabits"
 import { useRouter } from "next/navigation"
 import { deleteHabit } from "@/server-calls/habits"
+import { useToFetchHabitDailyTimeline } from "./_hooks/fetchHabitDailyTimeline"
 
 export default function DashboardPage() {
   const [selectedHabitId, setSelectedHabitId] = useState("")
@@ -25,6 +26,9 @@ export default function DashboardPage() {
 
   // fetching habits from server
   useToFetchHabits()
+
+  // fetching habit daily timeline from server
+  useToFetchHabitDailyTimeline()
 
   // initializing habits with mock data
   // useEffect(() => {

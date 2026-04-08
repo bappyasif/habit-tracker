@@ -70,3 +70,12 @@ export const createHabitDailyTimeline = async (habit: TrackTypes) => {
     }
     return res.json()
 }
+
+export const getHabitDailyTimeline = async (habitId: string) => {
+    const res = await fetch(`/api/habits/timeline?habitId=${habitId}`)
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.message || "Failed to fetch habit daily log timeline")
+    }
+    return res.json()
+}
