@@ -4,7 +4,7 @@ import { createHabit, getAllHabits } from "@/server-calls/habits"
 import { useEffect } from "react"
 
 export const useToFetchHabits = () => {
-    const { dispatch } = useTrackCtx()
+    const { state, dispatch } = useTrackCtx()
 
     const runOnce = () => {
         getAllHabits()
@@ -12,7 +12,7 @@ export const useToFetchHabits = () => {
                 console.log(payload, "initializing habits from db", payload?.data?.habits?.length, payload?.data?.habits)
                 // normalize data for frontend currently its misisng a few props requires for frontend to render correctly
                 // dispatch({ type: "IINITIALIZE", payload: data })
-                if(payload?.data?.habits?.length) {
+                if (payload?.data?.habits?.length) {
                     console.log("habits found!!")
                     dispatch({ type: "IINITIALIZE", payload: payload?.data?.habits })
                     dispatch({ type: "UPDATE_HABIT_VIEWING", payload: payload?.data?.habits[0]?.id })
@@ -25,7 +25,9 @@ export const useToFetchHabits = () => {
     }
 
     useEffect(() => {
-        runOnce()
+        if (state.habitViewing === -1) {
+            runOnce()
+        }
     }, [])
 }
 

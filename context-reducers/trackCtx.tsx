@@ -214,8 +214,9 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                             ...habit,
                             steps: habit.steps.map(step => {
                                 console.log(step.id, "step.id", action.payload.log, "action.payload.log", action.payload.log.includes(step.id), "does log include step id?")
-                                if (action.payload.log.includes(step.id)) {
-                                    console.log("marking step as completed for step id", step.id)
+                                if (action.payload.log.includes(step.id) && new Date(step.time).toLocaleDateString() == new Date(action.payload.dateStamp).toLocaleDateString()) {
+                                    console.log(new Date(step.time).toLocaleDateString() == new Date(action.payload.dateStamp).toLocaleDateString(), "does step time match date stamp?")
+                                    // console.log("marking step as completed for step id", step.id, "date", step.time.toLocaleLowerCase(), "action.payload.dateStamp", action.payload.dateStamp, new Date(step.time).toLocaleDateString()== new Date(action.payload.dateStamp).toLocaleDateString(), "does step time match date stamp?")
                                     return {
                                         ...step,
                                         completed: true
@@ -227,8 +228,8 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                     }
                     return habit
                 })
-            
-                        }
+
+            }
 
         case "remove-from-habit-suggestions":
             return {
@@ -327,13 +328,13 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                                         weekEnd: new Date(action.payload.dateStamp + 7 * 24 * 60 * 60 * 1000),
                                     }
                                 } else if (dateStamp >= weekStart && dateStamp <= weekEnd) {
-                                    console.log("dateStamp is within weekStart and weekEnd, updating week data", (action.payload.data.totalCompleted + (week.totalCompleted || 0)), Number(action.payload.data.totalSteps) + (Number(week.totalSteps) || 0 ) * 100)
+                                    console.log("dateStamp is within weekStart and weekEnd, updating week data", (action.payload.data.totalCompleted + (week.totalCompleted || 0)), Number(action.payload.data.totalSteps) + (Number(week.totalSteps) || 0) * 100)
                                     // return action.payload.data
                                     return {
                                         ...week,
                                         totalSteps: action.payload.data.totalSteps + (week.totalSteps || 0), // adding new total steps to existing total steps for that week to get cumulative total steps for that week
                                         totalCompleted: action.payload.data.totalCompleted + (week.totalCompleted || 0), // adding new total completed to existing total completed for that week to get cumulative total completed for that week
-                                        percentile: Math.round((action.payload.data.totalCompleted + (week.totalCompleted || 0) / action.payload.data.totalSteps + (week.totalSteps || 0 )) * 100)
+                                        percentile: Math.round((action.payload.data.totalCompleted + (week.totalCompleted || 0) / action.payload.data.totalSteps + (week.totalSteps || 0)) * 100)
                                     }
                                 } else if (dateStamp > weekEnd) {
                                     console.log("dateStamp is greater than weekEnd, adding new week data to the end of weeks array")

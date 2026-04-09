@@ -17,6 +17,8 @@ export default function TrackPage() {
 
   const habit = state.habits.find((habit) => Number(habit.id) == state.habitViewing) ?? state.habits[0]
 
+  console.log(habit, "habit for tracking page")
+
   const [date, setDate] = useState(new Date())
   const [measurementValue, setMeasurementValue] = useState(30)
   const [steps, setSteps] = useState(habit?.steps)
@@ -179,27 +181,27 @@ export default function TrackPage() {
     return <div>Loading...</div>
   }
 
-  useEffect(() => {
-    const whichDay = new Date(habit?.createdAt)?.toDateString() === date.toDateString() ? "today" : "different day"
+  // useEffect(() => {
+  //   const whichDay = new Date(habit?.createdAt)?.toDateString() === date.toDateString() ? "today" : "different day"
 
-    console.log(whichDay)
+  //   console.log(whichDay)
 
-    if (whichDay === "different day") {
-      // if its a different day we need to reset steps to empty array or fetch steps for that day if we have a history of steps for each day
-      const todaySteps = habit.steps.map(step => {
-        return {
-          ...step,
-          completed: false,
-          // time: new Date(date.getTime() + Math.floor(Math.random() * (12 * 60 * 60 * 1000))).toISOString() // set random time for each step on that day to be within that day
-        }
-      })
-      setSteps(todaySteps)
-      return
-    }
-    else {
-      setSteps(habit.steps)
-    }
-  }, [date])
+  //   if (whichDay === "different day") {
+  //     // if its a different day we need to reset steps to empty array or fetch steps for that day if we have a history of steps for each day
+  //     const todaySteps = habit.steps.map(step => {
+  //       return {
+  //         ...step,
+  //         completed: false,
+  //         // time: new Date(date.getTime() + Math.floor(Math.random() * (12 * 60 * 60 * 1000))).toISOString() // set random time for each step on that day to be within that day
+  //       }
+  //     })
+  //     setSteps(todaySteps)
+  //     return
+  //   }
+  //   else {
+  //     setSteps(habit.steps)
+  //   }
+  // }, [date])
 
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
