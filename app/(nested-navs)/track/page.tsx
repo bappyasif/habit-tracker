@@ -203,6 +203,19 @@ export default function TrackPage() {
   //   }
   // }, [date])
 
+  const {dailyLogs} = state
+
+  useEffect(() => {
+    console.log(dailyLogs, "daily logs from state: track page")
+    const todaty= date.toDateString()
+    const findisTodayLogFound = dailyLogs.find((dlog) => {
+      const logDate = new Date(dlog.logs[0]?.date).toDateString()
+      return logDate === todaty
+    })
+    console.log(findisTodayLogFound, "is today log found")
+
+  }, [date])
+
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
