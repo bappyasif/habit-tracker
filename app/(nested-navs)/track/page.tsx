@@ -67,7 +67,7 @@ export default function TrackPage() {
     // as track view gets updated during updates tracking logs on view but gets discarded on dashboard as it fetches data from server for all habits and habits steps or not updated but rather we are keeping daily log stored in another table called daily_traking
     //  so i guess we need to fetch data from there for updating dashboard data to match daily tracking
 
-    
+
     // dispatch({
     //   type: "ADD_DAILY_TRACKING_LOG",
     //   payload: {
@@ -203,16 +203,153 @@ export default function TrackPage() {
   //   }
   // }, [date])
 
-  const {dailyLogs} = state
+  const { dailyLogs } = state
+
+  // this is functioning correctly as expected
+  // useEffect(() => {
+  //   console.log(dailyLogs, "daily logs from state: track page")
+  //   const today= date.toDateString()
+  //   // const findisTodayLogFound = dailyLogs.find((dlog) => {
+  //   //   const logDate = new Date(dlog.logs[0]?.date).toDateString()
+  //   //   console.log(logDate, "log date", today, "today date")
+  //   //   return logDate === today
+  //   // })
+
+  //   const findisTodayLogFound = dailyLogs.find((dlog) => {
+  //     const findDate = dlog.logs.find(entry => {
+  //       const logDate = new Date(entry.date).toDateString()
+  //       console.log(logDate, "log date", today, "today date")
+  //       return logDate === today
+  //     })
+  //     console.log(findDate, "find date")
+
+  //     if(findDate) {
+  //       const tempSteps = steps.map(step => {
+  //         // console.log(step.id.toString(), "step id", findDate.id?.findIndex(v => v== step.id), "find date id", step.id.toString() === findDate.id)
+
+  //         const sid = findDate.ids?.findIndex(v => v== step.id)
+
+  //         // if(sid !== -1) {
+  //         //   return {
+  //         //     ...step,
+  //         //     completed: true
+  //         //   }
+  //         // }
+  //         // if(step.id.toString() === findDate.id) {
+  //         //   return {
+  //         //     ...step,
+  //         //     completed: true
+  //         //   }
+  //         // }
+  //         return {
+  //           ...step,
+  //           completed: sid !== -1 ? true : false
+  //         }
+  //         // return step
+  //       })
+  //       setSteps(tempSteps)
+  //     }
+  //     return findDate
+  //   })
+
+  //   if(!findisTodayLogFound) {
+  //     const todaySteps = habit.steps.map(step => {
+  //       return {
+  //         ...step,
+  //         completed: false,
+  //         // time: new Date(date.getTime() + Math.floor(Math.random() * (12 * 60 * 60 * 1000))).toISOString() // set random time for each step on that day to be within that day
+  //       }
+  //     })
+  //     setSteps(todaySteps)
+  //   }
+
+  //   console.log(findisTodayLogFound, "is today log found", steps)
+
+  // }, [date])
+
+  // this is functioning but going to try something different to make it better
+  // useEffect(() => {
+  //   const today= date.toDateString()
+
+  //   const findisTodayLogFound = dailyLogs.find((dlog) => {
+  //     const findDate = dlog.logs.find(entry => {
+  //       const logDate = new Date(entry.date).toDateString()
+  //       return logDate === today
+  //     })
+
+  //     if(findDate) {
+  //       const tempSteps = steps.map(step => {
+  //         const sid = findDate.ids?.findIndex(v => v== step.id)
+
+  //         return {
+  //           ...step,
+  //           completed: sid !== -1 ? true : step.completed
+  //         }
+  //       })
+  //       setSteps(tempSteps)
+  //     }
+  //     return findDate
+  //   })
+
+  //   if(!findisTodayLogFound) {
+  //     const todaySteps = habit.steps.map(step => {
+  //       return {
+  //         ...step,
+  //         completed: false,
+  //       }
+  //     })
+  //     setSteps(todaySteps)
+  //   }
+
+  //   console.log(findisTodayLogFound, "is today log found", steps)
+
+  // }, [date])
+
+  const updateSteps = (ids: (number | string)[]) => {
+    const tempSteps = steps.map(step => {
+      const sid = ids?.findIndex(v => v == step.id)
+
+      return {
+        ...step,
+        completed: sid !== -1 ? true : step.completed
+      }
+    })
+
+    setSteps(tempSteps)
+  }
+
+  const resetSteps = () => {
+    const todaySteps = habit.steps.map(step => {
+      return {
+        ...step,
+        completed: false,
+      }
+    })
+    setSteps(todaySteps)
+  }
 
   useEffect(() => {
-    console.log(dailyLogs, "daily logs from state: track page")
-    const todaty= date.toDateString()
-    const findisTodayLogFound = dailyLogs.find((dlog) => {
-      const logDate = new Date(dlog.logs[0]?.date).toDateString()
-      return logDate === todaty
+    const today = date.toDateString()
+
+    let findDate = undefined
+
+    dailyLogs.find((dlog) => {
+      findDate = dlog.logs.find(entry => {
+        const logDate = new Date(entry.date).toDateString()
+        return logDate === today
+      })
+
+      if (findDate) {
+        updateSteps(findDate.ids)
+      }
+      return findDate
     })
-    console.log(findisTodayLogFound, "is today log found")
+
+    if (!findDate) {
+      resetSteps()
+    }
+
+    console.log(findDate, "is today log found", steps)
 
   }, [date])
 

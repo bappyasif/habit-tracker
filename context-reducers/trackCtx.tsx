@@ -70,7 +70,7 @@ export type initialStateTypes = {
     dailyLogs: {
         habitId: number | string,
         logs: {
-            id: string,
+            ids: string[],
             date: Date,
             // measurement: number,
             notes: string
@@ -222,7 +222,8 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                         return {
                             ...log,
                             logs: [...log.logs, ...action.payload.map((entry: any) => ({
-                                id: entry.log.map((l: any) => l.id).join("-") + "-" + entry.dateStamp, // creating a unique id for each log entry by combining habitId, dateStamp and log ids to avoid duplicates in case of multiple logs for same habit on same day
+                                ids: entry.log.map((l:any) => l.toString()),
+                                // id: entry.log.map((l: any) => l.id).join("-") + "-" + entry.dateStamp, // creating a unique id for each log entry by combining habitId, dateStamp and log ids to avoid duplicates in case of multiple logs for same habit on same day
                                 date: entry.dateStamp,
                                 // measurement: entry.log.map((l: any) => l.measurement).join(", "), // combining measurements of all logs for that day into a single string to display in daily timeline
                                 notes: entry.notes
@@ -233,7 +234,8 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                 }) : [{
                     habitId: action.payload[0].habitId,
                     logs: action.payload.map((entry: any) => ({
-                        id: entry.log.map((l: any) => l.id).join("-") + "-" + entry.dateStamp, // creating a unique id for each log entry by combining habitId, dateStamp and log ids to avoid duplicates in case of multiple logs for same habit on same day
+                        ids: entry.log.map((l:any) => l.toString()),
+                        // id: entry.log.map((l: any) => l.id).join("-") + "-" + entry.dateStamp, // creating a unique id for each log entry by combining habitId, dateStamp and log ids to avoid duplicates in case of multiple logs for same habit on same day
                         date: entry.dateStamp,
                         // measurement: entry.log.map((l: any) => l.measurement).join(", "), // combining measurements of all logs for that day into a single string to display in daily timeline
                         notes: entry.notes
