@@ -5,6 +5,7 @@ import { Button } from "../../../../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card"
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
+import { useToUpdateHabitStepsCompletion } from "../_hooks/useToUpdateHabitStepsCompletion"
 
 const weekData = [
   { day: "Mon", completion: 75 },
@@ -38,7 +39,9 @@ export function DashboardTabs(
 
   const { habits } = state
 
-  const currentHabit = habits.find((h) => h?.id == selectedHabitId) || habits[0]
+  // const currentHabit = habits.find((h) => h?.id == selectedHabitId) || habits[0]
+
+  const currentHabit = useToUpdateHabitStepsCompletion().updatedHabit || habits[0]
 
   return (
     <Card>

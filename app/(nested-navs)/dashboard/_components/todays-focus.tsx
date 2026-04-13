@@ -4,12 +4,14 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { CheckCircle2 } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
+import { useToUpdateHabitStepsCompletion } from "../_hooks/useToUpdateHabitStepsCompletion"
 
 export const TodaysFocus = ({selectedHabitId}: {selectedHabitId: string}) => {
     const {state} = useTrackCtx()
     const {habits} = state
 
-    const currentHabit = habits.find((h) => h?.id == selectedHabitId) || habits[0]
+    // const currentHabit = habits.find((h) => h?.id == selectedHabitId) || habits[0]
+    const currentHabit = useToUpdateHabitStepsCompletion().updatedHabit || habits[0]
     
     return (
         <Card className="border-2 border-primary/20">
