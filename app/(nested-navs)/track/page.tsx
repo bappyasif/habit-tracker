@@ -9,7 +9,7 @@ import { LogHistory } from "@/app/(nested-navs)/track/_components/log-history"
 import { Save } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { mockLogs } from "@/lib/mock-data"
-import { createHabitDailyTimeline, createHabitWeeklyTimeline } from "@/server-calls/habits"
+import { createHabitDailyTimeline, createHabitWeeklyTimeline, updateHabitDailyTimeline } from "@/server-calls/habits"
 
 export default function TrackPage() {
   const { state, dispatch } = useTrackCtx()
@@ -120,52 +120,100 @@ export default function TrackPage() {
       payload: payloadData
     })
 
-    // save to db too
+    // checking if this habit id and step id is found on dailylogs and if found then update the steps for that log with the new steps from this tracking page and if not found then add a new log for that habit id with the steps from this tracking page
+    // const checkIfHabitStepFoundInDailyLogs = state.dailyLogs.find(dlog => dlog.habitId === habit.id)?.logs.find(log => new Date(log.date).toDateString() === date.toDateString())
+
+    const checkIfHabitStepFoundInDailyLogs = dailyLogs.find((dlog) => {
+      const findDate = dlog.logs.find(entry => {
+        const logDate = new Date(entry.date).toDateString()
+        return logDate === date.toDateString()
+      })
+
+      if (findDate) {
+        updateSteps(findDate.ids)
+      }
+      return findDate
+    })
+
+    console.log(checkIfHabitStepFoundInDailyLogs, "checkIfHabitStepFoundInDailyLogs")
+
     const completedSteps = habit.steps.map(step => step.completed).filter(step => step)
     const totalSteps = habit.steps
     const percentile = Math.round((completedSteps.length / totalSteps.length) * 100)
 
-    const dbrq = {
-      habitId: habit.id,
-      week: {
-        weekStart: new Date(date.getTime() - (date.getDay() - 1) * 24 * 60 * 60 * 1000),
-        weekEnd: new Date(date.getTime() + (6 - date.getDay()) * 24 * 60 * 60 * 1000),
-        totalCompleted: completedSteps.length,
-        // totalSteps: totalSteps.length * habit.duration,habit.steps.map(step => step.completed).filter(step => step)
+    if (checkIfHabitStepFoundInDailyLogs) {
+      console.log("found the habit step log for today in daily logs, now updating the steps for that log with the new steps from tracking page")
+      // updateHabitDailyTimeline()
+      // saveDailyTrackingTodb()
+      const tt = {
+        habitId: habit.id.toString(),
+        dateStamp: date,
+        // dateStamp: date.toDateString(),
         totalSteps: totalSteps.length,
-        percentile: percentile
+        // percentile: percentile,
+        steps: habit.steps.map(step => ({
+          ...step,
+          id: step.id.toString(),
+          note: "None",
+        })),
+        completedSteps: habit.steps.filter(step => step.completed).map(step => ({
+          ...step,
+          id: step.id.toString(),
+          note: "None",
+        })),
       }
+
+      updateHabitDailyTimeline(tt).then((data) => {
+        console.log(data, "response from updating daily timeline data for daily tracking")
+      })
+    } else {
+      // save to db too
+      // const completedSteps = habit.steps.map(step => step.completed).filter(step => step)
+      // const totalSteps = habit.steps
+      // const percentile = Math.round((completedSteps.length / totalSteps.length) * 100)
+
+      const dbrq = {
+        habitId: habit.id,
+        week: {
+          weekStart: new Date(date.getTime() - (date.getDay() - 1) * 24 * 60 * 60 * 1000),
+          weekEnd: new Date(date.getTime() + (6 - date.getDay()) * 24 * 60 * 60 * 1000),
+          totalCompleted: completedSteps.length,
+          // totalSteps: totalSteps.length * habit.duration,habit.steps.map(step => step.completed).filter(step => step)
+          totalSteps: totalSteps.length,
+          percentile: percentile
+        }
+      }
+
+      // saveTodb(dbrq)
+      saveWeeklyTrackingTodb(dbrq)
+
+      // save to db for daily tracking as well
+      saveDailyTrackingTodb({
+        habitId: habit.id.toString(),
+        dateStamp: date,
+        // dateStamp: date.toDateString(),
+        totalSteps: totalSteps.length,
+        // percentile: percentile,
+        steps: habit.steps.map(step => ({
+          ...step,
+          id: step.id.toString(),
+          note: "None",
+        })),
+        completedSteps: habit.steps.filter(step => step.completed).map(step => ({
+          ...step,
+          id: step.id.toString(),
+          note: "None",
+        })),
+        // notes: "consider adding notes input in the UI for each day to log any specific notes for that day along with steps and measurement"
+
+        // data: {
+        //   // totalCompleted: completedSteps.length,
+        //   totalSteps: totalSteps.length,
+        //   percentile: percentile, 
+        //   completedSteps: habit.steps.filter(step => step.completed)
+        // }
+      })
     }
-
-    // saveTodb(dbrq)
-    saveWeeklyTrackingTodb(dbrq)
-
-    // save to db for daily tracking as well
-    saveDailyTrackingTodb({
-      habitId: habit.id.toString(),
-      dateStamp: date,
-      // dateStamp: date.toDateString(),
-      totalSteps: totalSteps.length,
-      // percentile: percentile,
-      steps: habit.steps.map(step => ({
-        ...step,
-        id: step.id.toString(),
-        note: "None",
-      })),
-      completedSteps: habit.steps.filter(step => step.completed).map(step => ({
-        ...step,
-        id: step.id.toString(),
-        note: "None",
-      })),
-      // notes: "consider adding notes input in the UI for each day to log any specific notes for that day along with steps and measurement"
-
-      // data: {
-      //   // totalCompleted: completedSteps.length,
-      //   totalSteps: totalSteps.length,
-      //   percentile: percentile, 
-      //   completedSteps: habit.steps.filter(step => step.completed)
-      // }
-    })
 
     // Show success message
     alert("Log saved successfully!")

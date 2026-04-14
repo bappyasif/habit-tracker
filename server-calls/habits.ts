@@ -79,3 +79,37 @@ export const getHabitDailyTimeline = async (habitId: string) => {
     }
     return res.json()
 }
+
+export const updateHabitDailyTimeline = async (habit: {
+    habitId: string;
+    dateStamp: Date;
+    totalSteps: number;
+    steps: {
+        id: string;
+        note: string;
+        title: string;
+        time: string;
+        completed: boolean;
+    }[];
+    completedSteps: {
+        id: string;
+        note: string;
+        title: string;
+        time: string;
+        completed: boolean;
+    }[];
+}) => {
+    console.log("Updating habit daily timeline with data:", habit)
+    const res = await fetch("/api/habits/timeline", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ ...habit })
+    })
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.message || "Failed to update habit daily log timeline")
+    }
+    return res.json()
+}
