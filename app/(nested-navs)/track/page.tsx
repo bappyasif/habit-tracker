@@ -10,6 +10,7 @@ import { Save } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { mockLogs } from "@/lib/mock-data"
 import { createHabitDailyTimeline, createHabitWeeklyTimeline, updateHabitDailyTimeline } from "@/server-calls/habits"
+import { useToFetchHabitDailyTimeline } from "../dashboard/_hooks/fetchHabitDailyTimeline"
 
 export default function TrackPage() {
   const { state, dispatch } = useTrackCtx()
@@ -55,6 +56,7 @@ export default function TrackPage() {
     //   console.error("Failed to save data")
     // }
   }
+  
   const saveWeeklyTrackingTodb = async (data: any) => {
     const response = await createHabitWeeklyTimeline(data)
     console.log(response, "response from saving timeline data for weekly tracking")
@@ -165,6 +167,14 @@ export default function TrackPage() {
 
       updateHabitDailyTimeline(tt).then((data) => {
         console.log(data, "response from updating daily timeline data for daily tracking")
+        // dispatch({
+        //   type: "TOGGLE_DAILY_TRACKING_LOG",
+        //   payload: {
+        //     habitId: habit.id,
+        //     date: date,
+        //     ids: tt.steps.map(step => step.id)
+        //   }
+        // })
       })
     } else {
       // save to db too
@@ -387,8 +397,10 @@ export default function TrackPage() {
         return logDate === today
       })
 
-      if (findDate) {
+      if (findDate?.ids?.length) {
         updateSteps(findDate.ids)
+      } else {
+        resetSteps()
       }
       return findDate
     })
