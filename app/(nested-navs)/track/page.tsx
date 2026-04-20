@@ -11,12 +11,19 @@ import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { mockLogs } from "@/lib/mock-data"
 import { createHabitDailyTimeline, createHabitWeeklyTimeline, updateHabitDailyTimeline } from "@/server-calls/habits"
 import { useToFetchHabitDailyTimeline } from "../dashboard/_hooks/fetchHabitDailyTimeline"
+import { da } from "date-fns/locale"
 
 export default function TrackPage() {
   const { state, dispatch } = useTrackCtx()
   // const habit = state.habits[state.habitViewing === -1 ? 0 : state.habitViewing - 1]
 
-  const habit = state.habits.find((habit) => Number(habit.id) == state.habitViewing) ?? state.habits[0]
+  // const habit = state.habits.find((habit) => Number(habit.id) == state.habitViewing) ?? state.habits[0]
+
+  const habit = state.habits.find((habit) => Number(habit.id) == state.habitViewing)
+
+  if(!habit) {
+    return <div>Loading...</div>
+  }
 
   console.log(habit, "habit for tracking page")
 
@@ -165,14 +172,34 @@ export default function TrackPage() {
         })),
       }
 
-      updateHabitDailyTimeline(tt).then((data) => {
-        console.log(data, "response from updating daily timeline data for daily tracking")
+      updateHabitDailyTimeline(tt).then((resp) => {
+        console.log(resp, "response from updating daily timeline data for daily tracking")
+        const dataUpdated = resp?.data?.entry?.filter((item: any) => item.habit_id == habit.id && new Date(item.date_stamp).toDateString() == date.toDateString())?.[0] || null
+
+        // console.log(dataUpdated, "dataUpdated?!", resp.entry, resp?.data?.entry)
+
+        if(dataUpdated) {
+          console.log("daily timeline data updated successfully for daily tracking, now updating the state with the new steps from tracking page", dataUpdated)
+
+          dispatch({
+          type: "TOGGLE_DAILY_TRACKING_LOG",
+          payload: {
+            habitId: habit.id,
+            date: date,
+            // ids: data?.completed_steps_ids || []
+            // ids: habit.steps.filter(step => step.completed).map(step => step.id.toString()) || []
+            ids: dataUpdated?.completed_steps_ids || []
+          }
+        })
+        }
+
         // dispatch({
         //   type: "TOGGLE_DAILY_TRACKING_LOG",
         //   payload: {
         //     habitId: habit.id,
         //     date: date,
-        //     ids: tt.steps.map(step => step.id)
+        //     // ids: data?.completed_steps_ids || []
+        //     ids: habit.steps.filter(step => step.completed).map(step => step.id.toString()) || []
         //   }
         // })
       })
@@ -411,7 +438,7 @@ export default function TrackPage() {
 
     console.log(findDate, "is today log found", steps)
 
-  }, [date])
+  }, [date, dailyLogs])
 
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

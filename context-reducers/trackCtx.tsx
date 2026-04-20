@@ -212,6 +212,32 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
         //         })
         //     }
 
+        case "TOGGLE_DAILY_TRACKING_LOG":
+            console.log(action.payload, "TOGGLE_DAILY_TRACKING_LOG")
+            return {
+                ...state,
+                dailyLogs: state?.dailyLogs.map((log) => {
+                    if (log.habitId == action.payload.habitId) {
+                        return {
+                            ...log,
+                            logs: log.logs.map((entry) => {
+                                // console.log(entry, "entry in daily logs for habit")
+                                if (new Date(entry.date).toDateString() == new Date(action.payload.date).toDateString()) {
+                                    console.log(log.habitId, "comparing with payload date", action.payload.date, action.payload.ids)
+                                    return {
+                                        ...entry,
+                                        ids: action.payload.ids,
+                                        // ids: entry.ids.includes(action.payload.stepId) ? entry.ids.filter((id) => id !== action.payload.stepId) : [...entry.ids, action.payload.stepId]
+                                    }
+                                }
+                                return entry
+                            })
+                        }
+                    }
+                    return log
+                })
+            }
+
         case "UPDATE_HABIT_DAILY_TIMELINE":
             console.log(action.payload, "UPDATE_HABIT_DAILY_TIMELINE")
             // action.payload is an array so when initially updating this we need to format this accordingly which will have required data type for dailyLogs

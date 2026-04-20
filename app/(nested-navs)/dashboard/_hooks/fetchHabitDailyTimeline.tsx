@@ -9,7 +9,7 @@ export const useToFetchHabitDailyTimeline = async () => {
     const fetchTimeline = async () => {
         if (!habitId) return
         const res = await getHabitDailyTimeline(habitId)
-        console.log(res, "fetched habit daily timeline")
+        // console.log(res, "fetched habit daily timeline")
         if(res?.data?.daily_tracking_timeline) {
             const modded = res.data.daily_tracking_timeline.map((entry: any) => ({
                 dateStamp: entry.date_stamp,
@@ -18,7 +18,7 @@ export const useToFetchHabitDailyTimeline = async () => {
                 habitId: habitId
             }))
 
-            console.log(modded, "modded daily timeline data")
+            // console.log(modded, "modded daily timeline data")
 
             dispatch({ type: "UPDATE_HABIT_DAILY_TIMELINE", payload: modded })
             // dispatch({ type: "UPDATE_HABIT_DAILY_TIMELINE", payload: {
