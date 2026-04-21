@@ -22,7 +22,8 @@ export const mockCalendarHeatmapDataWithValues = () => {
     const currentMonth = new Date()
     const heatmapData = Array.from({ length: 30 }, (_, i) => ({
         date: new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i + 1),
-        value: Math.floor(Math.random() * 100),
+        // value: Math.floor(Math.random() * 100),
+        value: 0
     }))
 
     return {heatmapData}
