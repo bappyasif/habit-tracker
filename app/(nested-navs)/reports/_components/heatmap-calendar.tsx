@@ -14,11 +14,11 @@ export function HeatmapCalendar() {
 
   console.log("Daily Data:", dailyData)
   console.log("Days", days)
-  const logEntries = dailyData.map(log =>{
-    console.log("Log:", log, "test".repeat(log.ids.length), new Date(log.date).toLocaleDateString().repeat(log.ids.length))
-    // return new Date(log.date).toLocaleDateString().repeat(log.ids.length)
-    return log.date.toString().repeat(log.ids.length)
-  })
+  // const logEntries = dailyData.map(log =>{
+  //   console.log("Log:", log, "test".repeat(log.ids.length), new Date(log.date).toLocaleDateString().repeat(log.ids.length))
+  //   // return new Date(log.date).toLocaleDateString().repeat(log.ids.length)
+  //   return log.date.toString().repeat(log.ids.length)
+  // })
 
   const mappedDays = days.map((day) => {
     const logForDay = dailyData.find(log => new Date(log.date).toDateString() === day?.toDateString())
@@ -56,7 +56,8 @@ export function HeatmapCalendar() {
         if (logForDay) {
           return {
             ...day,
-            value: logForDay.ids.length * 100 // we need to repurpose value to correctly convert these into percentile value, by accessing total steps and completed steps, here we only have completed steps
+            value: logForDay.percentile
+            // value: logForDay.ids.length * 100 // we need to repurpose value to correctly convert these into percentile value, by accessing total steps and completed steps, here we only have completed steps
             // value: 33
           }
         }
@@ -84,12 +85,28 @@ export function HeatmapCalendar() {
 
     console.log("Date:", date, "Value:", value, "MonthData:", monthData, "DayData:", dayData, state.habitInsights, date.getMonth(), data)
 
-    if (value === 0) return "bg-muted/20"
+    if (value === -1) return "bg-muted/20"
+    // if (value < 33) return "bg-primary/30"
+    // if (value < 66) return "bg-primary/60"
+    if (value === 100) return "bg-primary/80"
+
+    if (value === 0) return "bg-destructive/20"
+
     if (value < 33) return "bg-primary/30"
     if (value < 66) return "bg-primary/60"
+    if (value < 100) return "bg-primary/80"
 
     return "bg-primary"
   }
+
+  const getAdditionalTitleInformation = (date: Date | null) => {
+      const logForDay = dailyData.find(log => new Date(log.date).toDateString() === date?.toDateString())
+      console.log("Log For Day:", logForDay)
+      if (logForDay) {
+        return logForDay.percentile + "%"
+      }
+      return -1
+    }
 
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
@@ -119,7 +136,7 @@ export function HeatmapCalendar() {
                 // className={`aspect-square rounded flex items-center justify-center text-xs font-semibold transition-colors ${getIntensity(date?.toDateString() ? new Date(date.toDateString()) : null)}`}
                 className={`aspect-square rounded flex items-center justify-center text-xs font-semibold transition-colors ${getIntensity(date)}`}
                 // title={date ? date.toDateString() : ""}
-                title={date ? date.toLocaleDateString() : ""}
+                title={date ? `${date.toDateString()} ${getAdditionalTitleInformation(date) !== -1 ? `: ${getAdditionalTitleInformation(date)} Completed`: " " }` : ""}
               >
                 {date?.getDate()}
                 {/* {date ? new Date(date).getDate() : date} */}

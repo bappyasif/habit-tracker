@@ -188,7 +188,9 @@ export default function TrackPage() {
             date: date,
             // ids: data?.completed_steps_ids || []
             // ids: habit.steps.filter(step => step.completed).map(step => step.id.toString()) || []
-            ids: dataUpdated?.completed_steps_ids || []
+            ids: dataUpdated?.completed_steps_ids || [],
+            totalSteps: totalSteps.length,
+            percentile: percentile
           }
         })
         }

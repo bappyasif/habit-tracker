@@ -73,7 +73,9 @@ export type initialStateTypes = {
             ids: string[],
             date: Date,
             // measurement: number,
-            notes: string
+            notes: string,
+            totalSteps: number,
+            percentile: number, // 0-100 percentage
         }[]
     }[]
 }
@@ -227,7 +229,9 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                                     return {
                                         ...entry,
                                         ids: action.payload.ids,
-                                        // ids: entry.ids.includes(action.payload.stepId) ? entry.ids.filter((id) => id !== action.payload.stepId) : [...entry.ids, action.payload.stepId]
+                                        // ids: entry.ids.includes(action.payload.stepId) ? entry.ids.filter((id) => id !== action.payload.stepId) : [...entry.ids, action.payload.stepId],
+                                        totalSteps: action.payload.totalSteps,
+                                        percentile: action.payload.percentile
                                     }
                                 }
                                 return entry
@@ -252,7 +256,9 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                                 // id: entry.log.map((l: any) => l.id).join("-") + "-" + entry.dateStamp, // creating a unique id for each log entry by combining habitId, dateStamp and log ids to avoid duplicates in case of multiple logs for same habit on same day
                                 date: entry.dateStamp,
                                 // measurement: entry.log.map((l: any) => l.measurement).join(", "), // combining measurements of all logs for that day into a single string to display in daily timeline
-                                notes: entry.notes
+                                notes: entry.notes,
+                                totalSteps: entry.totalSteps,
+                                percentile: entry.percentile
                             }))]
                         }
                     }
@@ -264,7 +270,9 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                         // id: entry.log.map((l: any) => l.id).join("-") + "-" + entry.dateStamp, // creating a unique id for each log entry by combining habitId, dateStamp and log ids to avoid duplicates in case of multiple logs for same habit on same day
                         date: entry.dateStamp,
                         // measurement: entry.log.map((l: any) => l.measurement).join(", "), // combining measurements of all logs for that day into a single string to display in daily timeline
-                        notes: entry.notes
+                        notes: entry.notes,
+                        totalSteps: entry.totalSteps,
+                        percentile: entry.percentile
                     }))
                 }]
             }
