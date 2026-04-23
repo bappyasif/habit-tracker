@@ -40,18 +40,9 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
   const { state: trackState, dispatch: trackDispatch } = useTrackCtx()
 
-  // const [tempHabit, setTempHabit] = useState(trackState.habits[trackState.habitViewing - 1])
-  // const [tempHabit, setTempHabit] = useState(trackState.habits[trackState.habitViewing])
-
   const habit = trackState.habits.find((habit) => Number(habit.id) === trackState.habitViewing) ?? trackState.habits[0]
 
   const [tempHabit, setTempHabit] = useState<TrackTypes>(habit)
-
-  // useEffect(() => {
-  //   setTempHabit(tempHabit)
-  // }, [tempHabit])
-
-  console.log(tempHabit, "temp habit", trackState.habits, "all habits", trackState.habitViewing, "habit viewing")
 
   const [tabs, setTabs] = useState<{
     label: string;
@@ -75,7 +66,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
   const handleAddStep = () => {
     const newStep: Step = {
-      // id: 's4',
       id: (habit.steps.length + 1).toString(),
       title: "New step",
       time: "06:00",
@@ -136,13 +126,11 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
         onSave(habitData)
       }
     }).catch(err => console.log(err))
-    // onSave(tempHabit)
   }
 
   const handleSave = () => {
     onClose()
     saveToDb(habit)
-    // onSave(tempHabit)
   }
 
   const handleUpdate = () => {
@@ -150,15 +138,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     updateHabit(habit)
     onClose()
   }
-
-  // const habit = trackState.habits[trackState.habitViewing - 1]
-  // const habit = trackState.habits[trackState.habitViewing]
-  // const habit = tempHabit
-
-  // if (!habit) {
-  //   return null
-  // }
-
 
   const checkDailyStepsExists = trackState.habitInsights?.find(insight => insight.habitId === trackState.habitViewing)?.daily
 
@@ -234,7 +213,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
             ) : stage === "edit" && habit ? (
               // Edit Stage
               <HabitEdit
-                // habit={tempHabit}
                 habit={habit}
                 handleAddStep={handleAddStep}
                 handleUpdateStep={handleUpdateStep}
@@ -259,7 +237,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                     [Cancel]
                   </Button>
                   <Button 
-                    // onClick={handleSave} 
                     onClick={stage === "edit" ? handleUpdate : handleSave}
                     className="flex-1"
                   >

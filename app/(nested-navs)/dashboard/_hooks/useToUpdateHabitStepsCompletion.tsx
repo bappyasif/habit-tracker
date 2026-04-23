@@ -56,8 +56,6 @@ export const useToUpdateHabitStepsCompletion = () => {
             resetSteps()
         }
 
-        console.log(findDate, "is today log found", steps)
-
     }, [date, dailyLogs])
 
     const updatedHabit = {

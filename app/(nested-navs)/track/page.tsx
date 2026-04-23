@@ -10,59 +10,23 @@ import { Save } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { mockLogs } from "@/lib/mock-data"
 import { createHabitDailyTimeline, createHabitWeeklyTimeline, updateHabitDailyTimeline } from "@/server-calls/habits"
-import { useToFetchHabitDailyTimeline } from "../dashboard/_hooks/fetchHabitDailyTimeline"
-import { da } from "date-fns/locale"
 
 export default function TrackPage() {
   const { state, dispatch } = useTrackCtx()
-  // const habit = state.habits[state.habitViewing === -1 ? 0 : state.habitViewing - 1]
-
-  // const habit = state.habits.find((habit) => Number(habit.id) == state.habitViewing) ?? state.habits[0]
-
+  
   const habit = state.habits.find((habit) => Number(habit.id) == state.habitViewing)
 
   if(!habit) {
     return <div>Loading...</div>
   }
 
-  console.log(habit, "habit for tracking page")
-
   const [date, setDate] = useState(new Date())
   const [measurementValue, setMeasurementValue] = useState(30)
   const [steps, setSteps] = useState(habit?.steps)
 
-  // const habitStepLogs = habit.steps.map((s) => ({ id: s.id, habitId: habit.id, date: new Date(s.time), measurement: measurements.metric === "minutes" ? Number(measurements.target) / 60 : Number(measurements.target), notes: s.title }))
-
   const [logs, setLogs] = useState(mockLogs)
-  // const [logs, setLogs] = useState(habitStepLogs)
 
   const [isSaving, setIsSaving] = useState(false)
-
-  const saveTodb = async (data: any) => {
-    // const response = await fetch("/api/habits/timeline", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(data),
-    // })
-
-    // weekly tracking
-    // const response = await createHabitWeeklyTimeline(data)
-    // console.log(response, "response from saving timeline data")
-
-    // daily tracking
-    const resp = await createHabitDailyTimeline(data)
-    console.log(resp, "response from saving daily timeline data")
-
-
-    // if (response.ok) {
-    //   const responseData = await response.json()
-    //   console.log("Data saved successfully", data, responseData)
-    // } else {
-    //   console.error("Failed to save data")
-    // }
-  }
   
   const saveWeeklyTrackingTodb = async (data: any) => {
     const response = await createHabitWeeklyTimeline(data)
@@ -72,23 +36,6 @@ export default function TrackPage() {
   const saveDailyTrackingTodb = async (data: any) => {
     const response = await createHabitDailyTimeline(data)
     console.log(response, "response from saving timeline data for daily tracking")
-
-    // as track view gets updated during updates tracking logs on view but gets discarded on dashboard as it fetches data from server for all habits and habits steps or not updated but rather we are keeping daily log stored in another table called daily_traking
-    //  so i guess we need to fetch data from there for updating dashboard data to match daily tracking
-
-
-    // dispatch({
-    //   type: "ADD_DAILY_TRACKING_LOG",
-    //   payload: {
-    //     habitId: habit.id,
-    //     log: response?.data?.entry?.steps || [{
-    //         id: Math.random().toString(),
-    //         date: new Date(Math.random().toString()),
-    //         measurement: Math.random().toString(),
-    //         notes: Math.random().toString()
-    //       }]
-    //   }
-    // })
   }
 
   const handleSaveLog = async () => {
@@ -129,9 +76,6 @@ export default function TrackPage() {
       payload: payloadData
     })
 
-    // checking if this habit id and step id is found on dailylogs and if found then update the steps for that log with the new steps from this tracking page and if not found then add a new log for that habit id with the steps from this tracking page
-    // const checkIfHabitStepFoundInDailyLogs = state.dailyLogs.find(dlog => dlog.habitId === habit.id)?.logs.find(log => new Date(log.date).toDateString() === date.toDateString())
-
     const checkIfHabitStepFoundInDailyLogs = dailyLogs.find((dlog) => {
       const findDate = dlog.logs.find(entry => {
         const logDate = new Date(entry.date).toDateString()
@@ -144,22 +88,15 @@ export default function TrackPage() {
       return findDate
     })
 
-    console.log(checkIfHabitStepFoundInDailyLogs, "checkIfHabitStepFoundInDailyLogs")
-
     const completedSteps = habit.steps.map(step => step.completed).filter(step => step)
     const totalSteps = habit.steps
     const percentile = Math.round((completedSteps.length / totalSteps.length) * 100)
 
     if (checkIfHabitStepFoundInDailyLogs) {
-      console.log("found the habit step log for today in daily logs, now updating the steps for that log with the new steps from tracking page")
-      // updateHabitDailyTimeline()
-      // saveDailyTrackingTodb()
       const tt = {
         habitId: habit.id.toString(),
         dateStamp: date,
-        // dateStamp: date.toDateString(),
         totalSteps: totalSteps.length,
-        // percentile: percentile,
         steps: habit.steps.map(step => ({
           ...step,
           id: step.id.toString(),
@@ -176,48 +113,27 @@ export default function TrackPage() {
         console.log(resp, "response from updating daily timeline data for daily tracking")
         const dataUpdated = resp?.data?.entry?.filter((item: any) => item.habit_id == habit.id && new Date(item.date_stamp).toDateString() == date.toDateString())?.[0] || null
 
-        // console.log(dataUpdated, "dataUpdated?!", resp.entry, resp?.data?.entry)
-
         if(dataUpdated) {
-          console.log("daily timeline data updated successfully for daily tracking, now updating the state with the new steps from tracking page", dataUpdated)
-
           dispatch({
           type: "TOGGLE_DAILY_TRACKING_LOG",
           payload: {
             habitId: habit.id,
             date: date,
-            // ids: data?.completed_steps_ids || []
-            // ids: habit.steps.filter(step => step.completed).map(step => step.id.toString()) || []
             ids: dataUpdated?.completed_steps_ids || [],
             totalSteps: totalSteps.length,
             percentile: percentile
           }
         })
         }
-
-        // dispatch({
-        //   type: "TOGGLE_DAILY_TRACKING_LOG",
-        //   payload: {
-        //     habitId: habit.id,
-        //     date: date,
-        //     // ids: data?.completed_steps_ids || []
-        //     ids: habit.steps.filter(step => step.completed).map(step => step.id.toString()) || []
-        //   }
-        // })
       })
     } else {
       // save to db too
-      // const completedSteps = habit.steps.map(step => step.completed).filter(step => step)
-      // const totalSteps = habit.steps
-      // const percentile = Math.round((completedSteps.length / totalSteps.length) * 100)
-
       const dbrq = {
         habitId: habit.id,
         week: {
           weekStart: new Date(date.getTime() - (date.getDay() - 1) * 24 * 60 * 60 * 1000),
           weekEnd: new Date(date.getTime() + (6 - date.getDay()) * 24 * 60 * 60 * 1000),
           totalCompleted: completedSteps.length,
-          // totalSteps: totalSteps.length * habit.duration,habit.steps.map(step => step.completed).filter(step => step)
           totalSteps: totalSteps.length,
           percentile: percentile
         }
@@ -230,9 +146,7 @@ export default function TrackPage() {
       saveDailyTrackingTodb({
         habitId: habit.id.toString(),
         dateStamp: date,
-        // dateStamp: date.toDateString(),
         totalSteps: totalSteps.length,
-        // percentile: percentile,
         steps: habit.steps.map(step => ({
           ...step,
           id: step.id.toString(),
@@ -244,13 +158,6 @@ export default function TrackPage() {
           note: "None",
         })),
         // notes: "consider adding notes input in the UI for each day to log any specific notes for that day along with steps and measurement"
-
-        // data: {
-        //   // totalCompleted: completedSteps.length,
-        //   totalSteps: totalSteps.length,
-        //   percentile: percentile, 
-        //   completedSteps: habit.steps.filter(step => step.completed)
-        // }
       })
     }
 
@@ -268,129 +175,7 @@ export default function TrackPage() {
     return <div>Loading...</div>
   }
 
-  // useEffect(() => {
-  //   const whichDay = new Date(habit?.createdAt)?.toDateString() === date.toDateString() ? "today" : "different day"
-
-  //   console.log(whichDay)
-
-  //   if (whichDay === "different day") {
-  //     // if its a different day we need to reset steps to empty array or fetch steps for that day if we have a history of steps for each day
-  //     const todaySteps = habit.steps.map(step => {
-  //       return {
-  //         ...step,
-  //         completed: false,
-  //         // time: new Date(date.getTime() + Math.floor(Math.random() * (12 * 60 * 60 * 1000))).toISOString() // set random time for each step on that day to be within that day
-  //       }
-  //     })
-  //     setSteps(todaySteps)
-  //     return
-  //   }
-  //   else {
-  //     setSteps(habit.steps)
-  //   }
-  // }, [date])
-
   const { dailyLogs } = state
-
-  // this is functioning correctly as expected
-  // useEffect(() => {
-  //   console.log(dailyLogs, "daily logs from state: track page")
-  //   const today= date.toDateString()
-  //   // const findisTodayLogFound = dailyLogs.find((dlog) => {
-  //   //   const logDate = new Date(dlog.logs[0]?.date).toDateString()
-  //   //   console.log(logDate, "log date", today, "today date")
-  //   //   return logDate === today
-  //   // })
-
-  //   const findisTodayLogFound = dailyLogs.find((dlog) => {
-  //     const findDate = dlog.logs.find(entry => {
-  //       const logDate = new Date(entry.date).toDateString()
-  //       console.log(logDate, "log date", today, "today date")
-  //       return logDate === today
-  //     })
-  //     console.log(findDate, "find date")
-
-  //     if(findDate) {
-  //       const tempSteps = steps.map(step => {
-  //         // console.log(step.id.toString(), "step id", findDate.id?.findIndex(v => v== step.id), "find date id", step.id.toString() === findDate.id)
-
-  //         const sid = findDate.ids?.findIndex(v => v== step.id)
-
-  //         // if(sid !== -1) {
-  //         //   return {
-  //         //     ...step,
-  //         //     completed: true
-  //         //   }
-  //         // }
-  //         // if(step.id.toString() === findDate.id) {
-  //         //   return {
-  //         //     ...step,
-  //         //     completed: true
-  //         //   }
-  //         // }
-  //         return {
-  //           ...step,
-  //           completed: sid !== -1 ? true : false
-  //         }
-  //         // return step
-  //       })
-  //       setSteps(tempSteps)
-  //     }
-  //     return findDate
-  //   })
-
-  //   if(!findisTodayLogFound) {
-  //     const todaySteps = habit.steps.map(step => {
-  //       return {
-  //         ...step,
-  //         completed: false,
-  //         // time: new Date(date.getTime() + Math.floor(Math.random() * (12 * 60 * 60 * 1000))).toISOString() // set random time for each step on that day to be within that day
-  //       }
-  //     })
-  //     setSteps(todaySteps)
-  //   }
-
-  //   console.log(findisTodayLogFound, "is today log found", steps)
-
-  // }, [date])
-
-  // this is functioning but going to try something different to make it better
-  // useEffect(() => {
-  //   const today= date.toDateString()
-
-  //   const findisTodayLogFound = dailyLogs.find((dlog) => {
-  //     const findDate = dlog.logs.find(entry => {
-  //       const logDate = new Date(entry.date).toDateString()
-  //       return logDate === today
-  //     })
-
-  //     if(findDate) {
-  //       const tempSteps = steps.map(step => {
-  //         const sid = findDate.ids?.findIndex(v => v== step.id)
-
-  //         return {
-  //           ...step,
-  //           completed: sid !== -1 ? true : step.completed
-  //         }
-  //       })
-  //       setSteps(tempSteps)
-  //     }
-  //     return findDate
-  //   })
-
-  //   if(!findisTodayLogFound) {
-  //     const todaySteps = habit.steps.map(step => {
-  //       return {
-  //         ...step,
-  //         completed: false,
-  //       }
-  //     })
-  //     setSteps(todaySteps)
-  //   }
-
-  //   console.log(findisTodayLogFound, "is today log found", steps)
-
-  // }, [date])
 
   const updateSteps = (ids: (number | string)[]) => {
     const tempSteps = steps.map(step => {
@@ -437,8 +222,6 @@ export default function TrackPage() {
     if (!findDate) {
       resetSteps()
     }
-
-    console.log(findDate, "is today log found", steps)
 
   }, [date, dailyLogs])
 

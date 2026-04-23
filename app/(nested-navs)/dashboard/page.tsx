@@ -20,20 +20,11 @@ export default function DashboardPage() {
 
   const { dispatch, state } = useTrackCtx()
 
-  // useEffect(() => {
-  //   setSelectedHabitId(state.habitViewing.toString())
-  // }, [state.habitViewing])
-
   // fetching habits from server
   useToFetchHabits()
 
   // fetching habit daily timeline from server
   useToFetchHabitDailyTimeline()
-
-  // initializing habits with mock data
-  // useEffect(() => {
-  //   state.habits.length === 0 && dispatch({ type: "IINITIALIZE", payload: mockHabits })
-  // }, [])
 
   useEffect(() => {
     if (!selectedHabitId) return
@@ -42,15 +33,6 @@ export default function DashboardPage() {
       payload: Number(selectedHabitId)
     })
   }, [selectedHabitId, state.habits])
-
-  // const ih = state.habits.find(habit => Number(habit.id) === state.habitViewing)
-
-  // const [habit, setHabit] = useState<TrackTypes | undefined>()
-
-
-  // useEffect(() => {
-  //   setHabit(ih)
-  // }, [ih])
 
   const router = useRouter()
 
@@ -69,8 +51,6 @@ export default function DashboardPage() {
   const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
 
   if (!habit) return <WhenEmpty />
-
-  // console.log(habit, "habit for dashboard")
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -135,7 +115,6 @@ export default function DashboardPage() {
 
                     <div className="absolute right-1.5 bg-secondary min-w-1/4 h-9 flex gap-2 items-center justify-evenly text-primary rounded">
                       <Link
-                        // className="absolute right-1.5 bg-secondary w-1/2 h-9 rounded-full flex gap-2 items-center justify-center text-primary hover:bg-secondary transition-colors"
                         className="p-2 bg-secondary rounded-full flex gap-2 items-center justify-center text-primary hover:text-secondary hover:bg-primary transition-colors px-2.5"
                         href="/create-habit"
                         onClick={() => {
@@ -160,7 +139,6 @@ export default function DashboardPage() {
                               })
                               return
                             }
-                            // deleteHabitFromDb(habit.id)
                             setSelectedHabitId(fh.id)
                             dispatch({ type: "UPDATE_HABIT_VIEWING", payload: fh.id })
                             dispatch({ type: "DELETE_HABIT", payload: habit.id })
@@ -168,13 +146,10 @@ export default function DashboardPage() {
                             deleteHabitFromDb(habit.id)
                             dispatch({ type: "DELETE_HABIT", payload: habit.id })
                           }
-                          // deleteHabitFromDb(habit.id)
-                          // alert("Habit deleted")
                         }}
                         className="bg-secondary w-1/4 h-9 px-2.5 rounded-full flex gap-2 items-center justify-center text-primary hover:bg-destructive transition-colors"
                       >
                         <Trash className="w-4 h-4" />
-                        {/* <span>Delete</span> */}
                       </Button>
                     </div>
                   </div>
@@ -217,7 +192,6 @@ export default function DashboardPage() {
 const WhenEmpty = () => {
   return (
     <div
-      // className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col justify-between gap-4"
       className="flex flex-col min-w-3/4 gap-40"
     >
       <header

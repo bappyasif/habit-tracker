@@ -37,7 +37,6 @@ export const NewHabit = () => {
         createHabit(habitData).then(data => {
           console.log(data, "created habit")
         }).catch(err => console.log(err))
-        // onSave(tempHabit)
       }
 
     const handleSave = () => {
@@ -45,10 +44,6 @@ export const NewHabit = () => {
             alert("Please enter habit details correctly")
             return
         }
-
-        // console.log(habit, "habit save!!")
-
-        // saveToDb({...habit, id: (state.habits.length + 1).toString(), createdAt: new Date(), successDefinition: { enabled: false, percentage: 0.0 }, steps: [], currentStreak: 0, totalCompleted: 0})
 
         saveToDb({...habit, id: (state.habits.length + 1).toString()})
 

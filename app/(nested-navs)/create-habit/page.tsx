@@ -18,7 +18,6 @@ export default function CreateHabitPage() {
 
   const handleSave = (habit: any) => {
     handleClose()
-    // dispatch({type: "CREATE_HABIT", payload: habit})
     dispatch({ type: "UPDATE_HABIT", payload: habit })
   }
 

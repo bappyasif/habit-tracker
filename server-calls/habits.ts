@@ -99,7 +99,6 @@ export const updateHabitDailyTimeline = async (habit: {
         completed: boolean;
     }[];
 }) => {
-    // console.log("Updating habit daily timeline with data:", habit)
     const res = await fetch("/api/habits/timeline", {
         method: "PUT",
         headers: {

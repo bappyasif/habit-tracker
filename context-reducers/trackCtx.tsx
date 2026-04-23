@@ -198,24 +198,7 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
 
             }
 
-        // case "ADD_DAILY_TRACKING_LOG":
-        //     console.log(action.payload, "ADD_DAILY_TRACKING_LOG")
-        //     return {
-        //         ...state,
-        //         habits: state.habits.map((habit) => {
-        //             if (habit.id == action.payload.habitId) {
-        //                 console.log(action.payload.log, "action.payload.log")
-        //                 return {
-        //                     ...habit,
-        //                     steps: [...habit.steps, ...action.payload.log]
-        //                 }
-        //             }
-        //             return habit
-        //         })
-        //     }
-
         case "TOGGLE_DAILY_TRACKING_LOG":
-            console.log(action.payload, "TOGGLE_DAILY_TRACKING_LOG")
             return {
                 ...state,
                 dailyLogs: state?.dailyLogs.map((log) => {
@@ -223,13 +206,10 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                         return {
                             ...log,
                             logs: log.logs.map((entry) => {
-                                // console.log(entry, "entry in daily logs for habit")
                                 if (new Date(entry.date).toDateString() == new Date(action.payload.date).toDateString()) {
-                                    console.log(log.habitId, "comparing with payload date", action.payload.date, action.payload.ids)
                                     return {
                                         ...entry,
                                         ids: action.payload.ids,
-                                        // ids: entry.ids.includes(action.payload.stepId) ? entry.ids.filter((id) => id !== action.payload.stepId) : [...entry.ids, action.payload.stepId],
                                         totalSteps: action.payload.totalSteps,
                                         percentile: action.payload.percentile
                                     }
@@ -243,8 +223,6 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
             }
 
         case "UPDATE_HABIT_DAILY_TIMELINE":
-            console.log(action.payload, "UPDATE_HABIT_DAILY_TIMELINE")
-            // action.payload is an array so when initially updating this we need to format this accordingly which will have required data type for dailyLogs
             return {
                 ...state,
                 dailyLogs: state.dailyLogs.length > 0 ? state.dailyLogs.map((log) => {
@@ -253,9 +231,7 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                             ...log,
                             logs: [...log.logs, ...action.payload.map((entry: any) => ({
                                 ids: entry.log.map((l:any) => l.toString()),
-                                // id: entry.log.map((l: any) => l.id).join("-") + "-" + entry.dateStamp, // creating a unique id for each log entry by combining habitId, dateStamp and log ids to avoid duplicates in case of multiple logs for same habit on same day
                                 date: entry.dateStamp,
-                                // measurement: entry.log.map((l: any) => l.measurement).join(", "), // combining measurements of all logs for that day into a single string to display in daily timeline
                                 notes: entry.notes,
                                 totalSteps: entry.totalSteps,
                                 percentile: entry.percentile
@@ -267,77 +243,13 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                     habitId: action.payload[0].habitId,
                     logs: action.payload.map((entry: any) => ({
                         ids: entry.log.map((l:any) => l.toString()),
-                        // id: entry.log.map((l: any) => l.id).join("-") + "-" + entry.dateStamp, // creating a unique id for each log entry by combining habitId, dateStamp and log ids to avoid duplicates in case of multiple logs for same habit on same day
                         date: entry.dateStamp,
-                        // measurement: entry.log.map((l: any) => l.measurement).join(", "), // combining measurements of all logs for that day into a single string to display in daily timeline
                         notes: entry.notes,
                         totalSteps: entry.totalSteps,
                         percentile: entry.percentile
                     }))
                 }]
             }
-            // return {
-            //     ...state,
-            //     dailyLogs: state.dailyLogs.length > 0 ? state.dailyLogs.map((log) => {
-            //         if (log.habitId == action.payload.habitId) {
-            //             return {
-            //                 ...log,
-            //                 logs: [...log.logs, ...action.payload?.log.map((l: any) => {
-            //                     console.log(l, "daily log")
-            //                     return {
-            //                     id: l,
-            //                     date: action.payload.dateStamp,
-            //                     // measurement: l.measurement,
-            //                     notes: action.payload.notes
-            //                 }
-            //                 })]
-            //             }
-            //         }
-            //         return log
-            //     }) : 
-            //     // [{
-            //     //     ...action.payload,
-            //     // }]
-            //     // [{
-            //     //     habitId: action.payload.habitId,
-            //     //     logs: action.payload?.log?.map((l: any) => ({
-            //     //         id: l,
-            //     //         date: action.payload.dateStamp,
-            //     //         // measurement: l.measurement,
-            //     //         notes: action.payload.notes
-            //     //     }))
-            //     // }]
-            // }
-            // return {
-            //     ...state,
-            //     habits: state.habits.map((habit) => {
-            //         if (habit.id == action.payload.habitId) {
-            //             console.log(action.payload.log, "action.payload.log")
-            //             return {
-            //                 ...habit,
-            //                 steps: habit.steps.map(step => {
-            //                     // console.log(step.id, "step.id", action.payload.log, "action.payload.log", action.payload.log.includes(step.id), "does log include step id?", new Date(step.time).toLocaleDateString() == new Date(action.payload.dateStamp).toLocaleDateString(), new Date(step.time).toLocaleDateString(), new Date(action.payload.dateStamp).toLocaleDateString(), step, habit)
-
-            //                     if (action.payload.log.includes(step.id) && new Date(step.time).toLocaleDateString() == new Date(action.payload.dateStamp).toLocaleDateString()) {
-            //                         console.log(new Date(step.time).toLocaleDateString() == new Date(action.payload.dateStamp).toLocaleDateString(), "does step time match date stamp?", step, action.payload)
-            //                         // console.log("marking step as completed for step id", step.id, "date", step.time.toLocaleLowerCase(), "action.payload.dateStamp", action.payload.dateStamp, new Date(step.time).toLocaleDateString()== new Date(action.payload.dateStamp).toLocaleDateString(), "does step time match date stamp?")
-            //                         return {
-            //                             ...step,
-            //                             // completed: true // its also updating it for wrong dates somehow!!
-
-            //                             // understood pobvlem as step and saved dat on db is same as it should be so it matches but we need to differentiate between which day log are we viewing this data for
-
-            //                             //  so perhaps keeping daily log into a a different place would make more sense and simply update state by checking it from there for each view related to this.
-            //                         }
-            //                     }
-            //                     return step
-            //                 })
-            //             }
-            //         }
-            //         return habit
-            //     })
-
-            // }
 
         case "remove-from-habit-suggestions":
             return {

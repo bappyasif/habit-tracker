@@ -34,11 +34,8 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
     })
   }
 
-  // const router = useRouter()
-
   const handleOnAdjustPlan = () => {
     onAdjustPlan()
-    // router.push("/create-habit")
   }
 
   const insights = state.habitInsights?.find(insight => insight.habitId === state.habitViewing)?.insights

@@ -25,8 +25,6 @@ const monthData = [
 ]
 
 interface DashboardTabsProps {
-  // habitTitle: string
-  // currentStreak: number
   selectedHabitId: string
 }
 
@@ -38,8 +36,6 @@ export function DashboardTabs(
   const { state } = useTrackCtx()
 
   const { habits } = state
-
-  // const currentHabit = habits.find((h) => h?.id == selectedHabitId) || habits[0]
 
   const currentHabit = useToUpdateHabitStepsCompletion().updatedHabit || habits[0]
 
