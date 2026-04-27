@@ -16,6 +16,8 @@ export default function TrackPage() {
   
   const habit = state.habits.find((habit) => Number(habit.id) == state.habitViewing)
 
+  console.log(habit, "habit frpom track page", state.habits)
+
   if(!habit) {
     return <div>Loading...</div>
   }
@@ -205,7 +207,7 @@ export default function TrackPage() {
 
     let findDate = undefined
 
-    dailyLogs.find((dlog) => {
+    const checkIfHabitStepFoundInDailyLogs = dailyLogs.find((dlog) => {
       findDate = dlog.logs.find(entry => {
         const logDate = new Date(entry.date).toDateString()
         return logDate === today
@@ -218,6 +220,36 @@ export default function TrackPage() {
       }
       return findDate
     })
+
+    const getDateDailyLogs = checkIfHabitStepFoundInDailyLogs?.logs.find(entry => {
+      const logDate = new Date(entry.date).toDateString()
+      return logDate === today
+    })
+
+    // now we need to reset steps as it remains same for all days!! it needs to rerender when date changes, specifically steps ids are not changing and it doesnt really match with date wise rendered steps ids, either we need to reset or find a way to match it. 
+    // in reports page it correctly matches with steps ids so gotta be able to get similar behaviour here as well.
+
+    // NEW THOUGHT PROCESS
+    // FINDINGS:
+    /**
+     * we are correc tly fetching habit from server
+     * we are correctly fetching daily logs from server
+     * but for tracking page we are using same data from one date with rest of them to keep things simple reason why it is not correctly showiung actual step ionformation from server
+     * currently we are simply toggling steps ids based on it reciorded in dailylogs for that datestamp
+     * any update made on Habit is simply gets updated on server for first appeared datestamp found on its records.
+     */
+    // CONSIDERATION:
+    /**
+     * we would have to fetch habit steps only from server for that specific datestamp
+     * for that to happen we would have to first include datestamp in api reques and also have it accepted in server db model as well
+     * as our Habit remains same for all dates only our steps is changing for different dates in dashboard and tracking page, so we would have to fetch steps for that specific datestamp from server
+     * for updates we would have to update only that specific habit that matches its update datestamp for that habit in records.
+     * when updating tracking details we would have to fascilitate a differenrt route point to ensure its correct updates
+     * for example, currenytly our habit has changeable data in edit page where we can update title, description, measurements and steps, and when tracking each habit for different dates keeping rest of Habit data intact, so we would have to fetch only steps for that specific datestamp from server and record updates based on that datestamp. and in frontend we would have to update steps for that specific datestamp only by fetching steps from server for that datestamp
+     */
+
+
+    console.log(checkIfHabitStepFoundInDailyLogs, "checkIfHabitStepFoundInDailyLogs", getDateDailyLogs, "getDateDailyLogs", habit.steps, "habit.steps", state)
 
     if (!findDate) {
       resetSteps()
