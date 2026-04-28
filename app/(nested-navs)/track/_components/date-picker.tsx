@@ -5,11 +5,15 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 interface DatePickerProps {
   date: Date
-  onDateChange: (date: Date) => void
+  onDateChange: (date: Date) => void, 
+  habitCreatedAt: Date
 }
 
-export function DatePicker({ date, onDateChange }: DatePickerProps) {
+export function DatePicker({ date, onDateChange, habitCreatedAt }: DatePickerProps) {
   const handlePrevDay = () => {
+    // so that it doesnt go back earlier than habit createAt date
+    if (date.toDateString() == new Date(habitCreatedAt).toDateString()) return
+    // if (date.toDateString() === new Date().toDateString()) return
     const newDate = new Date(date)
     newDate.setDate(date.getDate() - 1)
     onDateChange(newDate)

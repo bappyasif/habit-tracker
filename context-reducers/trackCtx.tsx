@@ -14,6 +14,9 @@ export type Steps = {
     title: string;
     time: string;
     completed: boolean;
+    notes?: string;
+    photo?: string;
+    voiceNote?: string;
 }
 
 export type TrackTypes = {

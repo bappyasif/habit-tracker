@@ -152,12 +152,13 @@ export default function TrackPage() {
         steps: habit.steps.map(step => ({
           ...step,
           id: step.id.toString(),
-          note: "None",
+          note: step.notes || "None found",
         })),
         completedSteps: habit.steps.filter(step => step.completed).map(step => ({
           ...step,
           id: step.id.toString(),
-          note: "None",
+          note: step.notes || "None found",
+          // note: "None",
         })),
         // notes: "consider adding notes input in the UI for each day to log any specific notes for that day along with steps and measurement"
       })
@@ -248,6 +249,18 @@ export default function TrackPage() {
      * for example, currenytly our habit has changeable data in edit page where we can update title, description, measurements and steps, and when tracking each habit for different dates keeping rest of Habit data intact, so we would have to fetch only steps for that specific datestamp from server and record updates based on that datestamp. and in frontend we would have to update steps for that specific datestamp only by fetching steps from server for that datestamp
      */
 
+    /**
+     * UPDATED CONSIDERATION
+     * 
+     * ASSESSMENT:
+     * on another thought came to reaslize that Habit Steps are supposed to be same on each date as they supposed to be tracked similarly for each datestamp
+     * 
+     * now we have to make sure why is that "step id" changes after a few days for previous ones?!
+     * 
+     * DO CHECK THIS TOMORROW!!
+     * probably that happened becauyse of we delted a step within a habit and then added a new one  thus possibly creating a backlog of steps idds with removed steps from earlier!!
+     */
+
 
     console.log(checkIfHabitStepFoundInDailyLogs, "checkIfHabitStepFoundInDailyLogs", getDateDailyLogs, "getDateDailyLogs", habit.steps, "habit.steps", state)
 
@@ -265,7 +278,7 @@ export default function TrackPage() {
       </div>
 
       {/* Date Picker */}
-      <DatePicker date={date} onDateChange={setDate} />
+      <DatePicker date={date} onDateChange={setDate} habitCreatedAt={habit.createdAt} />
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
