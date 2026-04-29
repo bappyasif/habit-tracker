@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { DatePicker } from "@/app/(nested-navs)/track/_components/date-picker"
 import { StepLogger } from "@/app/(nested-navs)/track/_components/step-logger"
 import { MeasurementInput } from "@/app/(nested-navs)/track/_components/measurement-input"
-import { LogHistory } from "@/app/(nested-navs)/track/_components/log-history"
+import { LogEntry, LogHistory } from "@/app/(nested-navs)/track/_components/log-history"
 import { Save } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { mockLogs } from "@/lib/mock-data"
@@ -13,12 +13,12 @@ import { createHabitDailyTimeline, createHabitWeeklyTimeline, updateHabitDailyTi
 
 export default function TrackPage() {
   const { state, dispatch } = useTrackCtx()
-  
+
   const habit = state.habits.find((habit) => Number(habit.id) == state.habitViewing)
 
   console.log(habit, "habit frpom track page", state.habits)
 
-  if(!habit) {
+  if (!habit) {
     return <div>Loading...</div>
   }
 
@@ -26,10 +26,56 @@ export default function TrackPage() {
   const [measurementValue, setMeasurementValue] = useState(30)
   const [steps, setSteps] = useState(habit?.steps)
 
+  const { dailyLogs } = state
+
+  //   : {
+  //     id: string;
+  //     habitId: string;
+  //     date: Date;
+  //     measurement: number;
+  //     stepsCompleted: boolean[];
+  //     notes: string;
+  // }
+
+  const mappedLogsFromHabit = dailyLogs.map((dlog) => {
+    // console.log(dlog, "dlog")
+    let obj = {}
+    dlog.logs.forEach((log) => {
+      // console.log(log, "log")
+      const measurement = habit.measurement.target
+      const completedSteps = habit.steps.map((step) => step.completed).filter(Boolean)
+
+      return log.ids.forEach((id) => {
+        const step = habit.steps.find((step) => step.id == id)
+        obj = {
+          id: id,
+          // habitId: dlog.habitId,
+          date: new Date(log.date),
+          measurement,
+          // stepsCompleted: completedSteps,
+          // notes: log.notes,
+          notes: step?.notes || log.notes || "Not Found",
+        }
+        // return {
+        //   id: id,
+        //   habitId: dlog.habitId,
+        //   date: log.date,
+        //   measurement,
+        //   stepsCompleted: completedSteps,
+        //   notes: log.notes,
+        // }
+      })
+    })
+
+    return obj
+  })
+
+  console.log(mappedLogsFromHabit, "mappedLopgsFromHabit")
+
   const [logs, setLogs] = useState(mockLogs)
 
   const [isSaving, setIsSaving] = useState(false)
-  
+
   const saveWeeklyTrackingTodb = async (data: any) => {
     const response = await createHabitWeeklyTimeline(data)
     console.log(response, "response from saving timeline data for weekly tracking")
@@ -115,17 +161,17 @@ export default function TrackPage() {
         console.log(resp, "response from updating daily timeline data for daily tracking")
         const dataUpdated = resp?.data?.entry?.filter((item: any) => item.habit_id == habit.id && new Date(item.date_stamp).toDateString() == date.toDateString())?.[0] || null
 
-        if(dataUpdated) {
+        if (dataUpdated) {
           dispatch({
-          type: "TOGGLE_DAILY_TRACKING_LOG",
-          payload: {
-            habitId: habit.id,
-            date: date,
-            ids: dataUpdated?.completed_steps_ids || [],
-            totalSteps: totalSteps.length,
-            percentile: percentile
-          }
-        })
+            type: "TOGGLE_DAILY_TRACKING_LOG",
+            payload: {
+              habitId: habit.id,
+              date: date,
+              ids: dataUpdated?.completed_steps_ids || [],
+              totalSteps: totalSteps.length,
+              percentile: percentile
+            }
+          })
         }
       })
     } else {
@@ -178,7 +224,7 @@ export default function TrackPage() {
     return <div>Loading...</div>
   }
 
-  const { dailyLogs } = state
+  // const { dailyLogs } = state
 
   const updateSteps = (ids: (number | string)[]) => {
     const tempSteps = steps.map(step => {
@@ -305,7 +351,8 @@ export default function TrackPage() {
         {/* Right Column - History */}
         <div>
           <LogHistory
-            logs={logs}
+            // logs={logs}
+            logs={mappedLogsFromHabit as LogEntry[]}
             onUndo={handleUndoLast}
             onDelete={(id) => setLogs(logs.filter((l) => l.id !== id))}
           />

@@ -4,7 +4,7 @@ import { Button } from "../../../../components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../../components/ui/card"
 import { RotateCcw, Trash2 } from "lucide-react"
 
-interface LogEntry {
+export interface LogEntry {
   id: string
   date: Date
   measurement: number
