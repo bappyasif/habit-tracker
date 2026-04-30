@@ -83,7 +83,7 @@ export default function TrackPage() {
 
   const saveDailyTrackingTodb = async (data: any) => {
     const response = await createHabitDailyTimeline(data)
-    console.log(response, "response from saving timeline data for daily tracking")
+    console.log(response, "response from saving timeline data for daily tracking", data)
   }
 
   const handleSaveLog = async () => {
@@ -198,12 +198,12 @@ export default function TrackPage() {
         steps: habit.steps.map(step => ({
           ...step,
           id: step.id.toString(),
-          note: step.notes || "None found",
+          note: step.notes || "None found from fe",
         })),
         completedSteps: habit.steps.filter(step => step.completed).map(step => ({
           ...step,
           id: step.id.toString(),
-          note: step.notes || "None found",
+          note: step.notes || "None found from fe",
           // note: "None",
         })),
         // notes: "consider adding notes input in the UI for each day to log any specific notes for that day along with steps and measurement"

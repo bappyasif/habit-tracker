@@ -34,9 +34,26 @@ export const NewHabit = () => {
     const router = useRouter()
 
     const saveToDb = (habitData: TrackTypes) => {
-        createHabit(habitData).then(data => {
-          console.log(data, "created habit")
+        const addingJunkNotesToSteps = habitData.steps.map(step => {
+            return {
+                ...step,
+                "notes": "Just Created Add Some Notes Later!!"
+            }
+        })
+
+        const moddedData = {
+            ...habitData,
+            steps: addingJunkNotesToSteps
+        }
+          
+        // console.log(habitData, "habitData: new habit", moddedData)
+        createHabit(moddedData).then(data => {
+          console.log(data, "created a habit successfully")
         }).catch(err => console.log(err))
+        
+        // createHabit(habitData).then(data => {
+        //   console.log(data, "created habit")
+        // }).catch(err => console.log(err))
       }
 
     const handleSave = () => {
@@ -45,9 +62,12 @@ export const NewHabit = () => {
             return
         }
 
-        saveToDb({...habit, id: (state.habits.length + 1).toString()})
+        saveToDb({...habit})
 
-        dispatch({ type: "CREATE_HABIT", payload: {...habit, id: (state.habits.length + 1).toString(), createdAt: new Date(), currentStreak: 0, totalCompleted: 0} })
+        // saveToDb({...habit, id: (state.habits.length + 1).toString()})
+
+        // as we are moving to dashboard and fetching all habitys from server anyway, dont have to invidually update reduce state from here
+        // dispatch({ type: "CREATE_HABIT", payload: {...habit, id: (state.habits.length + 1).toString(), createdAt: new Date(), currentStreak: 0, totalCompleted: 0} })
         
         router.push("/dashboard")
     }

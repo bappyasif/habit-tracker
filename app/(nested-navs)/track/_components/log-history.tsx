@@ -31,21 +31,24 @@ export function LogHistory({ logs, onUndo, onDelete }: LogHistoryProps) {
               No logs yet. Start tracking to see history.
             </p>
           ) : (
-            logs.slice(0, 5).map((log) => (
-              <div key={log.id} className="flex items-center justify-between p-2 rounded-lg bg-muted/30 text-sm">
-                <div>
-                  <p className="font-semibold">
-                    {log.measurement} {log.notes ? "- " + log.notes : ""}
-                  </p>
-                  <p className="text-xs text-muted-foreground">{log.date.toLocaleDateString()}</p>
+            logs.slice(0, 5).map((log) => {
+              if (!Object.keys(log).length) return null;
+              return (
+                <div key={log.id + log?.date} className="flex items-center justify-between p-2 rounded-lg bg-muted/30 text-sm">
+                  <div>
+                    <p className="font-semibold">
+                      {log.measurement} {log?.notes ? "- " + log?.notes : ""}
+                    </p>
+                    <p className="text-xs text-muted-foreground">{new Date(log?.date).toLocaleDateString()}</p>
+                  </div>
+                  {onDelete && (
+                    <Button size="sm" variant="ghost" onClick={() => onDelete(log?.id)}>
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  )}
                 </div>
-                {onDelete && (
-                  <Button size="sm" variant="ghost" onClick={() => onDelete(log.id)}>
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                )}
-              </div>
-            ))
+              )
+            })
           )}
         </div>
         {onUndo && logs.length > 0 && (
