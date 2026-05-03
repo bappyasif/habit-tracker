@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "../../../../components/ui/button"
 import { Card, CardContent } from "../../../../components/ui/card"
 import { Label } from "../../../../components/ui/label"
 import { Textarea } from "../../../../components/ui/textarea"
 import { Checkbox } from "../../../../components/ui/checkbox"
 import { ChevronDown, Mic, Camera } from "lucide-react"
+import { useTrackCtx } from "@/context-reducers/trackCtx"
 
 interface Step {
   id: string
@@ -33,6 +34,23 @@ export function StepLogger({ steps, onUpdateSteps }: StepLoggerProps) {
   const handleUpdateStep = (id: string, field: string, value: any) => {
     onUpdateSteps(steps.map((s) => (s.id === id ? { ...s, [field]: value } : s)))
   }
+
+  const [stepNote, setStepNote] = useState("")
+
+  const {state: trackState} = useTrackCtx()
+  
+  const stepNoteFromDailyLogsTimeline = trackState.dailyLogs
+  .find(dlog => dlog.habitId == trackState.habitViewing)?.logs.find(log => log.log_ids_with_notes.find(obj => obj.id == expandedStepId))?.log_ids_with_notes.find(obj => obj.id == expandedStepId)
+
+  useEffect(() => {
+    setStepNote(stepNoteFromDailyLogsTimeline?.notes || "")
+  }, [stepNoteFromDailyLogsTimeline])
+
+  // ?.log_ids_with_notes.find(obj => ({id: obj.id, notes: obj.notes}))
+
+  // ?.logs.find(log => log.log_ids_with_notes.find(note => note.id == expandedStepId))
+  // ?.log_ids_with_notes.find(note => note.id == expandedStepId)|| ""
+  console.log(stepNoteFromDailyLogsTimeline, "stepnoteFromDailyLogsTimeline", expandedStepId)
 
   return (
     <div className="space-y-3">
@@ -81,7 +99,7 @@ export function StepLogger({ steps, onUpdateSteps }: StepLoggerProps) {
                   <Textarea
                     id={`notes-${step.id}`}
                     placeholder="Add notes about this step..."
-                    value={step.notes || ""}
+                    value={stepNote || step.notes || ""}
                     onChange={(e) => handleUpdateStep(step.id, "notes", e.target.value)}
                     className="mt-1.5 min-h-20 resize-none"
                   />

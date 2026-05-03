@@ -74,6 +74,7 @@ export type initialStateTypes = {
         habitId: number | string,
         logs: {
             ids: string[],
+            log_ids_with_notes: { id: string, notes: string }[],
             date: Date,
             // measurement: number,
             notes: string,
@@ -237,7 +238,8 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                                 date: entry.dateStamp,
                                 notes: entry.notes,
                                 totalSteps: entry.totalSteps,
-                                percentile: entry.percentile
+                                percentile: entry.percentile,
+                                log_ids_with_notes: entry?.log_ids_with_notes || []
                             }))]
                         }
                     }
@@ -249,7 +251,8 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                         date: entry.dateStamp,
                         notes: entry.notes,
                         totalSteps: entry.totalSteps,
-                        percentile: entry.percentile
+                        percentile: entry.percentile,
+                        log_ids_with_notes: entry?.log_ids_with_notes || []
                     }))
                 }]
             }

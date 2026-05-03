@@ -260,6 +260,11 @@ export default function TrackPage() {
         return logDate === today
       })
 
+      // THINGS TO DO NEXT
+      // we will have to restructure this data as notes will or could be different for each datestamps
+      // we will have to restructure reducers state toi have a different dtaa structires to accomodate bnoth id and notes for each daily log for steps
+      // we will aslso have to re arrange response from backend to serve this purpose for frontend currently it only tends to send a blank notes which is not correct
+
       if (findDate?.ids?.length) {
         updateSteps(findDate.ids)
       } else {
