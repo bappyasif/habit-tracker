@@ -213,7 +213,8 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                                 if (new Date(entry.date).toDateString() == new Date(action.payload.date).toDateString()) {
                                     return {
                                         ...entry,
-                                        ids: action.payload.ids,
+                                        // ids: action.payload.ids,
+                                        log_ids_with_notes: action.payload.log_ids_with_notes || [],
                                         totalSteps: action.payload.totalSteps,
                                         percentile: action.payload.percentile
                                     }

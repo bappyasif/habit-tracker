@@ -43,10 +43,13 @@ export default function TrackPage() {
     dlog.logs.forEach((log) => {
       // console.log(log, "log")
       const measurement = habit.measurement.target
-      const completedSteps = habit.steps.map((step) => step.completed).filter(Boolean)
+      // const completedSteps = habit.steps.map((step) => step.completed).filter(Boolean)
 
-      return log.ids.forEach((id) => {
-        const step = habit.steps.find((step) => step.id == id)
+      return log?.ids?.forEach((id) => {
+        // const step = habit.steps.find((step) => step.id == id)
+        // const notes = habit.steps.find((step) => step.id == id)?.notes
+        const notes = log.log_ids_with_notes.find((obj) => obj.id == id)?.notes || "None found from fe"
+
         obj = {
           id: id,
           // habitId: dlog.habitId,
@@ -54,7 +57,9 @@ export default function TrackPage() {
           measurement,
           // stepsCompleted: completedSteps,
           // notes: log.notes,
-          notes: step?.notes || log.notes || "Not Found",
+          // notes: step?.notes || log.notes || "Not Found",
+          // notes: log.notes || step?.notes || "Not Found",
+          notes: notes || "None found from fe",
         }
         // return {
         //   id: id,
@@ -140,6 +145,8 @@ export default function TrackPage() {
     const totalSteps = habit.steps
     const percentile = Math.round((completedSteps.length / totalSteps.length) * 100)
 
+    console.log(checkIfHabitStepFoundInDailyLogs, "checkIfHabitStepFoundInDailyLogs", date, "date",)
+
     if (checkIfHabitStepFoundInDailyLogs) {
       const tt = {
         habitId: habit.id.toString(),
@@ -162,12 +169,14 @@ export default function TrackPage() {
         const dataUpdated = resp?.data?.entry?.filter((item: any) => item.habit_id == habit.id && new Date(item.date_stamp).toDateString() == date.toDateString())?.[0] || null
 
         if (dataUpdated) {
+          console.log("dataUpdated for daily timeline", dataUpdated)
           dispatch({
             type: "TOGGLE_DAILY_TRACKING_LOG",
             payload: {
               habitId: habit.id,
               date: date,
-              ids: dataUpdated?.completed_steps_ids || [],
+              // ids: dataUpdated?.completed_steps_ids || [],
+              log_ids_with_notes: dataUpdated?.steps_completed_with_notes || [],
               totalSteps: totalSteps.length,
               percentile: percentile
             }
@@ -198,12 +207,12 @@ export default function TrackPage() {
         steps: habit.steps.map(step => ({
           ...step,
           id: step.id.toString(),
-          note: step.notes || "None found from fe",
+          notes: step.notes || "None found from fe",
         })),
         completedSteps: habit.steps.filter(step => step.completed).map(step => ({
           ...step,
           id: step.id.toString(),
-          note: step.notes || "None found from fe",
+          notes: step.notes || "None found from fe",
           // note: "None",
         })),
         // notes: "consider adding notes input in the UI for each day to log any specific notes for that day along with steps and measurement"
@@ -336,7 +345,7 @@ export default function TrackPage() {
         {/* Left Column - Steps & Measurement */}
         <div className="lg:col-span-2 space-y-6">
           {/* Steps */}
-          <StepLogger steps={steps} onUpdateSteps={setSteps} />
+          <StepLogger steps={steps} onUpdateSteps={setSteps} date={date} />
 
           {/* Measurement */}
           <MeasurementInput

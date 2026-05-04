@@ -21,10 +21,11 @@ interface Step {
 
 interface StepLoggerProps {
   steps: Step[]
-  onUpdateSteps: (steps: Step[]) => void
+  onUpdateSteps: (steps: Step[]) => void,
+  date: Date
 }
 
-export function StepLogger({ steps, onUpdateSteps }: StepLoggerProps) {
+export function StepLogger({ steps, onUpdateSteps, date }: StepLoggerProps) {
   const [expandedStepId, setExpandedStepId] = useState<string | null>(null)
 
   const handleToggleStep = (id: string) => {
@@ -37,14 +38,32 @@ export function StepLogger({ steps, onUpdateSteps }: StepLoggerProps) {
 
   const [stepNote, setStepNote] = useState("")
 
-  const {state: trackState} = useTrackCtx()
-  
-  const stepNoteFromDailyLogsTimeline = trackState.dailyLogs
-  .find(dlog => dlog.habitId == trackState.habitViewing)?.logs.find(log => log.log_ids_with_notes.find(obj => obj.id == expandedStepId))?.log_ids_with_notes.find(obj => obj.id == expandedStepId)
+  const [stepChecked, setStepChecked] = useState(false)
+
+  const { state: trackState } = useTrackCtx()
+
+  // const stepNoteFromDailyLogsTimeline = trackState.dailyLogs
+  // .find(dlog => dlog.habitId == trackState.habitViewing)?.logs.find(log => log.log_ids_with_notes.find(obj => obj.id == expandedStepId))?.log_ids_with_notes.find(obj => obj.id == expandedStepId)
+
+  // const stepNoteFromDailyLogsTimeline = trackState.dailyLogs
+  //   .find(dlog => dlog.habitId == trackState.habitViewing)?.logs?.filter(log => new Date(log.date)?.toDateString() == date?.toDateString())
+  //   .find(log => log.log_ids_with_notes.find(obj => obj.id == expandedStepId))?.log_ids_with_notes.find(obj => obj.id == expandedStepId)
+
+  const dlFound = trackState.dailyLogs.find(dlog => dlog.habitId == trackState.habitViewing)
+  console.log(dlFound, "dlFound")
+
+  const dateFilteredLogs = dlFound?.logs?.filter(log => new Date(log.date)?.toDateString() == date?.toDateString()) || []
+  console.log(dateFilteredLogs, "dateFilteredLogs")
+
+  const stepNoteFromDailyLogsTimeline = dateFilteredLogs?.find(log => log.log_ids_with_notes.find(obj => obj.id == expandedStepId))?.log_ids_with_notes.find(obj => obj.id == expandedStepId)
 
   useEffect(() => {
+    if(dateFilteredLogs.length == 0) return
     setStepNote(stepNoteFromDailyLogsTimeline?.notes || "")
-  }, [stepNoteFromDailyLogsTimeline])
+    // setStepChecked(stepNoteFromDailyLogsTimeline?.id == expandedStepId ? true : false)
+
+    // console.log(stepNoteFromDailyLogsTimeline?.id == expandedStepId, "?!?!?!", stepNoteFromDailyLogsTimeline, expandedStepId)
+  }, [dateFilteredLogs])
 
   // ?.log_ids_with_notes.find(obj => ({id: obj.id, notes: obj.notes}))
 
@@ -70,7 +89,15 @@ export function StepLogger({ steps, onUpdateSteps }: StepLoggerProps) {
             >
               <Checkbox
                 checked={step.completed}
+                // checked={stepChecked}
                 onCheckedChange={() => handleToggleStep(step.id)}
+                // onCheckedChange={() => {
+                //   if (dateFilteredLogs.length) {
+                //     setStepChecked(v => !v)
+                //   } else {
+                //     handleToggleStep(step.id)
+                //   }
+                // }}
                 className="w-5 h-5"
               />
 
@@ -82,9 +109,8 @@ export function StepLogger({ steps, onUpdateSteps }: StepLoggerProps) {
               </div>
 
               <ChevronDown
-                className={`w-4 h-4 text-muted-foreground transition-transform ${
-                  expandedStepId === step.id ? "rotate-180" : ""
-                }`}
+                className={`w-4 h-4 text-muted-foreground transition-transform ${expandedStepId === step.id ? "rotate-180" : ""
+                  }`}
               />
             </div>
 
@@ -100,7 +126,14 @@ export function StepLogger({ steps, onUpdateSteps }: StepLoggerProps) {
                     id={`notes-${step.id}`}
                     placeholder="Add notes about this step..."
                     value={stepNote || step.notes || ""}
-                    onChange={(e) => handleUpdateStep(step.id, "notes", e.target.value)}
+                    // onChange={(e) => handleUpdateStep(step.id, "notes", e.target.value)}
+                    onChange={(e) => {
+                      if (stepNote) {
+                        setStepNote(e.target.value)
+                      } else {
+                        handleUpdateStep(step.id, "notes", e.target.value)
+                      }
+                    }}
                     className="mt-1.5 min-h-20 resize-none"
                   />
                 </div>
