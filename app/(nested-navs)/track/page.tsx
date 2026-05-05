@@ -39,40 +39,54 @@ export default function TrackPage() {
 
   const mappedLogsFromHabit = dailyLogs.map((dlog) => {
     // console.log(dlog, "dlog")
-    let obj = {}
+    let obj_itm = {}
     dlog.logs.forEach((log) => {
       // console.log(log, "log")
       const measurement = habit.measurement.target
       // const completedSteps = habit.steps.map((step) => step.completed).filter(Boolean)
 
-      return log?.ids?.forEach((id) => {
-        // const step = habit.steps.find((step) => step.id == id)
-        // const notes = habit.steps.find((step) => step.id == id)?.notes
-        const notes = log.log_ids_with_notes.find((obj) => obj.id == id)?.notes || "None found from fe"
+      
+      log.log_ids_with_notes.forEach((obj) => {
+        const step = habit.steps.find((step) => step.id == obj.id)
+        const notes = obj.notes || step?.notes || "Not Found"
 
-        obj = {
-          id: id,
+        obj_itm = {
+          id: obj.id,
+          notes: notes,
           // habitId: dlog.habitId,
-          date: new Date(log.date),
+          date: new Date(log.date).toISOString(),
           measurement,
-          // stepsCompleted: completedSteps,
-          // notes: log.notes,
-          // notes: step?.notes || log.notes || "Not Found",
-          // notes: log.notes || step?.notes || "Not Found",
-          notes: notes || "None found from fe",
         }
-        // return {
-        //   id: id,
-        //   habitId: dlog.habitId,
-        //   date: log.date,
-        //   measurement,
-        //   stepsCompleted: completedSteps,
-        //   notes: log.notes,
-        // }
       })
+
+      // return log?.ids?.forEach((id) => {
+      //   // const step = habit.steps.find((step) => step.id == id)
+      //   // const notes = habit.steps.find((step) => step.id == id)?.notes
+      //   const notes = log.log_ids_with_notes.find((obj) => obj.id == id)?.notes || "None found from fe"
+
+      //   obj = {
+      //     id: id,
+      //     // habitId: dlog.habitId,
+      //     date: new Date(log.date),
+      //     measurement,
+      //     // stepsCompleted: completedSteps,
+      //     // notes: log.notes,
+      //     // notes: step?.notes || log.notes || "Not Found",
+      //     // notes: log.notes || step?.notes || "Not Found",
+      //     notes: notes || "None found from fe",
+      //   }
+      //   // return {
+      //   //   id: id,
+      //   //   habitId: dlog.habitId,
+      //   //   date: log.date,
+      //   //   measurement,
+      //   //   stepsCompleted: completedSteps,
+      //   //   notes: log.notes,
+      //   // }
+      // })
     })
 
-    return obj
+    return obj_itm
   })
 
   console.log(mappedLogsFromHabit, "mappedLopgsFromHabit")

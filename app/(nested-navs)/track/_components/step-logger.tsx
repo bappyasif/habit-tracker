@@ -88,8 +88,9 @@ export function StepLogger({ steps, onUpdateSteps, date }: StepLoggerProps) {
               className="flex items-center gap-4 cursor-pointer"
             >
               <Checkbox
-                checked={step.completed}
+                // checked={step.completed}
                 // checked={stepChecked}
+                checked={stepNoteFromDailyLogsTimeline?.id == step.id ? true : false}
                 onCheckedChange={() => handleToggleStep(step.id)}
                 // onCheckedChange={() => {
                 //   if (dateFilteredLogs.length) {
@@ -102,7 +103,10 @@ export function StepLogger({ steps, onUpdateSteps, date }: StepLoggerProps) {
               />
 
               <div className="flex-1">
-                <p className={`font-semibold ${step.completed ? "line-through text-muted-foreground" : ""}`}>
+                <p 
+                  // className={`font-semibold ${step.completed ? "line-through text-muted-foreground" : ""}`}
+                  className={`font-semibold ${stepNoteFromDailyLogsTimeline?.id == step.id ? "line-through text-muted-foreground" : ""}`}
+                >
                   {idx + 1}. {step.title}
                 </p>
                 <p className="text-sm text-muted-foreground">⏰ {step.time}</p>
