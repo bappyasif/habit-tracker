@@ -86,14 +86,14 @@ export const updateHabitDailyTimeline = async (habit: {
     totalSteps: number;
     steps: {
         id: string;
-        note: string;
+        // note: string;
         title: string;
         time: string;
         completed: boolean;
     }[];
     completedSteps: {
         id: string;
-        note: string;
+        // note: string;
         title: string;
         time: string;
         completed: boolean;
