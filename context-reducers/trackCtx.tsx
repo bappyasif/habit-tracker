@@ -17,6 +17,8 @@ export type Steps = {
     notes?: string;
     photo?: string;
     voiceNote?: string;
+    // this needs to be included within step data update so that each changes doesnt affect on other date steps o track page
+    datestamp?: string; // added datestamp to steps to identify which step belongs to which date in daily timeline and also to avoid confusion of showing same notes for different datestamps as it is not possible to have same notes for different datestamps for same step and it will create confusion as well
 }
 
 export type TrackTypes = {
@@ -202,6 +204,13 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
 
             }
 
+        case "ADJUST_DAILY_TRACKING_LOG":
+            console.log("ADJUST_DAILY_TRACKING_STEP_NOTES action payload", action.payload)
+
+            return {
+                ...state,    
+            }
+
         case "TOGGLE_DAILY_TRACKING_LOG":
             return {
                 ...state,
@@ -228,24 +237,10 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
             }
 
         case "UPDATE_HABIT_DAILY_TIMELINE":
+            console.log("UPDATE_HABIT_DAILY_TIMELINE action payload", action.payload)
             return {
                 ...state,
-                dailyLogs: state.dailyLogs.length > 0 ? state.dailyLogs.map((log) => {
-                    if (log.habitId == action.payload[0].habitId) {
-                        return {
-                            ...log,
-                            logs: [...log.logs, ...action.payload.map((entry: any) => ({
-                                ids: entry.log.map((l:any) => l.toString()),
-                                date: entry.dateStamp,
-                                notes: entry.notes,
-                                totalSteps: entry.totalSteps,
-                                percentile: entry.percentile,
-                                log_ids_with_notes: entry?.log_ids_with_notes || []
-                            }))]
-                        }
-                    }
-                    return log
-                }) : [{
+                dailyLogs: [{
                     habitId: action.payload[0].habitId,
                     logs: action.payload.map((entry: any) => ({
                         ids: entry.log.map((l:any) => l.toString()),
@@ -257,6 +252,37 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                     }))
                 }]
             }
+
+        // case "UPDATE_HABIT_DAILY_TIMELINE":
+        //     return {
+        //         ...state,
+        //         dailyLogs: state.dailyLogs.length > 0 ? state.dailyLogs.map((log) => {
+        //             if (log.habitId == action.payload[0].habitId) {
+        //                 return {
+        //                     ...log,
+        //                     logs: [...log.logs, ...action.payload.map((entry: any) => ({
+        //                         ids: entry.log.map((l:any) => l.toString()),
+        //                         date: entry.dateStamp,
+        //                         notes: entry.notes,
+        //                         totalSteps: entry.totalSteps,
+        //                         percentile: entry.percentile,
+        //                         log_ids_with_notes: entry?.log_ids_with_notes || []
+        //                     }))]
+        //                 }
+        //             }
+        //             return log
+        //         }) : [{
+        //             habitId: action.payload[0].habitId,
+        //             logs: action.payload.map((entry: any) => ({
+        //                 ids: entry.log.map((l:any) => l.toString()),
+        //                 date: entry.dateStamp,
+        //                 notes: entry.notes,
+        //                 totalSteps: entry.totalSteps,
+        //                 percentile: entry.percentile,
+        //                 log_ids_with_notes: entry?.log_ids_with_notes || []
+        //             }))
+        //         }]
+        //     }
 
         case "remove-from-habit-suggestions":
             return {

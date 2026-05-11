@@ -39,17 +39,29 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
             habitId: habit.id.toString(),
             dateStamp: date,
             totalSteps: totalSteps.length,
-            steps: habit.steps.map(step => ({
+            // steps: habit.steps.map(step => ({
+            //     ...step,
+            //     id: step.id.toString()
+            //     // note: "None",
+            // })),
+            steps: totalSteps.map(step => ({
                 ...step,
                 id: step.id.toString()
                 // note: "None",
             })),
-            completedSteps: habit.steps.filter(step => step.completed).map(step => ({
+            completedSteps: totalSteps.filter(step => step.completed).map(step => ({
                 ...step,
                 id: step.id.toString(),
                 // note: "None",
             })),
+            // completedSteps: habit.steps.filter(step => step.completed).map(step => ({
+            //     ...step,
+            //     id: step.id.toString(),
+            //     // note: "None",
+            // })),
         }
+
+        // console.log(tt, "data to update daily timeline for daily tracking", totalSteps)
 
         updateHabitDailyTimeline(tt).then((resp) => {
             console.log(resp, "response from updating daily timeline data for daily tracking")
@@ -59,6 +71,7 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
                 console.log("dataUpdated for daily timeline", dataUpdated)
                 dispatch({
                     type: "TOGGLE_DAILY_TRACKING_LOG",
+                    // type: "ADJUST_DAILY_TRACKING_LOG",
                     payload: {
                         habitId: habit.id,
                         date: date,
@@ -159,8 +172,21 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
             return findDate
         })
 
-        const completedSteps = habit.steps.map(step => step.completed).filter(step => step)
-        const totalSteps = habit.steps
+        // const completedSteps = habit.steps.map(step => step.completed).filter(step => step)
+        // const totalSteps = habit.steps
+        // habit steps needs to be mapped with dailyLogs to get the accurate completed and total steps for that day as user can update the daily logs for any day and that should reflect in the completion percentage for that day in weekly tracking as well
+        const totalSteps = habit.steps.map(step => {
+            const findInDailyLogs = checkIfHabitStepFoundInDailyLogs?.logs.map((log) => new Date(log.date).toDateString() == date.toDateString() ? log.ids : []).flat().find((id: string) => id == step.id)
+            // .flat().find((id: string) => id == step.id)
+            console.log(findInDailyLogs, "findInDailyLogs for step", step.id, "step id")
+            return {
+                ...step,
+                completed: findInDailyLogs ? false : true
+            }
+        })
+
+        const completedSteps = totalSteps.map(step => step.completed).filter(step => step)
+        
         const percentile = Math.round((completedSteps.length / totalSteps.length) * 100)
 
         console.log(checkIfHabitStepFoundInDailyLogs, "checkIfHabitStepFoundInDailyLogs", date, "date",)
