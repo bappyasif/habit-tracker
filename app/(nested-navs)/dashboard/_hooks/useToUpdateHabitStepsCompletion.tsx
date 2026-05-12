@@ -46,8 +46,12 @@ export const useToUpdateHabitStepsCompletion = () => {
                 return logDate === today
             })
 
-            if (findDate) {
+            console.log(findDate, "FOUND date", dlog, "daily log")
+
+            if (findDate?.log_ids_with_notes?.length) {
                 updateSteps(findDate.ids)
+            } else {
+                resetSteps()
             }
             return findDate
         })

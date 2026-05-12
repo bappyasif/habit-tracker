@@ -208,24 +208,32 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
             console.log("ADJUST_DAILY_TRACKING_STEP_NOTES action payload", action.payload)
 
             return {
-                ...state,    
-            }
-
-        case "TOGGLE_DAILY_TRACKING_LOG":
-            return {
                 ...state,
-                dailyLogs: state?.dailyLogs.map((log) => {
+                dailyLogs: state.dailyLogs.length == 0 ? [{
+                    habitId: action.payload.habitId,
+                    logs: [{
+                        // ids: action.payload.ids,
+                        log_ids_with_notes: action.payload.log_ids_with_notes || [],
+                        date: action.payload.date,
+                        notes: action.payload.notes,
+                        totalSteps: action.payload.totalSteps,
+                        percentile: action.payload.percentile
+                    }]
+                }] : state.dailyLogs.map((log) => {
                     if (log.habitId == action.payload.habitId) {
                         return {
                             ...log,
                             logs: log.logs.map((entry) => {
                                 if (new Date(entry.date).toDateString() == new Date(action.payload.date).toDateString()) {
                                     return {
-                                        ...entry,
+                                        // ...entry,
                                         // ids: action.payload.ids,
                                         log_ids_with_notes: action.payload.log_ids_with_notes || [],
+                                        // notes: action.payload.notes,
                                         totalSteps: action.payload.totalSteps,
-                                        percentile: action.payload.percentile
+                                        percentile: action.payload.percentile,
+                                        date: action.payload.date,
+                                        habitId: action.payload.habitId
                                     }
                                 }
                                 return entry
@@ -234,7 +242,33 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                     }
                     return log
                 })
+                
             }
+
+        // case "TOGGLE_DAILY_TRACKING_LOG":
+        //     return {
+        //         ...state,
+        //         dailyLogs: state?.dailyLogs.map((log) => {
+        //             if (log.habitId == action.payload.habitId) {
+        //                 return {
+        //                     ...log,
+        //                     logs: log.logs.map((entry) => {
+        //                         if (new Date(entry.date).toDateString() == new Date(action.payload.date).toDateString()) {
+        //                             return {
+        //                                 ...entry,
+        //                                 // ids: action.payload.ids,
+        //                                 log_ids_with_notes: action.payload.log_ids_with_notes || [],
+        //                                 totalSteps: action.payload.totalSteps,
+        //                                 percentile: action.payload.percentile
+        //                             }
+        //                         }
+        //                         return entry
+        //                     })
+        //                 }
+        //             }
+        //             return log
+        //         })
+        //     }
 
         case "UPDATE_HABIT_DAILY_TIMELINE":
             console.log("UPDATE_HABIT_DAILY_TIMELINE action payload", action.payload)

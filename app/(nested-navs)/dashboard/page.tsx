@@ -71,7 +71,9 @@ export default function DashboardPage() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
 
-          <TodaysFocus selectedHabitId={selectedHabitId} />
+          <TodaysFocus 
+            // selectedHabitId={selectedHabitId} 
+          />
 
           <h2 className="text-3xl font-bold my-10">Snapshots of your habits</h2>
 

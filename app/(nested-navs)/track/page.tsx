@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { use, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { DatePicker } from "@/app/(nested-navs)/track/_components/date-picker"
 import { StepLogger } from "@/app/(nested-navs)/track/_components/step-logger"
@@ -9,6 +9,7 @@ import { Save } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { LogRendering } from "./_components/log-rendering"
 import { useToHandleDailyTimelineSaveOrUpdate } from "./_hooks/useToHandleDailyTimelineSaveOrUpdate"
+import { set } from "date-fns"
 
 export default function TrackPage() {
   const { state, dispatch } = useTrackCtx()
@@ -22,13 +23,32 @@ export default function TrackPage() {
   }
 
   const [date, setDate] = useState(new Date())
-  const [measurementValue, setMeasurementValue] = useState(30)
-  const [steps, setSteps] = useState(habit?.steps)
+  const [measurementValue, setMeasurementValue] = useState(habit.measurement.target)
+  const backup = habit?.steps.map(step => ({
+    ...step,
+    // completed: false,
+    notes: "initial state from backup"
+  })) || []
+
+  const [steps, setSteps] = useState(backup)
 
   const { dailyLogs } = state
 
+  // const updateSteps = (ids: (number | string)[]) => {
+  //   const tempSteps = steps.map(step => {
+  //     const sid = ids?.findIndex(v => v == step.id)
+
+  //     return {
+  //       ...step,
+  //       completed: sid !== -1 ? true : step.completed
+  //     }
+  //   })
+
+  //   setSteps(tempSteps)
+  // }
+
   const updateSteps = (ids: (number | string)[]) => {
-    const tempSteps = steps.map(step => {
+    const tempSteps = backup.map(step => {
       const sid = ids?.findIndex(v => v == step.id)
 
       return {
@@ -41,16 +61,32 @@ export default function TrackPage() {
   }
 
   const resetSteps = () => {
-    const todaySteps = habit.steps.map(step => {
+    // const todaySteps = habit.steps.map(step => {
+    //   return {
+    //     ...step,
+    //     completed: false,
+    //     notes: step.notes ?? "reset for initial state"
+    //   }
+    // })
+    const todaySteps = backup.map(step => {
       return {
         ...step,
         completed: false,
+        notes: "resetted for initial state"
       }
     })
     setSteps(todaySteps)
   }
 
   const {handleSaveLog, isSaving} = useToHandleDailyTimelineSaveOrUpdate({ habit, date, steps, updateSteps })
+
+  // useEffect(() => {
+  //   setSteps(backup)
+  // }, [])
+
+  // useEffect(() => {
+  //   resetSteps()
+  // }, [date])
 
   // update steps completion based on daily logs for the selected date
   useEffect(() => {
@@ -82,6 +118,8 @@ export default function TrackPage() {
     if (!findDate) {
       resetSteps()
     }
+
+    // resetSteps()
 
   }, [date, dailyLogs])
 

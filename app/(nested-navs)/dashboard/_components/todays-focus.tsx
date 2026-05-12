@@ -6,7 +6,9 @@ import { CheckCircle2 } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { useToUpdateHabitStepsCompletion } from "../_hooks/useToUpdateHabitStepsCompletion"
 
-export const TodaysFocus = ({selectedHabitId}: {selectedHabitId: string}) => {
+export const TodaysFocus = (
+  // {selectedHabitId}: {selectedHabitId: string}
+) => {
     const {state} = useTrackCtx()
     const {habits} = state
 

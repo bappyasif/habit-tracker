@@ -70,8 +70,8 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
             if (dataUpdated) {
                 console.log("dataUpdated for daily timeline", dataUpdated)
                 dispatch({
-                    type: "TOGGLE_DAILY_TRACKING_LOG",
-                    // type: "ADJUST_DAILY_TRACKING_LOG",
+                    // type: "TOGGLE_DAILY_TRACKING_LOG",
+                    type: "ADJUST_DAILY_TRACKING_LOG",
                     payload: {
                         habitId: habit.id,
                         date: date,

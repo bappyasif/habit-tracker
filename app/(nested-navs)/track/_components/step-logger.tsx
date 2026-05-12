@@ -14,7 +14,7 @@ interface Step {
   title: string
   time: string
   completed: boolean
-  notes?: string
+  notes: string
   photo?: string
   voiceNote?: string
 }
@@ -29,11 +29,11 @@ export function StepLogger({ steps, onUpdateSteps, date }: StepLoggerProps) {
   const [expandedStepId, setExpandedStepId] = useState<string | null>(null)
 
   const handleToggleStep = (id: string) => {
-    onUpdateSteps(steps.map((s) => (s.id === id ? { ...s, completed: !s.completed } : s)))
+    onUpdateSteps(steps.map((s) => (s.id === id ? { ...s, completed: !s.completed} : s)))
   }
 
   const handleUpdateStep = (id: string, field: string, value: any) => {
-    onUpdateSteps(steps.map((s) => (s.id === id ? { ...s, [field]: value } : s)))
+    onUpdateSteps(steps.map((s) => (s.id === id ? { ...s, [field]: value} : s)))
   }
 
   // const [stepNote, setStepNote] = useState("")
