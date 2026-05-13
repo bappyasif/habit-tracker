@@ -8,7 +8,7 @@ export interface LogEntry {
   id: string
   date: Date
   measurement: number
-  notes?: string
+  notes: string
 }
 
 interface LogHistoryProps {
@@ -25,7 +25,7 @@ export function LogHistory({ logs, onUndo, onDelete }: LogHistoryProps) {
         <CardDescription>Recent entries</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-2 max-h-48 overflow-y-auto">
+        <div className="space-y-2 max-h-72 overflow-y-auto">
           {logs.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-4">
               No logs yet. Start tracking to see history.

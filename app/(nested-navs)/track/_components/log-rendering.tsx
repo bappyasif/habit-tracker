@@ -3,7 +3,7 @@ import { LogEntry, LogHistory } from "./log-history"
 import { useState } from "react"
 import { mockLogs } from "@/lib/mock-data"
 
-export const LogRendering = ({habit}: {habit: any}) => {
+export const LogRendering = ({ habit }: { habit: any }) => {
     const [logs, setLogs] = useState(mockLogs)
 
     const { state } = useTrackCtx()
@@ -14,45 +14,79 @@ export const LogRendering = ({habit}: {habit: any}) => {
 
     console.log(habit, "habit in log rendering")
 
-    if(!habit) {
+    if (!habit) {
         return <div>No habit selected</div>
     }
 
-    const mappedLogsFromHabit = dailyLogs.map((dlog) => {
-        let obj_itm = {}
-        dlog.logs.forEach((log) => {
-            // console.log(log, "log")
-            const measurement = habit.measurement.target
+    // let final = []
 
-            log.log_ids_with_notes.forEach((obj) => {
-                const step = habit.steps.find((step: any) => step.id == obj.id)
-                const notes = obj.notes || step?.notes || "Not Found"
+    // const mappedLogsFromHabit = dailyLogs.map((dlog) => {
+    //     let obj_itm = {}
+    //     // let final = []
+    //     dlog.logs.forEach((log) => {
+    //         let obj_itm = {}
+    //         console.log(log, "log")
+    //         const measurement = habit.measurement.target
 
-                obj_itm = {
+    //         log.log_ids_with_notes.forEach((obj) => {
+    //             const step = habit.steps.find((step: any) => step.id == obj.id)
+    //             const notes = obj.notes || step?.notes || "Not Found"
+
+    //             obj_itm = {
+    //                 id: obj.id,
+    //                 notes: notes,
+    //                 // habitId: dlog.habitId,
+    //                 date: new Date(log.date).toISOString(),
+    //                 measurement,
+    //             }
+    //         })
+    //         final.push(obj_itm)
+    //     })
+
+    //     return obj_itm
+    //     // return final
+    // })
+
+    const mappedLogsFromHabit = dailyLogs.flatMap((dlog) => {
+        const measurement = habit.measurement.target;
+
+        return dlog.logs.flatMap((log) => {
+            // const logDate = new Date(log.date).toISOString();
+            const logDate = new Date(log.date);
+
+            return log.log_ids_with_notes.map((obj) => {
+                const step = habit.steps.find((s: any) => s.id == obj.id);
+                const notes = obj.notes || step?.notes || "Not Found";
+
+                return {
                     id: obj.id,
                     notes: notes,
-                    // habitId: dlog.habitId,
-                    date: new Date(log.date).toISOString(),
-                    measurement,
-                }
-            })
-        })
+                    date: logDate,
+                    measurement: measurement,
+                };
+            });
+        });
+    });
 
-        return obj_itm
-    })
+    const sortMappedLogs = mappedLogsFromHabit.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
-    console.log(mappedLogsFromHabit, "mappedLopgsFromHabit")
+    const pickFive = sortMappedLogs.slice(0, 5)
+
+
+    // console.log(mappedLogsFromHabit, "mappedLopgsFromHabit", sortMappedLogs)
 
     const handleUndoLast = () => {
-    if (logs.length > 0) {
-      setLogs(logs.slice(1))
+        if (logs.length > 0) {
+            setLogs(logs.slice(1))
+        }
     }
-  }
 
     return (
         <LogHistory
             // logs={logs}
-            logs={mappedLogsFromHabit as LogEntry[]}
+            // logs={mappedLogsFromHabit as LogEntry[]}
+            // logs={mappedLogsFromHabit as any}
+            logs={pickFive}
             onUndo={handleUndoLast}
             onDelete={(id) => setLogs(logs.filter((l: any) => l.id !== id))}
         />

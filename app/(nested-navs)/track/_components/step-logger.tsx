@@ -190,7 +190,7 @@ type StepLogProps = {
 
 const StepLog = ({ step, expandedStepId, setExpandedStepId, handleToggleStep, handleUpdateStep, idx, date }: StepLogProps) => {
 
-  const [stepNote, setStepNote] = useState("")
+  // const [stepNote, setStepNote] = useState("")
 
   const [stepChecked, setStepChecked] = useState(false)
 
@@ -208,11 +208,11 @@ const StepLog = ({ step, expandedStepId, setExpandedStepId, handleToggleStep, ha
   useEffect(() => {
     if (stepNoteFromDailyLogsTimeline === undefined || dateFilteredLogs.length == 0) {
       setStepChecked(false)
-      setStepNote(step.notes || "Some filler from STEPLOGGER")
+      // setStepNote(step.notes || "Some filler from STEPLOGGER")
       // console.log("GEEGEGEG", step.notes, stepNote)
     } else {
       setStepChecked(stepNoteFromDailyLogsTimeline.id == expandedStepId)
-      setStepNote(stepNoteFromDailyLogsTimeline.notes)
+      // setStepNote(stepNoteFromDailyLogsTimeline.notes)
       // console.log("THIS HERE", stepChecked, stepNote, stepNoteFromDailyLogsTimeline, stepNoteFromDailyLogsTimeline.id == expandedStepId, expandedStepId)
     }
   }, [date, stepNoteFromDailyLogsTimeline])
@@ -268,7 +268,8 @@ const StepLog = ({ step, expandedStepId, setExpandedStepId, handleToggleStep, ha
               <Textarea
                 id={`notes-${step.id}`}
                 placeholder="Add notes about this step..."
-                value={stepNote || step.notes || ""}
+                // value={stepNote || step.notes || ""}
+                value={step.notes || ""}
                 onChange={(e) => {
                   // if (stepNote) {
                   //   setStepNote(e.target.value)
@@ -276,7 +277,7 @@ const StepLog = ({ step, expandedStepId, setExpandedStepId, handleToggleStep, ha
                   //   handleUpdateStep(step.id, "notes", e.target.value)
                   // }
 
-                  setStepNote(e.target.value)
+                  // setStepNote(e.target.value)
                   handleUpdateStep(step.id, "notes", e.target.value)
                 }}
                 className="mt-1.5 min-h-20 resize-none"

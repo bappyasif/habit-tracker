@@ -16,7 +16,7 @@ export default function TrackPage() {
 
   const habit = state.habits.find((habit) => Number(habit.id) == state.habitViewing)
 
-  console.log(habit, "habit frpom track page", state.habits)
+  console.log(habit, "habit from track page", state.habits)
 
   if (!habit) {
     return <div>Loading...</div>
@@ -27,7 +27,8 @@ export default function TrackPage() {
   const backup = habit?.steps.map(step => ({
     ...step,
     // completed: false,
-    notes: "initial state from backup"
+    notes: step.notes ?? "initial state from backup"
+    // notes: "initial state from backup"
   })) || []
 
   const [steps, setSteps] = useState(backup)
@@ -53,9 +54,12 @@ export default function TrackPage() {
 
       return {
         ...step,
-        completed: sid !== -1 ? true : step.completed
+        completed: sid !== -1 ? true : step.completed,
+        notes: step.notes || "None found: track page"
       }
     })
+
+    console.log(tempSteps, "temp steps after updateSteps with ids", ids)
 
     setSteps(tempSteps)
   }
@@ -72,7 +76,7 @@ export default function TrackPage() {
       return {
         ...step,
         completed: false,
-        notes: "resetted for initial state"
+        notes: "resetted for notes: track page"
       }
     })
     setSteps(todaySteps)
@@ -100,22 +104,26 @@ export default function TrackPage() {
         return logDate === today
       })
 
-      if (findDate?.ids?.length) {
-        updateSteps(findDate.ids)
+      // console.log(findDate, "FOUND date", dlog, "daily log track page")
+
+      if (findDate?.log_ids_with_notes?.length) {
+        updateSteps(findDate.log_ids_with_notes.map((obj: { id: string; notes: string }) => obj.id))
       } else {
         resetSteps()
       }
+
+      // console.log(steps, "steps after checking daily logs for the date")
       return findDate
     })
 
-    const getDateDailyLogs = checkIfHabitStepFoundInDailyLogs?.logs.find(entry => {
-      const logDate = new Date(entry.date).toDateString()
-      return logDate === today
-    })
+    // const getDateDailyLogs = checkIfHabitStepFoundInDailyLogs?.logs.find(entry => {
+    //   const logDate = new Date(entry.date).toDateString()
+    //   return logDate === today
+    // })
 
-    console.log(checkIfHabitStepFoundInDailyLogs, "checkIfHabitStepFoundInDailyLogs", getDateDailyLogs, "getDateDailyLogs", habit.steps, "habit.steps", state)
+    // console.log(checkIfHabitStepFoundInDailyLogs, "checkIfHabitStepFoundInDailyLogs", getDateDailyLogs, "getDateDailyLogs", habit.steps, "habit.steps", state, date, "date")
 
-    if (!findDate) {
+    if (!findDate || !checkIfHabitStepFoundInDailyLogs) {
       resetSteps()
     }
 
