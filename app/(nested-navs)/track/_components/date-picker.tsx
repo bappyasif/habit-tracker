@@ -13,7 +13,6 @@ export function DatePicker({ date, onDateChange, habitCreatedAt }: DatePickerPro
   const handlePrevDay = () => {
     // so that it doesnt go back earlier than habit createAt date
     if (date.toDateString() == new Date(habitCreatedAt).toDateString()) return
-    // if (date.toDateString() === new Date().toDateString()) return
     const newDate = new Date(date)
     newDate.setDate(date.getDate() - 1)
     onDateChange(newDate)

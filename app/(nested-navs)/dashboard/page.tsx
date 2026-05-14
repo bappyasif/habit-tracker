@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardTabs } from "@/app/(nested-navs)/dashboard/_components/dashboard-tabs"
 import { AIInsightsCard } from "@/app/(nested-navs)/dashboard/_components/ai-insights-card"
-import { mockHabits, mockInsights } from "@/lib/mock-data"
+import { mockInsights } from "@/lib/mock-data"
 import Link from "next/link"
 import { Plus, Pencil, Trash, Sparkles, ArrowRight } from "lucide-react"
-import { TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
+import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { TodaysFocus } from "./_components/todays-focus"
 import { useToFetchHabits } from "./_hooks/fetchHabits"
 import { useRouter } from "next/navigation"
@@ -71,9 +71,7 @@ export default function DashboardPage() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
 
-          <TodaysFocus 
-            // selectedHabitId={selectedHabitId} 
-          />
+          <TodaysFocus />
 
           <h2 className="text-3xl font-bold my-10">Snapshots of your habits</h2>
 
@@ -124,7 +122,6 @@ export default function DashboardPage() {
                         }}
                       >
                         <Pencil className="w-4 h-4" />
-                        {/* <span>Edit</span> */}
                       </Link>
                       <Button
                         onClick={() => {

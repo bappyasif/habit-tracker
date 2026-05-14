@@ -9,7 +9,6 @@ export const useToFetchHabits = () => {
     const runOnce = () => {
         getAllHabits()
             .then(payload => {
-                console.log(payload, "payload")
                 if (payload?.data?.habits?.length) {
                     dispatch({ type: "IINITIALIZE", payload: payload?.data?.habits })
                     dispatch({ type: "UPDATE_HABIT_VIEWING", payload: payload?.data?.habits[0]?.id })

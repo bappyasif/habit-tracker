@@ -15,12 +15,6 @@ export const GET = async (request: Request) => {
 
 export const POST = async (request: Request) => {
     const userInp = await request.json()
-    console.log(userInp, "!!userinput data!!")
-
-    // return NextResponse.json({
-    //     message: "Habit created successfully",
-    //     data: userInp
-    // })
 
     const res = await fetch("http://0.0.0.0:8000/api/v1/daily-tracking/habit-timeline/", {
         method: "POST",
@@ -47,28 +41,12 @@ export const POST = async (request: Request) => {
 
 export const PUT = async (request: Request) => {
     const usrInp = await request.json()
-    // console.log(usrInp, "!!PUT data!!", "http://0.0.0.0.0:8000/api/v1/daily-tracking/habit-timeline/"+usrInp.habitId)
-
-    // const siphenedData = {
-    //     habit_id: usrInp.habitId,
-    //     date: usrInp.date,
-    //     is_completed: usrInp.isCompleted
-    // }
-
-    // console.log(siphenedData, "!!siphenedData for PUT!!")
-
-    // return NextResponse.json({
-    //     message: "Habit updated successfully",
-    //     data: siphenedData
-    // })
 
     if(!usrInp.habitId) {
         return NextResponse.json({
             message: "Habit ID is required for updating the habit timeline"
         })
     }
-
-    // console.log(usrInp, "!!user input for PUT!!")
 
     const res = await fetch("http://0.0.0.0:8000/api/v1/daily-tracking/habit-timeline/"+usrInp.habitId, {
         method: "PUT",
@@ -79,8 +57,6 @@ export const PUT = async (request: Request) => {
     })
 
     const data = await res.json()
-
-    // console.log(data, "!!response from PUT API call!!")
 
     return NextResponse.json({
         message: "Habit updated successfully",

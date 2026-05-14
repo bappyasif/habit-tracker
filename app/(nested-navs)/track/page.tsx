@@ -9,14 +9,11 @@ import { Save } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { LogRendering } from "./_components/log-rendering"
 import { useToHandleDailyTimelineSaveOrUpdate } from "./_hooks/useToHandleDailyTimelineSaveOrUpdate"
-import { set } from "date-fns"
 
 export default function TrackPage() {
   const { state, dispatch } = useTrackCtx()
 
   const habit = state.habits.find((habit) => Number(habit.id) == state.habitViewing)
-
-  console.log(habit, "habit from track page", state.habits)
 
   if (!habit) {
     return <div>Loading...</div>
@@ -26,27 +23,12 @@ export default function TrackPage() {
   const [measurementValue, setMeasurementValue] = useState(habit.measurement.target)
   const backup = habit?.steps.map(step => ({
     ...step,
-    // completed: false,
     notes: step.notes ?? "initial state from backup"
-    // notes: "initial state from backup"
   })) || []
 
   const [steps, setSteps] = useState(backup)
 
   const { dailyLogs } = state
-
-  // const updateSteps = (ids: (number | string)[]) => {
-  //   const tempSteps = steps.map(step => {
-  //     const sid = ids?.findIndex(v => v == step.id)
-
-  //     return {
-  //       ...step,
-  //       completed: sid !== -1 ? true : step.completed
-  //     }
-  //   })
-
-  //   setSteps(tempSteps)
-  // }
 
   const updateSteps = (ids: (number | string)[]) => {
     const tempSteps = backup.map(step => {
@@ -59,19 +41,10 @@ export default function TrackPage() {
       }
     })
 
-    console.log(tempSteps, "temp steps after updateSteps with ids", ids)
-
     setSteps(tempSteps)
   }
 
   const resetSteps = () => {
-    // const todaySteps = habit.steps.map(step => {
-    //   return {
-    //     ...step,
-    //     completed: false,
-    //     notes: step.notes ?? "reset for initial state"
-    //   }
-    // })
     const todaySteps = backup.map(step => {
       return {
         ...step,
@@ -82,15 +55,7 @@ export default function TrackPage() {
     setSteps(todaySteps)
   }
 
-  const {handleSaveLog, isSaving} = useToHandleDailyTimelineSaveOrUpdate({ habit, date, steps, updateSteps })
-
-  // useEffect(() => {
-  //   setSteps(backup)
-  // }, [])
-
-  // useEffect(() => {
-  //   resetSteps()
-  // }, [date])
+  const { handleSaveLog, isSaving } = useToHandleDailyTimelineSaveOrUpdate({ habit, date, steps, updateSteps })
 
   // update steps completion based on daily logs for the selected date
   useEffect(() => {
@@ -104,30 +69,18 @@ export default function TrackPage() {
         return logDate === today
       })
 
-      // console.log(findDate, "FOUND date", dlog, "daily log track page")
-
       if (findDate?.log_ids_with_notes?.length) {
         updateSteps(findDate.log_ids_with_notes.map((obj: { id: string; notes: string }) => obj.id))
       } else {
         resetSteps()
       }
 
-      // console.log(steps, "steps after checking daily logs for the date")
       return findDate
     })
-
-    // const getDateDailyLogs = checkIfHabitStepFoundInDailyLogs?.logs.find(entry => {
-    //   const logDate = new Date(entry.date).toDateString()
-    //   return logDate === today
-    // })
-
-    // console.log(checkIfHabitStepFoundInDailyLogs, "checkIfHabitStepFoundInDailyLogs", getDateDailyLogs, "getDateDailyLogs", habit.steps, "habit.steps", state, date, "date")
 
     if (!findDate || !checkIfHabitStepFoundInDailyLogs) {
       resetSteps()
     }
-
-    // resetSteps()
 
   }, [date, dailyLogs])
 
@@ -170,16 +123,8 @@ export default function TrackPage() {
         {/* Right Column - History */}
         <div>
           <LogRendering
-            // logs={logs}
-            // setLogs={setLogs}
             habit={habit}
           />
-          {/* <LogHistory
-            // logs={logs}
-            logs={mappedLogsFromHabit as LogEntry[]}
-            onUndo={handleUndoLast}
-            onDelete={(id) => setLogs(logs.filter((l) => l.id !== id))}
-          /> */}
         </div>
       </div>
     </main>
