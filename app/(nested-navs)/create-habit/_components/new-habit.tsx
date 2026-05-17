@@ -10,7 +10,7 @@ import { useEffect, useState } from "react"
 
 export const NewHabit = () => {
     const [habit, setHabit] = useState<TrackTypes>({
-        id: "",
+        id: crypto.randomUUID(),
         title: "",
         description: "",
         frequency: "daily",
@@ -37,7 +37,7 @@ export const NewHabit = () => {
         const addingJunkNotesToSteps = habitData.steps.map(step => {
             return {
                 ...step,
-                "notes": "Just Created Add Some Notes Later!!"
+                "notes": "Some Junk Notes For Later Use!!"
             }
         })
 
@@ -45,6 +45,10 @@ export const NewHabit = () => {
             ...habitData,
             steps: addingJunkNotesToSteps
         }
+
+        // console.log(moddedData, "moddedData to be sent to server for creating habit", habitData)
+
+        // return 
           
         // console.log(habitData, "habitData: new habit", moddedData)
         createHabit(moddedData).then(data => {
@@ -190,14 +194,15 @@ export const NewHabit = () => {
 }
 
 const HandleSteps = ({handleUpdateSteps}: {handleUpdateSteps: (newSteps: Steps[]) => void}) => {
-    const [steps, setSteps] = useState<Steps[]>([{ id: "1", title: "Step 1", time: "00:00", completed: false }])
+    const [steps, setSteps] = useState<Steps[]>([{ id: crypto.randomUUID(), title: "Step 1", time: "00:00", completed: false }])
 
     const handleRemoveStep = (id: string) => {
         setSteps(steps.filter(s => s.id !== id))
     }
 
     const addEmptyStep = () => {
-        setSteps([...steps, { id: (steps.length + 1).toString(), title: "", time: "00:00", completed: false }])
+        setSteps([...steps, { id: crypto.randomUUID(), title: "", time: "00:00", completed: false }])
+        // setSteps([...steps, { id: (steps.length + 1).toString(), title: "", time: "00:00", completed: false }])
     }
 
     const handleSave = () => {
@@ -219,9 +224,9 @@ const HandleSteps = ({handleUpdateSteps}: {handleUpdateSteps: (newSteps: Steps[]
             <div className="space-y-3 bg-muted/30 rounded-lg p-4">
                 {
                     steps
-                        .map((step) => (
+                        .map((step, idx) => (
                             <div key={step.id} className="flex items-center gap-2 bg-card p-3 rounded-lg border">
-                                <span className="text-sm font-semibold text-muted-foreground min-w-6">{step.id}.</span>
+                                <span className="text-sm font-semibold text-muted-foreground min-w-6">{idx + 1}.</span>
                                 <Input
                                     placeholder="Step title"
                                     value={step.title}
