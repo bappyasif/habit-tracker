@@ -7,7 +7,6 @@ import { Label } from "../../../../components/ui/label"
 import { Textarea } from "../../../../components/ui/textarea"
 import { Checkbox } from "../../../../components/ui/checkbox"
 import { ChevronDown, Mic, Camera } from "lucide-react"
-import { useTrackCtx } from "@/context-reducers/trackCtx"
 
 interface Step {
   id: string
@@ -35,6 +34,8 @@ export function StepLogger({ steps, onUpdateSteps, date }: StepLoggerProps) {
   const handleUpdateStep = (id: string, field: string, value: any) => {
     onUpdateSteps(steps.map((s) => (s.id === id ? { ...s, [field]: value } : s)))
   }
+
+  // console.log("steps in StepLogger: ", steps)
 
   return (
     <div className="space-y-3">
@@ -71,41 +72,50 @@ type StepLogProps = {
 
 
 const StepLog = ({ step, expandedStepId, setExpandedStepId, handleToggleStep, handleUpdateStep, idx, date }: StepLogProps) => {
-  const [stepChecked, setStepChecked] = useState(false)
+  // const [stepChecked, setStepChecked] = useState(false)
 
-  const { state: trackState } = useTrackCtx()
+  // const { state: trackState } = useTrackCtx()
 
-  const dlFound = trackState.dailyLogs.find(dlog => dlog.habitId == trackState.habitViewing)
+  // const [stepNotes, setStepNotes] = useState(step.notes)
 
-  const dateFilteredLogs = dlFound?.logs?.filter(log => new Date(log.date)?.toDateString() == date?.toDateString()) || []
+  // const dlFound = trackState.dailyLogs.find(dlog => dlog.habitId == trackState.habitViewing)
 
-  const stepNoteFromDailyLogsTimeline = dateFilteredLogs?.find(log => log.log_ids_with_notes.find(obj => obj.id == expandedStepId))?.log_ids_with_notes.find(obj => obj.id == expandedStepId)
+  // const dateFilteredLogs = dlFound?.logs?.filter(log => new Date(log.date)?.toDateString() == date?.toDateString()) || []
 
-  useEffect(() => {
-    if (stepNoteFromDailyLogsTimeline === undefined || dateFilteredLogs.length == 0) {
-      setStepChecked(false)
-    } else {
-      setStepChecked(stepNoteFromDailyLogsTimeline.id == expandedStepId)
-    }
-  }, [date, stepNoteFromDailyLogsTimeline])
+  // const stepNoteFromDailyLogsTimeline = dateFilteredLogs?.find(log => log.log_ids_with_notes.find(obj => obj.id == expandedStepId))?.log_ids_with_notes.find(obj => obj.id == expandedStepId)
+
+  // useEffect(() => {
+  //   if (stepNoteFromDailyLogsTimeline === undefined || dateFilteredLogs.length == 0) {
+  //     setStepChecked(false)
+  //   } else {
+  //     setStepChecked(stepNoteFromDailyLogsTimeline.id == expandedStepId)
+  //   }
+  // }, [date, stepNoteFromDailyLogsTimeline])
 
   useEffect(() => {
     setExpandedStepId(step.id)
   }, [])
 
+  // useEffect(() => {
+  //   setStepNotes(step.notes)
+  // }, [date])
+
   return (
     <Card
-      className={stepNoteFromDailyLogsTimeline?.id !== undefined && stepNoteFromDailyLogsTimeline?.id == expandedStepId ? "bg-accent/5" : ""}
+      // className={stepNoteFromDailyLogsTimeline?.id !== undefined && stepNoteFromDailyLogsTimeline?.id == expandedStepId ? "bg-accent/5" : ""}
+      // className={step?.id == expandedStepId && isToday ? "bg-accent/5" : ""}
+      className={step?.completed ? "bg-accent/5" : ""}
     >
       <CardContent className="p-4">
         <div
           className="flex items-center gap-4 cursor-pointer"
         >
           <Checkbox
-            checked={stepChecked}
+            // checked={stepChecked}
+            checked={step.completed}
 
             onCheckedChange={() => {
-              setStepChecked(v => !v)
+              // setStepChecked(v => !v)
               handleToggleStep(step.id)
             }}
             className="w-5 h-5"
@@ -116,7 +126,9 @@ const StepLog = ({ step, expandedStepId, setExpandedStepId, handleToggleStep, ha
             onClick={() => setExpandedStepId(expandedStepId === step.id ? null : step.id)}
           >
             <p
-              className={`font-semibold ${stepNoteFromDailyLogsTimeline?.id !== undefined && stepNoteFromDailyLogsTimeline?.id == expandedStepId ? "line-through text-muted-foreground" : ""}`}
+              // className={`font-semibold ${stepNoteFromDailyLogsTimeline?.id !== undefined && stepNoteFromDailyLogsTimeline?.id == expandedStepId ? "line-through text-muted-foreground" : ""}`}
+              // className={`font-semibold ${step.id !== undefined && step?.id == expandedStepId ? "line-through text-muted-foreground" : ""}`}
+              className={`font-semibold ${step.completed ? "line-through text-muted-foreground" : ""}`}
             >
               {idx + 1}. {step.title}
             </p>
@@ -137,11 +149,15 @@ const StepLog = ({ step, expandedStepId, setExpandedStepId, handleToggleStep, ha
                 Notes
               </Label>
               <Textarea
-                id={`notes-${step.id}`}
+                // id={`notes-${step.id}`}
+                id={`${step.id}`}
                 placeholder="Add notes about this step..."
                 value={step.notes || ""}
+                // defaultValue={step?.completed ? step?.notes : ""}
+                // value={step.id == expandedStepId ? step.notes : stepNotes}
                 onChange={(e) => {
                   handleUpdateStep(step.id, "notes", e.target.value)
+                  // setStepNotes(e.target.value)
                 }}
                 className="mt-1.5 min-h-20 resize-none"
               />

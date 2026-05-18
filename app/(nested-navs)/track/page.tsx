@@ -30,16 +30,25 @@ export default function TrackPage() {
 
   const { dailyLogs } = state
 
+  // console.log("dailyLogs in track page: ", dailyLogs)
+  // console.log("steps state in track page: ", steps)
+
   const updateSteps = (ids: (number | string)[]) => {
     const tempSteps = backup.map(step => {
       const sid = ids?.findIndex(v => v == step.id)
+      
+      const notesFromDailyLog = dailyLogs?.find(dlog => dlog.habitId == habit.id)?.logs?.find(log => new Date(log.date).toDateString() == date.toDateString())?.log_ids_with_notes?.find((obj: { id: string; notes: string }) => obj.id == step.id)?.notes
+
+      // console.log("sid: ", sid)
 
       return {
         ...step,
-        completed: sid !== -1 ? true : step.completed,
-        notes: step.notes || "None found: track page"
+        completed: sid !== -1 ? true : false,
+        notes: notesFromDailyLog || step.notes || "None found: track page"
       }
     })
+
+    // console.log("tempSteps in updateSteps: ", tempSteps)
 
     setSteps(tempSteps)
   }
@@ -68,6 +77,8 @@ export default function TrackPage() {
         const logDate = new Date(entry.date).toDateString()
         return logDate === today
       })
+
+      // console.log("findDate in useEffect: ", findDate)
 
       if (findDate?.log_ids_with_notes?.length) {
         updateSteps(findDate.log_ids_with_notes.map((obj: { id: string; notes: string }) => obj.id))

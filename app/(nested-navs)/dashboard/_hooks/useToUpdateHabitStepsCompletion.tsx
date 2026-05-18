@@ -14,9 +14,12 @@ export const useToUpdateHabitStepsCompletion = () => {
         const tempSteps = steps.map(step => {
             const sid = ids?.findIndex(v => v == step.id)
 
+            const notesFromDailyLog = dailyLogs?.find(dlog => dlog.habitId == habit?.id)?.logs?.find(log => new Date(log.date).toDateString() == date.toDateString())?.log_ids_with_notes?.find((obj: { id: string; notes: string }) => obj.id == step.id)?.notes
+
             return {
                 ...step,
-                completed: sid !== -1 ? true : step.completed
+                completed: sid !== -1 ? true : step.completed,
+                notes: notesFromDailyLog || step.notes || "None found: useToUpdateHabitStepsCompletion"
             }
         })
 
@@ -47,7 +50,8 @@ export const useToUpdateHabitStepsCompletion = () => {
             })
 
             if (findDate?.log_ids_with_notes?.length) {
-                updateSteps(findDate.ids)
+                // updateSteps(findDate.ids)
+                updateSteps(findDate.log_ids_with_notes.map((obj: { id: string; notes: string }) => obj.id))
             } else {
                 resetSteps()
             }
