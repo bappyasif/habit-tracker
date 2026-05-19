@@ -37,6 +37,7 @@ export default function TrackPage() {
     const tempSteps = backup.map(step => {
       const sid = ids?.findIndex(v => v == step.id)
       
+      // option 2: add one more prop top keep tracking of completed status for these ids in them as well (NOT GOING WAS ABLE TO SOLVE THIS FROM CUSTOM HOOK)
       const notesFromDailyLog = dailyLogs?.find(dlog => dlog.habitId == habit.id)?.logs?.find(log => new Date(log.date).toDateString() == date.toDateString())?.log_ids_with_notes?.find((obj: { id: string; notes: string }) => obj.id == step.id)?.notes
 
       // console.log("sid: ", sid)
@@ -98,6 +99,9 @@ export default function TrackPage() {
   if (!habit) {
     return <div>Loading...</div>
   }
+
+  console.log(backup, "backup")
+  console.log(steps, "steps")
 
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

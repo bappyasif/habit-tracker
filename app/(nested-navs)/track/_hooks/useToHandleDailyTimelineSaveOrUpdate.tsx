@@ -6,6 +6,8 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
     const [isSaving, setIsSaving] = useState(false)
     const { state, dispatch } = useTrackCtx()
 
+    console.log(steps, "steps in useToHandleDailyTimelineSaveOrUpdate"  )
+
     const { dailyLogs } = state
     const saveWeeklyTrackingTodb = async (data: any) => {
         const response = await createHabitWeeklyTimeline(data)
@@ -51,8 +53,16 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
             })),
         }
 
+        console.log("data to update daily timeline: ", tt)
+
+        // return
+
         updateHabitDailyTimeline(tt).then((resp) => {
             const dataUpdated = resp?.data?.entry?.filter((item: any) => item.habit_id == habit.id && new Date(item.date_stamp).toDateString() == date.toDateString())?.[0] || null
+
+            // console.log("resp: ", resp?.data?.entry)
+
+            // console.log("dataUpdated: ", dataUpdated)
 
             if (dataUpdated) {
                 dispatch({
@@ -107,7 +117,8 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
         // Simulate saving
         await new Promise((resolve) => setTimeout(resolve, 500))
 
-        habit.steps = steps
+        // checking if this ios necessary
+        // habit.steps = steps
 
         // update on daily tracking as well
         beginWeeklyCompletionRate()
@@ -118,19 +129,38 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
                 return logDate === date.toDateString()
             })
 
+            console.log("findDate: ", findDate)
+
             if (findDate) {
-                updateSteps(findDate.ids)
+                // updateSteps(findDate.ids)
+                updateSteps(findDate.log_ids_with_notes.map((obj: { id: string; notes: string }) => obj.id))
             }
             return findDate
         })
 
         // habit steps needs to be mapped with dailyLogs to get the accurate completed and total steps for that day as user can update the daily logs for any day and that should reflect in the completion percentage for that day in weekly tracking as well
-        const totalSteps = habit.steps.map(step => {
-            const findInDailyLogs = checkIfHabitStepFoundInDailyLogs?.logs.map((log) => new Date(log.date).toDateString() == date.toDateString() ? log.ids : []).flat().find((id: string) => id == step.id)
+        // const totalSteps = habit.steps.map(step => {
+        //     const findInDailyLogs = checkIfHabitStepFoundInDailyLogs?.logs.map((log) => new Date(log.date).toDateString() == date.toDateString() ? log.ids : []).flat().find((id: string) => id == step.id)
+
+        //     console.log("findInDailyLogs: ", findInDailyLogs, "step.id: ", step.id)
+
+        //     return {
+        //         ...step,
+        //         completed: findInDailyLogs ? false : true
+        //     }
+        // })
+
+        const totalSteps = steps.map(step => {
+            // const findInDailyLogs = checkIfHabitStepFoundInDailyLogs?.logs.map((log) => new Date(log.date).toDateString() == date.toDateString() ? log.log_ids_with_notes : []).flat().find((obj: { id: string; notes: string }) => obj.id == step.id)
+
+            // console.log("findInDailyLogs: ", findInDailyLogs, "step.id: ", step.id, step.completed)
+
+            // as we are currently keeping track of completed status in steps themselves, we can directly use that to update the totalSteps for daily timeline instead of mapping through daily logs again to find the completed status for each step as that will be redundant and can cause confusion as well
 
             return {
                 ...step,
-                completed: findInDailyLogs ? false : true
+                completed: step.completed
+                // completed: findInDailyLogs ? false : true
             }
         })
 
@@ -139,6 +169,8 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
         const percentile = Math.round((completedSteps.length / totalSteps.length) * 100)
 
         if (checkIfHabitStepFoundInDailyLogs) {
+            console.log("updating existing log in db for daily timeline")
+            console.log("totalSteps: ", totalSteps, "percentile: ", percentile)
             // update the existing log in db
             updateDailyTimeline(totalSteps, percentile)
         } else {
