@@ -38,7 +38,7 @@ export const useToUpdateHabitStepsCompletion = () => {
         }
     }
 
-    useEffect(() => {
+    const updateOrReset = () => {
         const today = date.toDateString()
 
         let findDate = undefined
@@ -61,13 +61,33 @@ export const useToUpdateHabitStepsCompletion = () => {
         if (!findDate) {
             resetSteps()
         }
+    }
+
+    useEffect(() => {
+        updateOrReset()
 
     }, [date, dailyLogs])
 
-    const updatedHabit = {
+    // useEffect(() => {
+    //     updateOrReset()
+    // }, [state])
+
+    // const updatedHabit = {
+    //     ...habit,
+    //     steps: steps
+    // }
+
+    const [updatedHabit, setUpdatedHabit] = useState({
         ...habit,
         steps: steps
-    }
+    })
+
+    useEffect(() => {
+        setUpdatedHabit({
+            ...habit,
+            steps: steps
+        })
+    }, [steps, habit])
 
     return {updatedHabit}
 }
