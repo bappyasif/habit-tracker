@@ -6,7 +6,7 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
     const [isSaving, setIsSaving] = useState(false)
     const { state, dispatch } = useTrackCtx()
 
-    console.log(steps, "steps in useToHandleDailyTimelineSaveOrUpdate"  )
+    // console.log(steps, "steps in useToHandleDailyTimelineSaveOrUpdate"  )
 
     const { dailyLogs } = state
     const saveWeeklyTrackingTodb = async (data: any) => {
@@ -53,7 +53,7 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
             })),
         }
 
-        console.log("data to update daily timeline: ", tt)
+        // console.log("data to update daily timeline: ", tt)
 
         // return
 
@@ -81,18 +81,21 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
     }
 
     const saveDailyTimelineInDb = (totalSteps: Steps[], percentile: number, completedSteps: Boolean[]) => {
-        const dbrq = {
-            habitId: habit.id,
-            week: {
-                weekStart: new Date(date.getTime() - (date.getDay() - 1) * 24 * 60 * 60 * 1000),
-                weekEnd: new Date(date.getTime() + (6 - date.getDay()) * 24 * 60 * 60 * 1000),
-                totalCompleted: completedSteps.length,
-                totalSteps: totalSteps.length,
-                percentile: percentile
-            }
-        }
+        // we will look into this after daily timeline is free of this final bit of bug where on after initial loading for a day (today) save doesnt really going through onbly after first restart its working fine
 
-        saveWeeklyTrackingTodb(dbrq)
+        // to troubleshoot takin this out for now after figuring it out we will bring this back or place it in more appropriate place
+        // const dbrq = {
+        //     habitId: habit.id,
+        //     week: {
+        //         weekStart: new Date(date.getTime() - (date.getDay() - 1) * 24 * 60 * 60 * 1000),
+        //         weekEnd: new Date(date.getTime() + (6 - date.getDay()) * 24 * 60 * 60 * 1000),
+        //         totalCompleted: completedSteps.length,
+        //         totalSteps: totalSteps.length,
+        //         percentile: percentile
+        //     }
+        // }
+
+        // saveWeeklyTrackingTodb(dbrq)
 
         // save to db for daily tracking as well
         saveDailyTrackingTodb({
@@ -109,6 +112,10 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
                 id: step.id.toString(),
                 notes: step.notes || "None found from fe",
             })),
+        }).then((resp) => {
+            console.log("saved daily timeline in db and got returned this resp: ", resp)
+        }).catch((err) => {
+            console.log("error while saving daily timeline in db: ", err)
         })
     }
 
@@ -175,6 +182,8 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
             updateDailyTimeline(totalSteps, percentile)
         } else {
             // save to db too
+            console.log("saving new log in db for daily timeline")
+            console.log("totalSteps: ", totalSteps, "percentile: ", percentile)
             saveDailyTimelineInDb(totalSteps, percentile, completedSteps)
         }
 

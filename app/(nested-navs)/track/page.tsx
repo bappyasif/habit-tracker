@@ -100,8 +100,8 @@ export default function TrackPage() {
     return <div>Loading...</div>
   }
 
-  console.log(backup, "backup")
-  console.log(steps, "steps")
+  // console.log(backup, "backup")
+  // console.log(steps, "steps")
 
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
