@@ -113,6 +113,7 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
                 notes: step.notes || "None found from fe",
             })),
         }).then((resp) => {
+            // problem is here on initial save after loading of today's log it creates a record in db apparently but not sending back a response from server!!
             console.log("saved daily timeline in db and got returned this resp: ", resp)
         }).catch((err) => {
             console.log("error while saving daily timeline in db: ", err)
