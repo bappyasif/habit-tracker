@@ -17,6 +17,7 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
     const saveDailyTrackingTodb = async (data: any) => {
         const response = await createHabitDailyTimeline(data)
         console.log(response, "response from saving timeline data for daily tracking", data)
+        return response
     }
 
     const beginWeeklyCompletionRate = () => {
@@ -102,16 +103,19 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
             habitId: habit.id.toString(),
             dateStamp: date,
             totalSteps: totalSteps.length,
-            steps: habit.steps.map(step => ({
-                ...step,
-                id: step.id.toString(),
-                notes: step.notes || "None found from fe"
-            })),
-            completedSteps: habit.steps.filter(step => step.completed).map(step => ({
-                ...step,
-                id: step.id.toString(),
-                notes: step.notes || "None found from fe",
-            })),
+            steps: totalSteps,
+            completedSteps: totalSteps.filter(step => step.completed),
+            percentile: percentile,
+            // steps: habit.steps.map(step => ({
+            //     ...step,
+            //     id: step.id.toString(),
+            //     notes: step.notes || "None found from fe"
+            // })),
+            // completedSteps: habit.steps.filter(step => step.completed).map(step => ({
+            //     ...step,
+            //     id: step.id.toString(),
+            //     notes: step.notes || "None found from fe",
+            // })),
         }).then((resp) => {
             // problem is here on initial save after loading of today's log it creates a record in db apparently but not sending back a response from server!!
             console.log("saved daily timeline in db and got returned this resp: ", resp)
