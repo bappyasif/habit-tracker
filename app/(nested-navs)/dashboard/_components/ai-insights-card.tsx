@@ -19,6 +19,8 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
 
   const { state } = useTrackCtx()
 
+  const { dailyLogs } = state
+
   const habitData = state.habits.find(habit => Number(habit.id) === state.habitViewing)
 
   const { fetchAiInsightsData } = useToFetchInsights()
@@ -26,12 +28,54 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
   const handleRefresh = async () => {
     setIsLoading(true)
 
-    const props = { title: habitData?.title || "", steps: habitData?.steps || [], totalCompleted: habitData?.totalCompleted || 0}
+    let props = { title: habitData?.title || "", steps: habitData?.steps || [], totalCompleted: habitData?.totalCompleted || 0 }
+
+    const checkLogsFound = dailyLogs.find(log => log.habitId == state.habitViewing)
+
+    // console.log(checkLogsFound, "checkDateLogsFound")
+
+    const dateLog = checkLogsFound?.logs.find(log => new Date(log.date).toDateString() == new Date().toDateString())
+
+    // console.log(dateLog, "dateLog")
+
+    const mapSteps = dateLog?.log_ids_with_notes.map(log => log.id)
+
+    const updatedMappedSteps = habitData?.steps.map(step => {
+      if (mapSteps?.includes(step.id)) {
+        return { ...step, completed: true }
+      }
+      return step
+    })
+
+    // const completedSteps = updatedMappedSteps?.filter(step => step.completed).length
+
+    // const totalCompleted = Math.round((completedSteps || 0 / updatedMappedSteps!?.length || 1) * 100)
+
+    // const updatedHabitData = { ...habitData, steps: updatedMappedSteps, totalCompleted }
+
+    // console.log(mapSteps, "mapSteps", updatedHabitData, "updatedHabitData")
+
+    if (updatedMappedSteps?.length !== 0) {
+      const completedSteps = updatedMappedSteps?.filter(step => step.completed).length
+
+      const totalCompleted = Math.round((completedSteps! / updatedMappedSteps!?.length) * 100)
+
+      const updatedHabitData = { ...habitData, steps: updatedMappedSteps, totalCompleted }
+      props = { title: updatedHabitData?.title || "", steps: updatedHabitData?.steps || [], totalCompleted: updatedHabitData?.totalCompleted || 0 }
+    }
+
+    // props = { title: updatedHabitData?.title || "", steps: updatedHabitData?.steps || habitData?.steps || [], totalCompleted: updatedHabitData?.totalCompleted || habitData?.totalCompleted || 0}
+
+    console.log(props, "PROPS", habitData)
+
+    // setIsLoading(false)
+
+    // return 
 
     fetchAiInsightsData(props)
-    .then(async () => {
-      setIsLoading(false)
-    })
+      .then(async () => {
+        setIsLoading(false)
+      })
   }
 
   const handleOnAdjustPlan = () => {

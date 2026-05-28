@@ -47,12 +47,20 @@ export const useToFetchInsights = () => {
     const fetchAiInsightsData = async (props: dailyProps) => {
         const { title, steps, totalCompleted } = props
 
+        const payloadData = {
+            name: title || "",
+            description:steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(" \n ") || "",
+            feedback:`completed about ${totalCompleted.toString()} percent of the steps` || ""
+        }
+
+        console.log(payloadData, "payloadData")
+
+        // return
+
         // daily insights
-        const data = await fetchAiInsights(
-            title || "",
-            steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(", ") || "",
-            `completed about ${totalCompleted.toString()} percent of the steps` || ""
-        )
+        const data = await fetchAiInsights(payloadData.name, payloadData.description, payloadData.feedback)
+
+        console.log(data, "data")
 
         if (data?.response) {
             updateInsights(data.response?.actionable_steps || [], data.response?.areas_for_improvement || [], data.response?.strengths || [], data.response?.actions || [])
