@@ -15,7 +15,7 @@ type weeklyProps = {
 export const useToFetchInsights = () => {
     const { state, dispatch } = useTrackCtx()
 
-    const updateInsights = (suggestions: string[], areasOfImprovement: string[], strengths: string[], actions: string[]) => {
+    const updateInsights = (suggestions: string[], areasOfImprovement: string[], strengths: string[], actions: string[], dailySummary: string) => {
         dispatch({
             type: "SET_INSIGHTS",
             payload: {
@@ -24,6 +24,7 @@ export const useToFetchInsights = () => {
                     areasOfImprovement: areasOfImprovement,
                     strengths: strengths,
                     actions: actions,
+                    dailySummary: dailySummary
                 },
                 habitId: state.habitViewing
             }
@@ -63,7 +64,7 @@ export const useToFetchInsights = () => {
         console.log(data, "data")
 
         if (data?.response) {
-            updateInsights(data.response?.actionable_steps || [], data.response?.areas_for_improvement || [], data.response?.strengths || [], data.response?.actions || [])
+            updateInsights(data.response?.actionable_steps || [], data.response?.areas_for_improvement || [], data.response?.strengths || [], data.response?.actions || [], data.response?.daily_summary || "")
             updateSteps(data.response?.actions || [])
         }
     }

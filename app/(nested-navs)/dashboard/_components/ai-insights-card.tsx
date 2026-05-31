@@ -25,6 +25,7 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
 
   const { fetchAiInsightsData } = useToFetchInsights()
 
+  // this is a single day data of a habit extracted and mapped based on found data frpom daily logs data from that day.
   const handleRefresh = async () => {
     setIsLoading(true)
 
@@ -95,7 +96,7 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
             <Lightbulb className="w-5 h-5 text-primary" />
             <div>
               <CardTitle>AI Insights</CardTitle>
-              <CardDescription>Weekly summary & suggestions</CardDescription>
+              <CardDescription>Daily summary & suggestions</CardDescription>
             </div>
           </div>
           <Button size="sm" variant="ghost" onClick={handleRefresh} disabled={isLoading}>

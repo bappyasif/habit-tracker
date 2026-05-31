@@ -20,6 +20,12 @@ export default function DashboardPage() {
 
   const { dispatch, state } = useTrackCtx()
 
+  const {habitInsights} = state
+
+  const getDailyHabitInsightsSummary = () => {
+    return habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.dailySummary
+  }
+
   // fetching habits from server
   useToFetchHabits()
 
@@ -159,7 +165,7 @@ export default function DashboardPage() {
 
           {/* AI Insights */}
           <AIInsightsCard
-            weeklyText={mockInsights.weeklyText}
+            weeklyText={getDailyHabitInsightsSummary() || mockInsights.weeklyText}
             suggestions={mockInsights.suggestions}
             onAdjustPlan={() => console.log("Adjust plan")}
           />
