@@ -11,10 +11,10 @@ import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
 interface AIInsightsCardProps {
   weeklyText: string
   suggestions: string[]
-  onAdjustPlan: () => void
+  // onAdjustPlan: () => void
 }
 
-export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsightsCardProps) {
+export function AIInsightsCard({ weeklyText, suggestions }: AIInsightsCardProps) {
   const [isLoading, setIsLoading] = useState(false)
 
   const { state } = useTrackCtx()
@@ -79,14 +79,14 @@ export function AIInsightsCard({ weeklyText, suggestions, onAdjustPlan }: AIInsi
       })
   }
 
-  const handleOnAdjustPlan = () => {
-    onAdjustPlan()
-  }
-
   const insights = state.habitInsights?.find(insight => insight.habitId === state.habitViewing)?.insights
 
   const adjustReady = state.habitInsights?.find(insight => insight.habitId === state.habitViewing)?.daily?.length || 0 > 0
 
+  const handleOnAdjustPlan = () => {
+    // onAdjustPlan()
+    console.log("handleOnAdjustPlan", insights)
+  }
 
   return (
     <Card className="bg-linear-to-br from-primary/10 to-accent/10 border-primary/20">

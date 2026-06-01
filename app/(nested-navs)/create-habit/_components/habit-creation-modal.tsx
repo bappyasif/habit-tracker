@@ -141,6 +141,8 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
   const checkDailyStepsExists = trackState.habitInsights?.find(insight => insight.habitId === trackState.habitViewing)?.daily
 
+  console.log(checkDailyStepsExists, "checkDailyStepsExists")
+
   useEffect(() => {
     if (trackState.habitViewing === -1) {
       setStage("new")
@@ -156,14 +158,47 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
   }, [trackState.habitViewing])
 
+  // const [steps, setSteps] = useState<Step[]>(habit.steps || [])
+
+  const onlyIncludeStepWithUniqueIds = (oldSteps:Step[], newSteps:Step[]) => {
+    const freshStpes = oldSteps
+
+    newSteps.forEach((step) => {
+      if (!freshStpes.find((freshStep) => freshStep.id === step.id || freshStep.title === step.title)) {
+        freshStpes.push(step)
+      }
+    })
+
+    return freshStpes
+
+  }
+
   useEffect(() => {
 
     if (checkDailyStepsExists?.length) {
       setTempHabit(habit => ({ ...habit, steps: [...checkDailyStepsExists] }))
       setTabs([{ label: "Edit", value: "edit" }])
       setStage("edit")
+
+      // setSteps(prev => [...prev, ...checkDailyStepsExists])
+      // setSteps(checkDailyStepsExists)
+      
+      // habit.steps = checkDailyStepsExists
+
+      const reassignIdsForAiSuggestedDailySteps = checkDailyStepsExists.map(step => ({ ...step, id: crypto.randomUUID() }))
+      // habit.steps = reassignIdsForAiSuggestedDailySteps
+
+      habit.steps = onlyIncludeStepWithUniqueIds(habit.steps, reassignIdsForAiSuggestedDailySteps)
+
+      console.log(habit.steps, "habit.steps")
     }
-  }, [trackState.habitInsights])
+  }, [checkDailyStepsExists])
+
+  // console.log(steps, "steps")
+
+  // const test = [...habit?.steps, ...checkDailyStepsExists! || []]
+
+  // habit.steps = test
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
@@ -214,6 +249,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
               // Edit Stage
               <HabitEdit
                 habit={habit}
+                // habit={tempHabit}
                 handleAddStep={handleAddStep}
                 handleUpdateStep={handleUpdateStep}
                 handleRemoveStep={handleRemoveStep}

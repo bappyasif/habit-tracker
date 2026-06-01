@@ -51,7 +51,7 @@ export const useToFetchInsights = () => {
         const payloadData = {
             name: title || "",
             description:steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(" \n ") || "",
-            feedback:`completed about ${totalCompleted.toString()} percent of the steps` || ""
+            feedback:`completed about ${totalCompleted.toString()} percent of the steps for today` || ""
         }
 
         console.log(payloadData, "payloadData")

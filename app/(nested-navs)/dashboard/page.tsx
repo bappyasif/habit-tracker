@@ -167,7 +167,7 @@ export default function DashboardPage() {
           <AIInsightsCard
             weeklyText={getDailyHabitInsightsSummary() || mockInsights.weeklyText}
             suggestions={mockInsights.suggestions}
-            onAdjustPlan={() => console.log("Adjust plan")}
+            // onAdjustPlan={() => console.log("Adjust plan")}
           />
 
           {/* Notifications */}
