@@ -22,9 +22,11 @@ export default function DashboardPage() {
 
   const {habitInsights} = state
 
-  const getDailyHabitInsightsSummary = () => {
-    return habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.dailySummary
-  }
+  const weeklyText = habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.dailySummary
+
+  // const getDailyHabitInsightsSummary = () => {
+  //   return habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.dailySummary
+  // }
 
   // fetching habits from server
   useToFetchHabits()
@@ -165,7 +167,8 @@ export default function DashboardPage() {
 
           {/* AI Insights */}
           <AIInsightsCard
-            weeklyText={getDailyHabitInsightsSummary() || mockInsights.weeklyText}
+            // weeklyText={getDailyHabitInsightsSummary() || weeklyText || mockInsights.weeklyText}
+            weeklyText={weeklyText || mockInsights.weeklyText}
             suggestions={mockInsights.suggestions}
             // onAdjustPlan={() => console.log("Adjust plan")}
           />

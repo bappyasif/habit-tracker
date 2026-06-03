@@ -9,6 +9,7 @@ import { HabitEdit } from "./habit-edit"
 import { NewHabit } from "./new-habit"
 import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
 import { createHabit, updateHabit } from "@/server-calls/habits"
+import Link from "next/link"
 
 interface Step {
   id: string
@@ -56,12 +57,13 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
       payload: -1
     })
 
-    trackDispatch({
-      type: "DELETE_INSIGHTS_FOR_HABIT",
-      payload: {
-        habitId: trackState.habitViewing
-      }
-    })
+    // this will delete inisghts data when canceling out of update from modal, now its a choice whether to keep old data after canceling out of update or not, if we want to keep then we can remove this dispatch call
+    // trackDispatch({
+    //   type: "DELETE_INSIGHTS_FOR_HABIT",
+    //   payload: {
+    //     habitId: trackState.habitViewing
+    //   }
+    // })
   }
 
   const handleAddStep = () => {
@@ -137,6 +139,13 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     alert("update")
     updateHabit(habit)
     onClose()
+    // cleaning out old insights data for the habit being updated, we can choose to keep old insights data or not after update, if we want to keep then we can remove this dispatch call
+    trackDispatch({
+      type: "DELETE_INSIGHTS_FOR_HABIT",
+      payload: {
+        habitId: trackState.habitViewing
+      }
+    })
   }
 
   const checkDailyStepsExists = trackState.habitInsights?.find(insight => insight.habitId === trackState.habitViewing)?.daily
@@ -266,12 +275,15 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
               ? null
               : (
                 <div className="flex gap-3 pt-6 border-t mt-6">
-                  <Button variant="outline"
+                  {/* <Button variant="outline"
                     onClick={handleClose}
                     className="flex-1 bg-transparent"
                   >
                     [Cancel]
-                  </Button>
+                  </Button> */}
+                  <Link href="/dashboard" className="flex-1 w-full bg-primary/10 text-primary rounded-md flex items-center justify-center hover:bg-primary/20 transition cursor-pointer font-semibold py-2" onClick={handleClose}>
+                      Cancel
+                  </Link>
                   <Button 
                     onClick={stage === "edit" ? handleUpdate : handleSave}
                     className="flex-1"
