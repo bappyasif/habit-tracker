@@ -96,6 +96,18 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
   }
 
   const handleUpdateStep = (id: string, field: string, value: any) => {
+    // convert time string to date time string if field is "time"
+    // if (field === "time") {
+    //   const [hours, minutes] = value.split(":").map(Number)
+    //   const date = new Date()
+    //   date.setHours(hours)
+    //   date.setMinutes(minutes)
+    //   value = date.toISOString()
+    // }
+
+    // field == "time" && console.log(value, "updated time value")
+
+
     trackDispatch({
       type: 'UPDATE_HABIT_PAYLOAD',
       payload: {
@@ -124,7 +136,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
   const saveToDb = (habitData: TrackTypes) => {
     createHabit(habitData).then(data => {
       console.log(data, "created habit")
-      if(data) {
+      if (data) {
         onSave(habitData)
       }
     }).catch(err => console.log(err))
@@ -137,7 +149,38 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
   const handleUpdate = () => {
     alert("update")
-    updateHabit(habit)
+
+    // need convert habit steps time to date time string before saving to db, currently steps time is in "HH:mm" format which is good for displaying and editing in UI but when saving to db we want to convert it to date time string so that we can use it for daily timeline and insights generation
+    const convertedSteps = habit.steps.map(step => {
+      // 1. Clean the string: Remove AM/PM and trim spaces
+      const cleanTime = step.time.replace(/(AM|PM)/gi, '').trim();
+
+      // 2. Split and parse numbers safely
+      const [hoursStr, minutesStr] = cleanTime.split(":");
+      let hours = parseInt(hoursStr, 10);
+      const minutes = parseInt(minutesStr, 10);
+
+      // 3. Convert 12h to 24h format
+      const isPM = step.time.toUpperCase().includes("PM");
+      const isAM = step.time.toUpperCase().includes("AM");
+
+      if (isPM && hours < 12) hours += 12; // 1 PM -> 13
+      if (isAM && hours === 12) hours = 0; // 12 AM -> 0
+
+      // 4. Set time safely
+      const date = new Date();
+      date.setHours(hours, minutes, 0, 0); // Set hours, mins, secs, ms
+
+      return { ...step, time: date.toISOString() };
+    });
+
+    const updatedHabit = { ...habit, steps: convertedSteps };
+
+    // console.log(habit.steps, "original steps")
+    // console.log(convertedSteps, "converted steps")
+
+    // updateHabit(habit)
+    updateHabit(updatedHabit)
     onClose()
     // cleaning out old insights data for the habit being updated, we can choose to keep old insights data or not after update, if we want to keep then we can remove this dispatch call
     trackDispatch({
@@ -169,7 +212,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
   // const [steps, setSteps] = useState<Step[]>(habit.steps || [])
 
-  const onlyIncludeStepWithUniqueIds = (oldSteps:Step[], newSteps:Step[]) => {
+  const onlyIncludeStepWithUniqueIds = (oldSteps: Step[], newSteps: Step[]) => {
     const freshStpes = oldSteps
 
     newSteps.forEach((step) => {
@@ -191,7 +234,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
       // setSteps(prev => [...prev, ...checkDailyStepsExists])
       // setSteps(checkDailyStepsExists)
-      
+
       // habit.steps = checkDailyStepsExists
 
       const reassignIdsForAiSuggestedDailySteps = checkDailyStepsExists.map(step => ({ ...step, id: crypto.randomUUID() }))
@@ -282,9 +325,9 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
                     [Cancel]
                   </Button> */}
                   <Link href="/dashboard" className="flex-1 w-full bg-primary/10 text-primary rounded-md flex items-center justify-center hover:bg-primary/20 transition cursor-pointer font-semibold py-2" onClick={handleClose}>
-                      Cancel
+                    Cancel
                   </Link>
-                  <Button 
+                  <Button
                     onClick={stage === "edit" ? handleUpdate : handleSave}
                     className="flex-1"
                   >
