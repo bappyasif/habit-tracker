@@ -61,26 +61,73 @@ export default function ReportsPage() {
 
   const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
 
+  const extractWeekworthOfDailyLogs = () => {
+    const dailyLogs = state.dailyLogs.filter(log => log.habitId == state.habitViewing)
+    // console.log(dailyLogs, "all daily logs for the habit", state.dailyLogs)
+    const last7DaysLogs = dailyLogs.slice(-7)
+
+    return last7DaysLogs
+  }
+
+  const mapWeeklyDtaWithHabitData = () => {
+    const weekworthOfDailyLogs = extractWeekworthOfDailyLogs()
+    const weeklyLogs = weekworthOfDailyLogs.find(log => log.habitId == state.habitViewing)
+
+    // lets recreate Habit data by updating steps data that are found in weekly logs with the completed status from logs
+    const mappedHabitSteps = habit?.steps.map(step => {
+      const logForStep = weeklyLogs?.logs.find(log => log.log_ids_with_notes.some(logWithNote => logWithNote.id == step.id))
+      if (logForStep) {
+        return {
+          ...step,
+          completed: logForStep.log_ids_with_notes.length ? true : false
+        }
+      }
+      return step
+    })
+
+    // console.log(mappedHabitSteps, "mapped habits with weekly logs")
+
+
+    // console.log(weeklyLogs, "weekly logs for the habit")
+
+    return mappedHabitSteps
+  }
+
+  // mapWeeklyDtaWithHabitData()
+
+  // console.log(extractWeekworthOfDailyLogs(), "week worth of daily logs")
+
   const { fetchWeeklySummary } = useToFetchInsights()
 
   const { lock, toggleLock } = useToBooleanLock()
 
-  const completionrate = state.completionRate.find(rate => Number(rate.habitId) === state.habitViewing)?.weeks
+  // const completionrate = state.completionRate.find(rate => Number(rate.habitId) === state.habitViewing)?.weeks
+
+  // console.log(completionrate, "completion rate", state.completionRate)
 
   const handleRegenerateSummary = async () => {
     toggleLock()
+    const allStepsFromThisWeek = mapWeeklyDtaWithHabitData() || habit?.steps || []
+
+    const completionRate = allStepsFromThisWeek.length ? (allStepsFromThisWeek.filter(step => step.completed).length / allStepsFromThisWeek.length) * 100 : 0
+    
+    // console.log(allStepsFromThisWeek, "all steps from this week")
+
+    // console.log(completionRate, "completion rate")
+
     fetchWeeklySummary({
       title: habit?.title || "",
       steps: habit?.steps || [],
-      totalCompleted: completionrate ? completionrate[completionrate.length - 1]?.percentile || 0 : 0,
+      // totalCompleted: completionrate ? completionrate[completionrate.length - 1]?.percentile || 0 : 0,
+      totalCompleted: completionRate
     }).then(data => {
+      console.log(data, "weekly summary data from AI")
       dispatch({
         type: "add-weekly-summary-insights",
         payload: {
           habitId: habit?.id,
           data
         }
-
       })
 
     }).catch(err => console.log(err))
@@ -96,20 +143,26 @@ export default function ReportsPage() {
   }
 
   useEffect(() => {
-    fetchWeeklySummary({
-      title: habit?.title || "",
-      steps: habit?.steps || [],
-      totalCompleted: completionrate ? completionrate[completionrate.length - 1]?.percentile || 0 : 0,
-    }).then(data => {
-      dispatch({
-        type: "add-weekly-summary-insights",
-        payload: {
-          habitId: habit?.id,
-          data
-        }
-      })
-    }).catch(err => console.log(err))
-  }, [])
+    if (state.dailyLogs.length && !lock) {
+      handleRegenerateSummary()
+    }
+  }, [state.dailyLogs])
+
+  // useEffect(() => {
+  //   fetchWeeklySummary({
+  //     title: habit?.title || "",
+  //     steps: habit?.steps || [],
+  //     totalCompleted: completionrate ? completionrate[completionrate.length - 1]?.percentile || 0 : 0,
+  //   }).then(data => {
+  //     dispatch({
+  //       type: "add-weekly-summary-insights",
+  //       payload: {
+  //         habitId: habit?.id,
+  //         data
+  //       }
+  //     })
+  //   }).catch(err => console.log(err))
+  // }, [])
 
   const habitWeeklyData = state.habitInsights.find(insight => Number(insight.habitId) === state.habitViewing)
 
