@@ -111,17 +111,23 @@ export default function ReportsPage() {
 
   const [weeklySummary, setWeeklySummary] = useState<string>("")
 
-  const { mapWeeklyDtaWithHabitData } = useToHandleMappingHabitSteps()
+  const { mapWeeklyDataWithHabitData } = useToHandleMappingHabitSteps()
 
   const handleRegenerateSummary = async () => {
     toggleLock()
-    const allStepsFromThisWeek = mapWeeklyDtaWithHabitData() || habit?.steps || []
+    // const allStepsFromThisWeek = mapWeeklyDataWithHabitData() || habit?.steps || []
+    const allStepsFromThisWeek = mapWeeklyDataWithHabitData() || []
 
-    const completionRate = allStepsFromThisWeek.length ? (allStepsFromThisWeek.filter(step => step.completed).length / allStepsFromThisWeek.length) * 100 : 0
+    const allCompletedStepsFromThisWeek = allStepsFromThisWeek.filter(step => step.completed).length
+
+    // console.log(allCompletedStepsFromThisWeek, "all completed steps from this week")
+
+    // const completionRate = allStepsFromThisWeek.length ? (allStepsFromThisWeek.filter(step => step.completed).length / allStepsFromThisWeek.length) * 100 : 0
+    const completionRate = allStepsFromThisWeek.length ? (allCompletedStepsFromThisWeek / allStepsFromThisWeek.length) * 100 : 0
     
     // console.log(allStepsFromThisWeek, "all steps from this week")
 
-    // console.log(completionRate, "completion rate")
+    // console.log(completionRate, "completion rate for this week")
 
     fetchWeeklySummary({
       title: habit?.title || "",
@@ -148,6 +154,18 @@ export default function ReportsPage() {
       })
   }
 
+  const {mapMonthLongDataWithHabitData} = useToHandleMappingHabitSteps()
+
+  const handleRegenerateMonthlyTrend = async () => {
+    const allStepsFromThisMonth = mapMonthLongDataWithHabitData() || habit?.steps || []
+
+    const completionRate = allStepsFromThisMonth.length ? (allStepsFromThisMonth.filter(step => step.completed).length / allStepsFromThisMonth.length) * 100 : 0
+
+    console.log(allStepsFromThisMonth, "all steps from this month")
+
+    console.log(completionRate, "completion rate for the month")
+  }
+
   const handleRequestAdjustment = async () => {
     // Simulate AI adjustment request
     alert("Adjustment request sent to AI!")
@@ -158,6 +176,7 @@ export default function ReportsPage() {
   useEffect(() => {
     if (state.dailyLogs.length && !lock) {
       handleRegenerateSummary()
+      handleRegenerateMonthlyTrend()
       // .then(() => {
       //   setWeeklySummary(habitWeeklyData?.weekly || mockInsights.weeklyText)
       // })
