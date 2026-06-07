@@ -10,6 +10,7 @@ import { CalendarDays } from "lucide-react"
 import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { useToBooleanLock } from "@/hooks/useToBooleanLock"
+import { useToHandleMappingHabitSteps } from "./_hooks/handleMappingHabitSteps"
 
 interface Suggestion {
   id: string
@@ -61,37 +62,40 @@ export default function ReportsPage() {
 
   const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
 
-  const extractWeekworthOfDailyLogs = () => {
-    const dailyLogs = state.dailyLogs.filter(log => log.habitId == state.habitViewing)
-    // console.log(dailyLogs, "all daily logs for the habit", state.dailyLogs)
-    const last7DaysLogs = dailyLogs.slice(-7)
+  // const extractWeekworthOfDailyLogs = () => {
+  //   const dailyLogs = state.dailyLogs.filter(log => log.habitId == state.habitViewing)
+  //   // console.log(dailyLogs, "all daily logs for the habit", state.dailyLogs)
+  //   const last7DaysLogs = dailyLogs.slice(-7)
 
-    return last7DaysLogs
-  }
+  //   return last7DaysLogs
+  // }
 
-  const mapWeeklyDtaWithHabitData = () => {
-    const weekworthOfDailyLogs = extractWeekworthOfDailyLogs()
-    const weeklyLogs = weekworthOfDailyLogs.find(log => log.habitId == state.habitViewing)
+  // const mapWeeklyDtaWithHabitData = () => {
+  //   const weekworthOfDailyLogs = extractWeekworthOfDailyLogs()
+  //   const weeklyLogs = weekworthOfDailyLogs.find(log => log.habitId == state.habitViewing)
 
-    // lets recreate Habit data by updating steps data that are found in weekly logs with the completed status from logs
-    const mappedHabitSteps = habit?.steps.map(step => {
-      const logForStep = weeklyLogs?.logs.find(log => log.log_ids_with_notes.some(logWithNote => logWithNote.id == step.id))
-      if (logForStep) {
-        return {
-          ...step,
-          completed: logForStep.log_ids_with_notes.length ? true : false
-        }
-      }
-      return step
-    })
+  //   // lets recreate Habit data by updating steps data that are found in weekly logs with the completed status from logs
+  //   const mappedHabitSteps = habit?.steps.map(step => {
+  //     const logForStep = weeklyLogs?.logs.find(log => log.log_ids_with_notes.some(logWithNote => logWithNote.id == step.id))
+  //     if (logForStep) {
+  //       return {
+  //         ...step,
+  //         completed: logForStep.log_ids_with_notes.length ? true : false
+  //       }
+  //     }
+  //     return step
+  //   })
 
-    // console.log(mappedHabitSteps, "mapped habits with weekly logs")
+  //   // console.log(mappedHabitSteps, "mapped habits with weekly logs")
 
 
-    // console.log(weeklyLogs, "weekly logs for the habit")
+  //   // console.log(weeklyLogs, "weekly logs for the habit")
 
-    return mappedHabitSteps
-  }
+  //   return mappedHabitSteps
+  // }
+
+
+
 
   // mapWeeklyDtaWithHabitData()
 
@@ -104,6 +108,10 @@ export default function ReportsPage() {
   // const completionrate = state.completionRate.find(rate => Number(rate.habitId) === state.habitViewing)?.weeks
 
   // console.log(completionrate, "completion rate", state.completionRate)
+
+  const [weeklySummary, setWeeklySummary] = useState<string>("")
+
+  const { mapWeeklyDtaWithHabitData } = useToHandleMappingHabitSteps()
 
   const handleRegenerateSummary = async () => {
     toggleLock()
@@ -122,6 +130,9 @@ export default function ReportsPage() {
       totalCompleted: completionRate
     }).then(data => {
       console.log(data, "weekly summary data from AI")
+      
+      setWeeklySummary(data)
+
       dispatch({
         type: "add-weekly-summary-insights",
         payload: {
@@ -142,9 +153,14 @@ export default function ReportsPage() {
     alert("Adjustment request sent to AI!")
   }
 
+  // const habitWeeklyData = state.habitInsights.find(insight => Number(insight.habitId) === state.habitViewing)
+
   useEffect(() => {
     if (state.dailyLogs.length && !lock) {
       handleRegenerateSummary()
+      // .then(() => {
+      //   setWeeklySummary(habitWeeklyData?.weekly || mockInsights.weeklyText)
+      // })
     }
   }, [state.dailyLogs])
 
@@ -164,7 +180,7 @@ export default function ReportsPage() {
   //   }).catch(err => console.log(err))
   // }, [])
 
-  const habitWeeklyData = state.habitInsights.find(insight => Number(insight.habitId) === state.habitViewing)
+  // const habitWeeklyData = state.habitInsights.find(insight => Number(insight.habitId) === state.habitViewing)
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -178,7 +194,10 @@ export default function ReportsPage() {
       <div className="mb-8">
         <InsightCards
           btnLocked={lock}
-          weeklySummary={habitWeeklyData?.weekly || mockInsights.weeklyText}
+          // weeklySummary={habitWeeklyData?.weekly || mockInsights.weeklyText}
+          // weeklySummary={habitWeeklyData?.weekly ? habitWeeklyData.weekly : !lock && habitWeeklyData?.weekly ? "Loading..." : "No data yet. Log your habit daily to see insights here!"}
+          // weeklySummary={habitWeeklyData?.weekly ? habitWeeklyData.weekly : "Loading data...."}
+          weeklySummary={weeklySummary || "Loading data...."}
           monthlyTrend={mockInsights.monthlyText}
           goalStatus={82}
           onRegenerateSummary={handleRegenerateSummary}
