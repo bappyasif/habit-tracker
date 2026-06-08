@@ -118,12 +118,12 @@ export default function ReportsPage() {
     // const allStepsFromThisWeek = mapWeeklyDataWithHabitData() || habit?.steps || []
     const allStepsFromThisWeek = mapWeeklyDataWithHabitData() || []
 
-    const allCompletedStepsFromThisWeek = allStepsFromThisWeek.filter(step => step.completed).length
+    const allCompletedStepsFromThisWeek = allStepsFromThisWeek.filter(step => step.completed)
 
     // console.log(allCompletedStepsFromThisWeek, "all completed steps from this week")
 
     // const completionRate = allStepsFromThisWeek.length ? (allStepsFromThisWeek.filter(step => step.completed).length / allStepsFromThisWeek.length) * 100 : 0
-    const completionRate = allStepsFromThisWeek.length ? (allCompletedStepsFromThisWeek / allStepsFromThisWeek.length) * 100 : 0
+    const completionRate = allStepsFromThisWeek.length ? (allCompletedStepsFromThisWeek.length / allStepsFromThisWeek.length) * 100 : 0
     
     // console.log(allStepsFromThisWeek, "all steps from this week")
 
@@ -159,7 +159,13 @@ export default function ReportsPage() {
   const handleRegenerateMonthlyTrend = async () => {
     const allStepsFromThisMonth = mapMonthLongDataWithHabitData() || habit?.steps || []
 
-    const completionRate = allStepsFromThisMonth.length ? (allStepsFromThisMonth.filter(step => step.completed).length / allStepsFromThisMonth.length) * 100 : 0
+    const allCompletedStepsFromThisMonth = allStepsFromThisMonth.filter(step => step.completed)
+
+    // console.log(allCompletedStepsFromThisMonth, "all completed steps from this month")
+
+    const completionRate = allStepsFromThisMonth.length ? (allCompletedStepsFromThisMonth.length / allStepsFromThisMonth.length) * 100 : 0
+
+    // const completionRate = allStepsFromThisMonth.length ? (allStepsFromThisMonth.filter(step => step.completed).length / allStepsFromThisMonth.length) * 100 : 0
 
     console.log(allStepsFromThisMonth, "all steps from this month")
 

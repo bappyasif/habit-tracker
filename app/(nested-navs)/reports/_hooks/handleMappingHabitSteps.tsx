@@ -49,19 +49,46 @@ export const useToHandleMappingHabitSteps = () => {
         const mappedHabitSteps = []
 
         for (let i = 0; i < extractedLogs?.logs.length!; i++) {
-            const mapped = habit?.steps.map(step => {
-                const logForStep = extractedLogs?.logs.find(log => log.log_ids_with_notes.some(logWithNote => logWithNote.id == step.id))
-                if (logForStep) {
-                    return {
-                        ...step,
-                        completed: logForStep.log_ids_with_notes.length ? true : false
-                    }
+            const steps = habit?.steps.map(step => {
+                const logForStep = extractedLogs?.logs[i].log_ids_with_notes.find(logWithNote => logWithNote.id == step.id)
+
+                // console.log(logForStep, "log for step", step, extractedLogs?.logs[i])
+
+                return {
+                    ...step,
+                    completed: logForStep ? true : false,
+                    notes: logForStep ? logForStep.notes : "None found: mappedHabitStepsBasedOnExtractedDailyLogs",
+                    datestamp: extractedLogs?.logs[i].date,
+                    // percentile: extractedLogs?.logs[i].percentile,
+                    totalSteps: extractedLogs?.logs[i].totalSteps,
                 }
-                return step
             })
 
-            mappedHabitSteps.push(...mapped!)
+            // console.log(steps, "mapped habit steps for the habit based on the extracted daily logs")
+            mappedHabitSteps.push(...steps!)
         }
+
+
+        // for (let i = 0; i < extractedLogs?.logs.length! - 1; i++) {
+        //     const mapped = habit?.steps.map(step => {
+        //         const logForStep = extractedLogs?.logs.find(log => log.log_ids_with_notes.some(logWithNote => logWithNote.id == step.id))
+        //         if (logForStep) {
+        //             return {
+        //                 ...step,
+        //                 completed: logForStep.log_ids_with_notes.length ? true : false,
+        //                 notes: logForStep.notes,
+        //                 datestamp: logForStep.date,
+        //                 // percentile: logForStep.percentile,
+        //                 totalSteps: logForStep.totalSteps,
+        //             }
+        //         }
+        //         return step
+        //     })
+
+        //     console.log(mapped, "mapped habit steps for the habit based on the extracted daily logs")
+
+        //     mappedHabitSteps.push(...mapped!)
+        // }
 
         // const mappedHabitSteps = habit?.steps.map(step => {
         //     const logForStep = etractedLogs?.logs.find(log => log.log_ids_with_notes.some(logWithNote => logWithNote.id == step.id))
