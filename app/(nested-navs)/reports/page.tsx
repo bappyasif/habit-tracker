@@ -101,7 +101,7 @@ export default function ReportsPage() {
 
   // console.log(extractWeekworthOfDailyLogs(), "week worth of daily logs")
 
-  const { fetchWeeklySummary } = useToFetchInsights()
+  const { fetchWeeklySummary, fetchMonthlySummary } = useToFetchInsights()
 
   const { lock, toggleLock } = useToBooleanLock()
 
@@ -154,6 +154,8 @@ export default function ReportsPage() {
       })
   }
 
+  const [monthlyTrends, setMonthlyTrends] = useState<string>("")
+
   const {mapMonthLongDataWithHabitData} = useToHandleMappingHabitSteps()
 
   const handleRegenerateMonthlyTrend = async () => {
@@ -170,6 +172,21 @@ export default function ReportsPage() {
     console.log(allStepsFromThisMonth, "all steps from this month")
 
     console.log(completionRate, "completion rate for the month")
+
+    fetchMonthlySummary({
+      title: habit?.title || "",
+      // steps: habit?.steps || [],
+      steps: allStepsFromThisMonth.map(step => ({
+        id: step.id,
+        title: step.title,
+        time: step.time,
+        completed: step.completed
+      })),
+      totalCompleted: completionRate
+    }).then(data => {
+      console.log(data, "monthly trends from AI")
+      data && setMonthlyTrends(data)
+    }).catch(err => console.log(err))
   }
 
   const handleRequestAdjustment = async () => {
@@ -223,7 +240,8 @@ export default function ReportsPage() {
           // weeklySummary={habitWeeklyData?.weekly ? habitWeeklyData.weekly : !lock && habitWeeklyData?.weekly ? "Loading..." : "No data yet. Log your habit daily to see insights here!"}
           // weeklySummary={habitWeeklyData?.weekly ? habitWeeklyData.weekly : "Loading data...."}
           weeklySummary={weeklySummary || "Loading data...."}
-          monthlyTrend={mockInsights.monthlyText}
+          // monthlyTrend={mockInsights.monthlyText}
+          monthlyTrend={monthlyTrends || "Loading data...."}
           goalStatus={82}
           onRegenerateSummary={handleRegenerateSummary}
           onRequestAdjustment={handleRequestAdjustment}

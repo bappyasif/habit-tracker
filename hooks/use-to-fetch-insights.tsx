@@ -76,7 +76,7 @@ export const useToFetchInsights = () => {
             title || "",
             steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(", ") || "",
             `completed about ${totalCompleted.toString()} percent of the steps` || "", 
-            "ai-weekly-summary-insights"
+            "ai-monthly-trends"
         )
 
         if (data?.response) {
@@ -84,5 +84,22 @@ export const useToFetchInsights = () => {
         }
     }
 
-    return { fetchAiInsightsData, fetchWeeklySummary }
+    const fetchMonthlySummary = async (props: dailyProps) => {
+        const { title, steps, totalCompleted } = props
+
+        const response = await fetchAiInsights(
+            title || "",
+            steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(", ") || "",
+            `completed about ${totalCompleted.toString()} percent of the steps` || "", 
+            "ai-monthly-trends"
+        )
+
+        console.log(response, "response")
+
+        if (response?.trends) {
+            return response.trends
+        }
+    }
+
+    return { fetchAiInsightsData, fetchWeeklySummary, fetchMonthlySummary }
 }
