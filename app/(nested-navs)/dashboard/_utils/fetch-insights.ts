@@ -5,8 +5,6 @@ export const fetchAiInsights = async (name: string, description: string, feedbac
 
     const urlStr = `/api/${url}`
 
-    console.log(urlStr, hobbyName)
-
     try {
 
       if(!hobbyName || !hobbyDescription || !hobbyFeedback) {

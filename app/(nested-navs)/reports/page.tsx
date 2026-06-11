@@ -62,52 +62,9 @@ export default function ReportsPage() {
 
   const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
 
-  // const extractWeekworthOfDailyLogs = () => {
-  //   const dailyLogs = state.dailyLogs.filter(log => log.habitId == state.habitViewing)
-  //   // console.log(dailyLogs, "all daily logs for the habit", state.dailyLogs)
-  //   const last7DaysLogs = dailyLogs.slice(-7)
-
-  //   return last7DaysLogs
-  // }
-
-  // const mapWeeklyDtaWithHabitData = () => {
-  //   const weekworthOfDailyLogs = extractWeekworthOfDailyLogs()
-  //   const weeklyLogs = weekworthOfDailyLogs.find(log => log.habitId == state.habitViewing)
-
-  //   // lets recreate Habit data by updating steps data that are found in weekly logs with the completed status from logs
-  //   const mappedHabitSteps = habit?.steps.map(step => {
-  //     const logForStep = weeklyLogs?.logs.find(log => log.log_ids_with_notes.some(logWithNote => logWithNote.id == step.id))
-  //     if (logForStep) {
-  //       return {
-  //         ...step,
-  //         completed: logForStep.log_ids_with_notes.length ? true : false
-  //       }
-  //     }
-  //     return step
-  //   })
-
-  //   // console.log(mappedHabitSteps, "mapped habits with weekly logs")
-
-
-  //   // console.log(weeklyLogs, "weekly logs for the habit")
-
-  //   return mappedHabitSteps
-  // }
-
-
-
-
-  // mapWeeklyDtaWithHabitData()
-
-  // console.log(extractWeekworthOfDailyLogs(), "week worth of daily logs")
-
   const { fetchWeeklySummary, fetchMonthlySummary } = useToFetchInsights()
 
   const { lock, toggleLock } = useToBooleanLock()
-
-  // const completionrate = state.completionRate.find(rate => Number(rate.habitId) === state.habitViewing)?.weeks
-
-  // console.log(completionrate, "completion rate", state.completionRate)
 
   const [weeklySummary, setWeeklySummary] = useState<string>("")
 
@@ -115,24 +72,16 @@ export default function ReportsPage() {
 
   const handleRegenerateSummary = async () => {
     toggleLock()
-    // const allStepsFromThisWeek = mapWeeklyDataWithHabitData() || habit?.steps || []
+
     const allStepsFromThisWeek = mapWeeklyDataWithHabitData() || []
 
     const allCompletedStepsFromThisWeek = allStepsFromThisWeek.filter(step => step.completed)
 
-    // console.log(allCompletedStepsFromThisWeek, "all completed steps from this week")
-
-    // const completionRate = allStepsFromThisWeek.length ? (allStepsFromThisWeek.filter(step => step.completed).length / allStepsFromThisWeek.length) * 100 : 0
     const completionRate = allStepsFromThisWeek.length ? (allCompletedStepsFromThisWeek.length / allStepsFromThisWeek.length) * 100 : 0
     
-    // console.log(allStepsFromThisWeek, "all steps from this week")
-
-    // console.log(completionRate, "completion rate for this week")
-
     fetchWeeklySummary({
       title: habit?.title || "",
       steps: habit?.steps || [],
-      // totalCompleted: completionrate ? completionrate[completionrate.length - 1]?.percentile || 0 : 0,
       totalCompleted: completionRate
     }).then(data => {
       console.log(data, "weekly summary data from AI")
@@ -163,19 +112,10 @@ export default function ReportsPage() {
 
     const allCompletedStepsFromThisMonth = allStepsFromThisMonth.filter(step => step.completed)
 
-    // console.log(allCompletedStepsFromThisMonth, "all completed steps from this month")
-
     const completionRate = allStepsFromThisMonth.length ? (allCompletedStepsFromThisMonth.length / allStepsFromThisMonth.length) * 100 : 0
-
-    // const completionRate = allStepsFromThisMonth.length ? (allStepsFromThisMonth.filter(step => step.completed).length / allStepsFromThisMonth.length) * 100 : 0
-
-    console.log(allStepsFromThisMonth, "all steps from this month")
-
-    console.log(completionRate, "completion rate for the month")
 
     fetchMonthlySummary({
       title: habit?.title || "",
-      // steps: habit?.steps || [],
       steps: allStepsFromThisMonth.map(step => ({
         id: step.id,
         title: step.title,
@@ -194,35 +134,12 @@ export default function ReportsPage() {
     alert("Adjustment request sent to AI!")
   }
 
-  // const habitWeeklyData = state.habitInsights.find(insight => Number(insight.habitId) === state.habitViewing)
-
   useEffect(() => {
     if (state.dailyLogs.length && !lock) {
       handleRegenerateSummary()
       handleRegenerateMonthlyTrend()
-      // .then(() => {
-      //   setWeeklySummary(habitWeeklyData?.weekly || mockInsights.weeklyText)
-      // })
     }
   }, [state.dailyLogs])
-
-  // useEffect(() => {
-  //   fetchWeeklySummary({
-  //     title: habit?.title || "",
-  //     steps: habit?.steps || [],
-  //     totalCompleted: completionrate ? completionrate[completionrate.length - 1]?.percentile || 0 : 0,
-  //   }).then(data => {
-  //     dispatch({
-  //       type: "add-weekly-summary-insights",
-  //       payload: {
-  //         habitId: habit?.id,
-  //         data
-  //       }
-  //     })
-  //   }).catch(err => console.log(err))
-  // }, [])
-
-  // const habitWeeklyData = state.habitInsights.find(insight => Number(insight.habitId) === state.habitViewing)
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -236,11 +153,7 @@ export default function ReportsPage() {
       <div className="mb-8">
         <InsightCards
           btnLocked={lock}
-          // weeklySummary={habitWeeklyData?.weekly || mockInsights.weeklyText}
-          // weeklySummary={habitWeeklyData?.weekly ? habitWeeklyData.weekly : !lock && habitWeeklyData?.weekly ? "Loading..." : "No data yet. Log your habit daily to see insights here!"}
-          // weeklySummary={habitWeeklyData?.weekly ? habitWeeklyData.weekly : "Loading data...."}
           weeklySummary={weeklySummary || "Loading data...."}
-          // monthlyTrend={mockInsights.monthlyText}
           monthlyTrend={monthlyTrends || "Loading data...."}
           goalStatus={82}
           onRegenerateSummary={handleRegenerateSummary}

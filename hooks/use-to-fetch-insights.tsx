@@ -38,7 +38,6 @@ export const useToFetchInsights = () => {
             payload: {
                 habitId: state.habitViewing,
                 data: {
-                    // steps: data.response?.actions
                     steps: actions
                 }
             }
@@ -53,10 +52,6 @@ export const useToFetchInsights = () => {
             description:steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(" \n ") || "",
             feedback:`completed about ${totalCompleted.toString()} percent of the steps for today` || ""
         }
-
-        console.log(payloadData, "payloadData")
-
-        // return
 
         // daily insights
         const data = await fetchAiInsights(payloadData.name, payloadData.description, payloadData.feedback)
@@ -93,8 +88,6 @@ export const useToFetchInsights = () => {
             `completed about ${totalCompleted.toString()} percent of the steps` || "", 
             "ai-monthly-trends"
         )
-
-        console.log(response, "response")
 
         if (response?.trends) {
             return response.trends
