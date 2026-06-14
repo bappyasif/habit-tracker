@@ -11,6 +11,8 @@ import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { useToBooleanLock } from "@/hooks/useToBooleanLock"
 import { useToHandleMappingHabitSteps } from "./_hooks/handleMappingHabitSteps"
+import { randomUUID } from "crypto"
+import { updateHabit } from "@/server-calls/habits"
 
 interface Suggestion {
   id: string
@@ -37,17 +39,41 @@ export default function ReportsPage() {
     setSuggestions(suggestions.filter((s) => s.id !== id))
   }
 
+  const handleUpdateHabit = (newStep: typeof state.habits[0]["steps"][0]) => {
+    const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
+
+    if(!habit) return
+
+    habit?.steps.push(newStep)
+
+    updateHabit(habit)
+
+  }
+
   const handleCreateNewHabit = (suggestion: string) => {
-    dispatch({
-      type: "ADD_A_HABIT_STEP",
-      payload: {
-        habitId: state.habitViewing,
-        newStep: {
-          id: Math.random().toString(),
+    const newStep = {
+          // id: Math.random().toString(),
+          // id: randomUUID(),
+          id: crypto.randomUUID(),
           title: suggestion,
           completed: false,
           time: new Date().toISOString()
         }
+
+    handleUpdateHabit(newStep)
+
+    dispatch({
+      type: "ADD_A_HABIT_STEP",
+      payload: {
+        habitId: state.habitViewing,
+        newStep
+        // newStep: {
+        //   // id: Math.random().toString(),
+        //   id: randomUUID(),
+        //   title: suggestion,
+        //   completed: false,
+        //   time: new Date().toISOString()
+        // }
       }
     })
 
