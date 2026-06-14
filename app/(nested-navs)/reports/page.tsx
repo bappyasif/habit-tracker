@@ -11,7 +11,6 @@ import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { useToBooleanLock } from "@/hooks/useToBooleanLock"
 import { useToHandleMappingHabitSteps } from "./_hooks/handleMappingHabitSteps"
-import { randomUUID } from "crypto"
 import { updateHabit } from "@/server-calls/habits"
 
 interface Suggestion {
@@ -23,13 +22,38 @@ interface Suggestion {
 export default function ReportsPage() {
   const { state, dispatch } = useTrackCtx()
 
-  const sugg = state?.habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.suggestions
+  const suggs = state?.habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.suggestions
 
-  const [suggestions, setSuggestions] = useState<Suggestion[]>((sugg || mockInsights.suggestions)?.map((text: string, idx: number) => ({
+  const [suggestions, setSuggestions] = useState<Suggestion[]>((suggs || mockInsights.suggestions)?.map((text: string, idx: number) => ({
     id: Math.random().toString(),
     text,
     accepted: false,
   })) || [])
+
+  // console.log("suggs: ", suggs, state?.habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights)
+
+  // const [suggestions, setSuggestions] = useState<Suggestion[]>(suggs?.map((text: string, idx: number) => ({
+  //   id: crypto.randomUUID(),
+  //   text,
+  //   accepted: false,
+  // })) || [])
+
+  useEffect(() => {
+    const onlyUniqs = suggestions.filter((suggestion, idx) => suggestions.findIndex((s) => s.text === suggestion.text) === idx)
+    // console.log("onlyUniqs: ", onlyUniqs)
+
+    // filter already exiting suggestion in habit steps title
+    const filteredSuggestions = onlyUniqs.filter((suggestion) => {
+      const existingSuggestion = state.habits.find(habit => Number(habit.id) === state.habitViewing)?.steps.find(step => step.title === suggestion.text)
+      return !existingSuggestion
+    })
+
+    // console.log("filteredSuggestions: ", filteredSuggestions)
+
+    // setSuggestions(onlyUniqs)
+    setSuggestions(filteredSuggestions)
+  }, [suggs])
+
 
   const handleAcceptSuggestion = (id: string) => {
     setSuggestions(suggestions.map((s) => (s.id === id ? { ...s, accepted: true } : s)))
@@ -155,7 +179,18 @@ export default function ReportsPage() {
     }).catch(err => console.log(err))
   }
 
+  const [adjustGoal, setAdjustGoal] = useState(81)
+
+  const handleAdjustGoal = (value: number) => {
+    setAdjustGoal(value)
+  }
+
   const handleRequestAdjustment = async () => {
+    const userInput = prompt("Enter the new goal percentage (0-100):")
+
+    if (userInput !== null) {
+      handleAdjustGoal(Number(userInput))
+    }
     // Simulate AI adjustment request
     alert("Adjustment request sent to AI!")
   }
@@ -181,7 +216,7 @@ export default function ReportsPage() {
           btnLocked={lock}
           weeklySummary={weeklySummary || "Loading data...."}
           monthlyTrend={monthlyTrends || "Loading data...."}
-          goalStatus={82}
+          goalStatus={adjustGoal}
           onRegenerateSummary={handleRegenerateSummary}
           onRequestAdjustment={handleRequestAdjustment}
         />
