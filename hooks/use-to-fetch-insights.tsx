@@ -71,8 +71,10 @@ export const useToFetchInsights = () => {
             title || "",
             steps.map(step => `completed:${step.completed}, step:${step.title}, time:${step.time}`).join(", ") || "",
             `completed about ${totalCompleted.toString()} percent of the steps` || "", 
-            "ai-monthly-trends"
+            "ai-weekly-summary-insights"
         )
+
+        console.log(data, "weekly ai summary data")
 
         if (data?.response) {
             return data.response?.summary
@@ -88,6 +90,8 @@ export const useToFetchInsights = () => {
             `completed about ${totalCompleted.toString()} percent of the steps` || "", 
             "ai-monthly-trends"
         )
+
+        console.log(response, "monthly trends from AI")
 
         if (response?.trends) {
             return response.trends

@@ -77,66 +77,160 @@ export function DashboardTabs(
         {activeTab === "today" && (
           <div className="space-y-3">
             {
-            // dailyData
-            currentHabit.steps
-            .map((item, idx) => (
-              <div
-                key={idx}
-                className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition"
-              >
-                <div className="flex-1">
-                  <p className="font-medium">{item.title}</p>
-                  <p className="text-xs text-muted-foreground">⏰ {item.time}</p>
-                </div>
-                <span className={`text-sm font-semibold ${item.completed ? "text-accent" : "text-muted-foreground"}`}>
-                  {item.completed ? "✓" : "[]"}
-                </span>
-              </div>
-            ))}
+              // dailyData
+              currentHabit.steps
+                .map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition"
+                  >
+                    <div className="flex-1">
+                      <p className="font-medium">{item.title}</p>
+                      <p className="text-xs text-muted-foreground">⏰ {item.time}</p>
+                    </div>
+                    <span className={`text-sm font-semibold ${item.completed ? "text-accent" : "text-muted-foreground"}`}>
+                      {item.completed ? "✓" : "[]"}
+                    </span>
+                  </div>
+                ))}
           </div>
         )}
 
         {/* Week Tab */}
         {activeTab === "week" && (
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={weekData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="day" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="completion" fill="hsl(var(--color-primary))" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <WeekTab />
+          // <div className="h-64">
+          //   <ResponsiveContainer width="100%" height="100%">
+          //     <BarChart data={weekData}>
+          //       <CartesianGrid strokeDasharray="3 3" />
+          //       <XAxis dataKey="day" />
+          //       <YAxis />
+          //       <Tooltip />
+          //       <Bar dataKey="completion" fill="hsl(var(--color-primary))" radius={[8, 8, 0, 0]} />
+          //     </BarChart>
+          //   </ResponsiveContainer>
+          // </div>
         )}
 
         {/* Month Tab */}
         {activeTab === "month" && (
-          <div className="space-y-6">
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={monthData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="week" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="score"
-                    stroke="hsl(var(--color-primary))"
-                    dot={{ fill: "hsl(var(--color-primary))", r: 5 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="text-center p-4 bg-accent/10 rounded-lg">
-              <p className="text-2xl font-bold text-accent">82</p>
-              <p className="text-sm text-muted-foreground">Monthly Score</p>
-            </div>
-          </div>
+          <MonthTab />
+          // <div className="space-y-6">
+          //   <div className="h-64">
+          //     <ResponsiveContainer width="100%" height="100%">
+          //       <LineChart data={monthData}>
+          //         <CartesianGrid strokeDasharray="3 3" />
+          //         <XAxis dataKey="week" />
+          //         <YAxis />
+          //         <Tooltip />
+          //         <Line
+          //           type="monotone"
+          //           dataKey="score"
+          //           stroke="hsl(var(--color-primary))"
+          //           dot={{ fill: "hsl(var(--color-primary))", r: 5 }}
+          //         />
+          //       </LineChart>
+          //     </ResponsiveContainer>
+          //   </div>
+          //   <div className="text-center p-4 bg-accent/10 rounded-lg">
+          //     <p className="text-2xl font-bold text-accent">82</p>
+          //     <p className="text-sm text-muted-foreground">Monthly Score</p>
+          //   </div>
+          // </div>
         )}
       </CardContent>
     </Card>
+  )
+}
+
+const MonthTab = () => {
+  return (
+    <div className="space-y-6">
+      <div className="h-64">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={monthData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="week" />
+            <YAxis />
+            <Tooltip />
+            <Line
+              type="monotone"
+              dataKey="score"
+              stroke="hsl(var(--color-primary))"
+              dot={{ fill: "hsl(var(--color-primary))", r: 5 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="text-center p-4 bg-accent/10 rounded-lg">
+        <p className="text-2xl font-bold text-accent">82</p>
+        <p className="text-sm text-muted-foreground">Monthly Score</p>
+      </div>
+    </div>
+  )
+}
+
+const WeekTab = () => {
+  const { state } = useTrackCtx()
+
+  const { habits, dailyLogs } = state
+
+  const currentHabit = habits.find(habit => Number(habit.id) == state.habitViewing)
+
+  // const habitLogs = dailyLogs.filter(log => Number(log.habitId) == state.habitViewing).map(log => log.logs.slice(-7))
+
+  // const habitLogs = dailyLogs.filter(log => Number(log.habitId) == state.habitViewing).map(log => log.logs.filter(obj => obj.date <= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)))
+
+  // make this comparisons against two timestamps instead of date strings
+  const habitLogs = dailyLogs.filter(log => Number(log.habitId) == state.habitViewing)
+
+  console.log(habitLogs, "habit logs")
+
+  const dailyLogsForWeek = habitLogs.map(log => log.logs.filter(obj => new Date(obj.date) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)))
+  // const dailyLogsForWeek = habitLogs
+
+  console.log(dailyLogsForWeek, "week logs")
+
+  const modifyWeekDataAsWeeklyDataFormat = dailyLogsForWeek.flat().map(log => {
+    return {
+      // day: new Date(log.date).toDateString(),
+      // day needs to be in "Mon", "Tue"etc int this format
+      day: new Date(log.date).toLocaleString('en-US', { weekday: 'short' }),
+      completion: log.log_ids_with_notes.length / currentHabit?.steps.length! * 100
+    }
+  })
+
+  console.log(modifyWeekDataAsWeeklyDataFormat, "modifyWeekDataAsWeeklyDataFormat")
+
+  const withMissingDays = []
+
+  for (let i = 0; i < 7; i++) {
+    const findDay = modifyWeekDataAsWeeklyDataFormat.find(day => day.day == new Date(Date.now() - 6 * 24 * 60 * 60 * 1000 + i * 24 * 60 * 60 * 1000).toLocaleString('en-US', { weekday: 'short' }))
+    if (findDay) {
+      withMissingDays.push(findDay)
+    } else {
+      withMissingDays.push({ day: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000 + i * 24 * 60 * 60 * 1000).toLocaleString('en-US', { weekday: 'short' }), completion: 0 })
+    }
+  }
+
+  console.log(withMissingDays, "withMissingDays")
+
+
+  return (
+    <div className="h-64">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart
+          // data={weekData}
+          // data={modifyWeekDataAsWeeklyDataFormat}
+          data={withMissingDays}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="day" tickLine={true} axisLine={true} />
+          <YAxis domain={[0, 100]} />
+          <Tooltip />
+          <Bar dataKey="completion" fill="hsl(var(--color-primary))" radius={[8, 8, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   )
 }
