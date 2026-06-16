@@ -144,14 +144,113 @@ export function DashboardTabs(
 }
 
 const MonthTab = () => {
+  const { state } = useTrackCtx()
+
+  const { habits, dailyLogs } = state
+
+  const currentHabit = habits.find((habit) => Number(habit.id) === state.habitViewing)
+
+  const habitLogs = dailyLogs.filter((log) => log.habitId == currentHabit?.id)
+
+  // console.log(habitLogs, "habit logs")
+
+  // const dailyLogsForWeek = habitLogs.map(log => log.logs.filter(obj => new Date(obj.date) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)))
+
+  const dailyLogsForMonth = habitLogs.map((log) => log.logs.filter((obj) => new Date(obj.date) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)))
+
+  const flattenedMonthlyLogsData = dailyLogsForMonth.flat()
+  // .map((log) => {
+  //   return {
+  //     week: new Date(log.date).toDateString(),
+  //     score: log.percentile,
+  //   }
+  // })
+  // console.log(flattenedMonthlyLogsData, "monthly data")
+
+  const today = new Date()
+
+  const howManyDaysInthatMonth = (month: number, year: number) => {
+    // month is 0 indexed so need to add 1
+    return new Date(year, month + 1, 0).getDate()
+  }
+
+  // console.log(howManyDaysInthatMonth(today.getMonth(), today.getFullYear()), "how many days in that month", today.getMonth())
+
+  const formattedData = []
+
+  for (let i = 0; i < howManyDaysInthatMonth(today.getMonth(), today.getFullYear()); i++) {
+    // decide if its on week 1 or week 2 or week3 or week4
+    const week = Math.floor((i + 1) / 8)
+
+    formattedData.push({
+      // week: new Date(today.getFullYear(), today.getMonth(), i + 1).toDateString(),
+      week: week,
+      score: flattenedMonthlyLogsData.find((log) => new Date(log.date).toDateString() === new Date(today.getFullYear(), today.getMonth(), i + 1).toDateString())?.percentile || 0,
+    })
+  }
+
+  // console.log(formattedData, "monthly formatted data")
+
+  // const weeklyFrequency = {}
+
+  // for (let i = 0; i < formattedData.length; i++) {
+  //   const week = formattedData[i].week
+  //   console.log(week, "week")
+
+  //   let wn = week == 0 ? "Week1" : week == 1 ? "Week2" : week == 2 ? "Week3" : "Week4"
+  //   console.log(wn, "wn")
+
+  //   if (weeklyFrequency[wn]) {
+  //     weeklyFrequency[wn] = {
+  //       week: wn,
+  //       score: weeklyFrequency[wn].score + formattedData[i].score,
+  //     }
+  //   } else {
+  //     weeklyFrequency[wn] = {
+  //       week: wn,
+  //       score: formattedData[i].score,
+  //     }
+  //   }
+  // }
+
+  const monthlyFrequency = formattedData.reduce<Record<string, { week: string; score: number }>>((acc, item) => {
+    // Convert week index (0-3) to a string ("Week1" to "Week4")
+    // const wn = item.week >= 0 && item.week <= 3 ? `Week${item.week + 1}` : "Week4";
+    const wn = item.week >= 0 && item.week <= 3 ? `W${item.week + 1}` : "W4";
+
+    // Initialize or add to the accumulated score
+    // acc[wn] = {
+    //   week: wn,
+    //   score: (acc[wn]?.score || 0) + item.score
+    // };
+
+    // return acc;
+
+    return acc[wn] ? { ...acc, [wn]: { ...acc[wn], score: acc[wn].score + item.score } } : { ...acc, [wn]: { week: wn, score: item.score } };
+  }, {});
+
+
+  // console.log(monthlyFrequency, "monthly frequency")
+
+  const monthlyFreqValues = Object.values(monthlyFrequency).map((item) => ({
+    week: item.week,
+    score: Math.ceil(item.score/7),
+  }))
+
+  console.log(monthlyFreqValues, "monthly freq values")
+
+
   return (
     <div className="space-y-6">
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={monthData}>
+          <LineChart 
+            // data={monthData}
+            data={monthlyFreqValues}
+          >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="week" />
-            <YAxis />
+            <YAxis domain={[0, 100]} />
             <Tooltip />
             <Line
               type="monotone"
@@ -184,12 +283,12 @@ const WeekTab = () => {
   // make this comparisons against two timestamps instead of date strings
   const habitLogs = dailyLogs.filter(log => Number(log.habitId) == state.habitViewing)
 
-  console.log(habitLogs, "habit logs")
+  // console.log(habitLogs, "habit logs")
 
   const dailyLogsForWeek = habitLogs.map(log => log.logs.filter(obj => new Date(obj.date) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)))
   // const dailyLogsForWeek = habitLogs
 
-  console.log(dailyLogsForWeek, "week logs")
+  // console.log(dailyLogsForWeek, "week logs")
 
   const modifyWeekDataAsWeeklyDataFormat = dailyLogsForWeek.flat().map(log => {
     return {
@@ -200,7 +299,7 @@ const WeekTab = () => {
     }
   })
 
-  console.log(modifyWeekDataAsWeeklyDataFormat, "modifyWeekDataAsWeeklyDataFormat")
+  // console.log(modifyWeekDataAsWeeklyDataFormat, "modifyWeekDataAsWeeklyDataFormat")
 
   const withMissingDays = []
 
