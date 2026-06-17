@@ -24,10 +24,6 @@ export default function DashboardPage() {
 
   const weeklyText = habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.dailySummary
 
-  // const getDailyHabitInsightsSummary = () => {
-  //   return habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.dailySummary
-  // }
-
   // fetching habits from server
   useToFetchHabits()
 
@@ -51,7 +47,6 @@ export default function DashboardPage() {
 
   const deleteHabitFromDb = async (id: string) => {
     const res = await deleteHabit(id)
-    console.log(res, "deleted habit")
   }
 
   if (!state.habits?.length) return null
@@ -167,10 +162,8 @@ export default function DashboardPage() {
 
           {/* AI Insights */}
           <AIInsightsCard
-            // weeklyText={getDailyHabitInsightsSummary() || weeklyText || mockInsights.weeklyText}
             weeklyText={weeklyText || mockInsights.weeklyText}
             suggestions={mockInsights.suggestions}
-            // onAdjustPlan={() => console.log("Adjust plan")}
           />
 
           {/* Notifications */}
@@ -181,7 +174,7 @@ export default function DashboardPage() {
             <CardContent className="space-y-2">
               <div className="p-3 bg-accent/10 rounded-lg text-sm">
                 <p className="font-semibold text-accent mb-1">Daily Goal Reminder</p>
-                <p className="text-xs text-muted-foreground">You have {habit.steps.filter(step => !step.completed).length} habits to complete today</p>
+                <p className="text-xs text-muted-foreground">You have {habit.steps.filter(step => !step.completed).length} steps to complete today</p>
               </div>
               <div className="p-3 bg-muted/50 rounded-lg text-sm">
                 <p className="font-semibold mb-1">Weekly Review</p>

@@ -30,17 +30,8 @@ export default function ReportsPage() {
     accepted: false,
   })) || [])
 
-  // console.log("suggs: ", suggs, state?.habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights)
-
-  // const [suggestions, setSuggestions] = useState<Suggestion[]>(suggs?.map((text: string, idx: number) => ({
-  //   id: crypto.randomUUID(),
-  //   text,
-  //   accepted: false,
-  // })) || [])
-
   useEffect(() => {
     const onlyUniqs = suggestions.filter((suggestion, idx) => suggestions.findIndex((s) => s.text === suggestion.text) === idx)
-    // console.log("onlyUniqs: ", onlyUniqs)
 
     // filter already exiting suggestion in habit steps title
     const filteredSuggestions = onlyUniqs.filter((suggestion) => {
@@ -48,9 +39,6 @@ export default function ReportsPage() {
       return !existingSuggestion
     })
 
-    // console.log("filteredSuggestions: ", filteredSuggestions)
-
-    // setSuggestions(onlyUniqs)
     setSuggestions(filteredSuggestions)
   }, [suggs])
 
@@ -76,8 +64,6 @@ export default function ReportsPage() {
 
   const handleCreateNewHabit = (suggestion: string) => {
     const newStep = {
-          // id: Math.random().toString(),
-          // id: randomUUID(),
           id: crypto.randomUUID(),
           title: suggestion,
           completed: false,
@@ -91,13 +77,6 @@ export default function ReportsPage() {
       payload: {
         habitId: state.habitViewing,
         newStep
-        // newStep: {
-        //   // id: Math.random().toString(),
-        //   id: randomUUID(),
-        //   title: suggestion,
-        //   completed: false,
-        //   time: new Date().toISOString()
-        // }
       }
     })
 

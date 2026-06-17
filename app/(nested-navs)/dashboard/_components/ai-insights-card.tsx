@@ -11,7 +11,6 @@ import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
 interface AIInsightsCardProps {
   weeklyText: string
   suggestions: string[]
-  // onAdjustPlan: () => void
 }
 
 export function AIInsightsCard({ weeklyText, suggestions }: AIInsightsCardProps) {
@@ -33,11 +32,7 @@ export function AIInsightsCard({ weeklyText, suggestions }: AIInsightsCardProps)
 
     const checkLogsFound = dailyLogs.find(log => log.habitId == state.habitViewing)
 
-    // console.log(checkLogsFound, "checkDateLogsFound")
-
     const dateLog = checkLogsFound?.logs.find(log => new Date(log.date).toDateString() == new Date().toDateString())
-
-    // console.log(dateLog, "dateLog")
 
     const mapSteps = dateLog?.log_ids_with_notes.map(log => log.id)
 
@@ -48,14 +43,6 @@ export function AIInsightsCard({ weeklyText, suggestions }: AIInsightsCardProps)
       return step
     })
 
-    // const completedSteps = updatedMappedSteps?.filter(step => step.completed).length
-
-    // const totalCompleted = Math.round((completedSteps || 0 / updatedMappedSteps!?.length || 1) * 100)
-
-    // const updatedHabitData = { ...habitData, steps: updatedMappedSteps, totalCompleted }
-
-    // console.log(mapSteps, "mapSteps", updatedHabitData, "updatedHabitData")
-
     if (updatedMappedSteps?.length !== 0) {
       const completedSteps = updatedMappedSteps?.filter(step => step.completed).length
 
@@ -65,13 +52,7 @@ export function AIInsightsCard({ weeklyText, suggestions }: AIInsightsCardProps)
       props = { title: updatedHabitData?.title || "", steps: updatedHabitData?.steps || [], totalCompleted: updatedHabitData?.totalCompleted || 0 }
     }
 
-    // props = { title: updatedHabitData?.title || "", steps: updatedHabitData?.steps || habitData?.steps || [], totalCompleted: updatedHabitData?.totalCompleted || habitData?.totalCompleted || 0}
-
     console.log(props, "PROPS", habitData)
-
-    // setIsLoading(false)
-
-    // return 
 
     fetchAiInsightsData(props)
       .then(async () => {

@@ -18,18 +18,6 @@ interface Step {
   completed: boolean
 }
 
-interface HabitCreationForm {
-  id: string
-  title: string
-  frequency: "daily" | "weekly" | "monthly"
-  duration: number
-  steps: Step[]
-  metric: string
-  target: number
-  successPercentage: number
-  successEnabled: boolean
-}
-
 interface HabitCreationModalProps {
   onClose: () => void
   onSave: (habit: TrackTypes) => void
@@ -56,14 +44,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
       type: "UPDATE_HABIT_VIEWING",
       payload: -1
     })
-
-    // this will delete inisghts data when canceling out of update from modal, now its a choice whether to keep old data after canceling out of update or not, if we want to keep then we can remove this dispatch call
-    // trackDispatch({
-    //   type: "DELETE_INSIGHTS_FOR_HABIT",
-    //   payload: {
-    //     habitId: trackState.habitViewing
-    //   }
-    // })
   }
 
   const handleAddStep = () => {
@@ -96,18 +76,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
   }
 
   const handleUpdateStep = (id: string, field: string, value: any) => {
-    // convert time string to date time string if field is "time"
-    // if (field === "time") {
-    //   const [hours, minutes] = value.split(":").map(Number)
-    //   const date = new Date()
-    //   date.setHours(hours)
-    //   date.setMinutes(minutes)
-    //   value = date.toISOString()
-    // }
-
-    // field == "time" && console.log(value, "updated time value")
-
-
     trackDispatch({
       type: 'UPDATE_HABIT_PAYLOAD',
       payload: {
@@ -176,9 +144,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
     const updatedHabit = { ...habit, steps: convertedSteps };
 
-    // console.log(habit.steps, "original steps")
-    // console.log(convertedSteps, "converted steps")
-
     // updateHabit(habit)
     updateHabit(updatedHabit)
     onClose()
@@ -193,8 +158,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
   const checkDailyStepsExists = trackState.habitInsights?.find(insight => insight.habitId === trackState.habitViewing)?.daily
 
-  console.log(checkDailyStepsExists, "checkDailyStepsExists")
-
+  // console.log(checkDailyStepsExists, "checkDailyStepsExists")
   useEffect(() => {
     if (trackState.habitViewing === -1) {
       setStage("new")
@@ -210,8 +174,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
   }, [trackState.habitViewing])
 
-  // const [steps, setSteps] = useState<Step[]>(habit.steps || [])
-
   const onlyIncludeStepWithUniqueIds = (oldSteps: Step[], newSteps: Step[]) => {
     const freshStpes = oldSteps
 
@@ -222,7 +184,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     })
 
     return freshStpes
-
   }
 
   useEffect(() => {
@@ -232,25 +193,13 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
       setTabs([{ label: "Edit", value: "edit" }])
       setStage("edit")
 
-      // setSteps(prev => [...prev, ...checkDailyStepsExists])
-      // setSteps(checkDailyStepsExists)
-
-      // habit.steps = checkDailyStepsExists
-
       const reassignIdsForAiSuggestedDailySteps = checkDailyStepsExists.map(step => ({ ...step, id: crypto.randomUUID() }))
-      // habit.steps = reassignIdsForAiSuggestedDailySteps
 
       habit.steps = onlyIncludeStepWithUniqueIds(habit.steps, reassignIdsForAiSuggestedDailySteps)
 
       console.log(habit.steps, "habit.steps")
     }
   }, [checkDailyStepsExists])
-
-  // console.log(steps, "steps")
-
-  // const test = [...habit?.steps, ...checkDailyStepsExists! || []]
-
-  // habit.steps = test
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
@@ -301,7 +250,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
               // Edit Stage
               <HabitEdit
                 habit={habit}
-                // habit={tempHabit}
                 handleAddStep={handleAddStep}
                 handleUpdateStep={handleUpdateStep}
                 handleRemoveStep={handleRemoveStep}
@@ -318,12 +266,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
               ? null
               : (
                 <div className="flex gap-3 pt-6 border-t mt-6">
-                  {/* <Button variant="outline"
-                    onClick={handleClose}
-                    className="flex-1 bg-transparent"
-                  >
-                    [Cancel]
-                  </Button> */}
                   <Link href="/dashboard" className="flex-1 w-full bg-primary/10 text-primary rounded-md flex items-center justify-center hover:bg-primary/20 transition cursor-pointer font-semibold py-2" onClick={handleClose}>
                     Cancel
                   </Link>

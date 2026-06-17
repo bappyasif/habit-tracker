@@ -29,7 +29,7 @@ export const NewHabit = () => {
         totalCompleted: 0
     })
 
-    const { state, dispatch } = useTrackCtx()
+    const { dispatch } = useTrackCtx()
 
     const router = useRouter()
 
@@ -46,18 +46,9 @@ export const NewHabit = () => {
             steps: addingJunkNotesToSteps
         }
 
-        // console.log(moddedData, "moddedData to be sent to server for creating habit", habitData)
-
-        // return 
-          
-        // console.log(habitData, "habitData: new habit", moddedData)
         createHabit(moddedData).then(data => {
           console.log(data, "created a habit successfully")
         }).catch(err => console.log(err))
-        
-        // createHabit(habitData).then(data => {
-        //   console.log(data, "created habit")
-        // }).catch(err => console.log(err))
       }
 
     const handleSave = () => {
@@ -67,11 +58,6 @@ export const NewHabit = () => {
         }
 
         saveToDb({...habit})
-
-        // saveToDb({...habit, id: (state.habits.length + 1).toString()})
-
-        // as we are moving to dashboard and fetching all habitys from server anyway, dont have to invidually update reduce state from here
-        // dispatch({ type: "CREATE_HABIT", payload: {...habit, id: (state.habits.length + 1).toString(), createdAt: new Date(), currentStreak: 0, totalCompleted: 0} })
         
         router.push("/dashboard")
     }
@@ -108,7 +94,6 @@ export const NewHabit = () => {
                     <Label>Frequency</Label>
                     <Select
                         required
-                        // defaultValue="daily"
                         value={habit.frequency}
                         onValueChange={e => {
                             const f = e as "daily" | "weekly" | "monthly"
@@ -202,7 +187,6 @@ const HandleSteps = ({handleUpdateSteps}: {handleUpdateSteps: (newSteps: Steps[]
 
     const addEmptyStep = () => {
         setSteps([...steps, { id: crypto.randomUUID(), title: "", time: "00:00", completed: false }])
-        // setSteps([...steps, { id: (steps.length + 1).toString(), title: "", time: "00:00", completed: false }])
     }
 
     const handleSave = () => {

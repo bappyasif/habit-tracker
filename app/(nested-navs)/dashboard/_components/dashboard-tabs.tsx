@@ -7,23 +7,6 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { useToUpdateHabitStepsCompletion } from "../_hooks/useToUpdateHabitStepsCompletion"
 
-const weekData = [
-  { day: "Mon", completion: 75 },
-  { day: "Tue", completion: 85 },
-  { day: "Wed", completion: 65 },
-  { day: "Thu", completion: 90 },
-  { day: "Fri", completion: 80 },
-  { day: "Sat", completion: 95 },
-  { day: "Sun", completion: 60 },
-]
-
-const monthData = [
-  { week: "W1", score: 72 },
-  { week: "W2", score: 78 },
-  { week: "W3", score: 85 },
-  { week: "W4", score: 82 },
-]
-
 interface DashboardTabsProps {
   selectedHabitId: string
 }
@@ -77,7 +60,6 @@ export function DashboardTabs(
         {activeTab === "today" && (
           <div className="space-y-3">
             {
-              // dailyData
               currentHabit.steps
                 .map((item, idx) => (
                   <div
@@ -99,44 +81,11 @@ export function DashboardTabs(
         {/* Week Tab */}
         {activeTab === "week" && (
           <WeekTab />
-          // <div className="h-64">
-          //   <ResponsiveContainer width="100%" height="100%">
-          //     <BarChart data={weekData}>
-          //       <CartesianGrid strokeDasharray="3 3" />
-          //       <XAxis dataKey="day" />
-          //       <YAxis />
-          //       <Tooltip />
-          //       <Bar dataKey="completion" fill="hsl(var(--color-primary))" radius={[8, 8, 0, 0]} />
-          //     </BarChart>
-          //   </ResponsiveContainer>
-          // </div>
         )}
 
         {/* Month Tab */}
         {activeTab === "month" && (
           <MonthTab />
-          // <div className="space-y-6">
-          //   <div className="h-64">
-          //     <ResponsiveContainer width="100%" height="100%">
-          //       <LineChart data={monthData}>
-          //         <CartesianGrid strokeDasharray="3 3" />
-          //         <XAxis dataKey="week" />
-          //         <YAxis />
-          //         <Tooltip />
-          //         <Line
-          //           type="monotone"
-          //           dataKey="score"
-          //           stroke="hsl(var(--color-primary))"
-          //           dot={{ fill: "hsl(var(--color-primary))", r: 5 }}
-          //         />
-          //       </LineChart>
-          //     </ResponsiveContainer>
-          //   </div>
-          //   <div className="text-center p-4 bg-accent/10 rounded-lg">
-          //     <p className="text-2xl font-bold text-accent">82</p>
-          //     <p className="text-sm text-muted-foreground">Monthly Score</p>
-          //   </div>
-          // </div>
         )}
       </CardContent>
     </Card>
@@ -152,20 +101,9 @@ const MonthTab = () => {
 
   const habitLogs = dailyLogs.filter((log) => log.habitId == currentHabit?.id)
 
-  // console.log(habitLogs, "habit logs")
-
-  // const dailyLogsForWeek = habitLogs.map(log => log.logs.filter(obj => new Date(obj.date) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)))
-
   const dailyLogsForMonth = habitLogs.map((log) => log.logs.filter((obj) => new Date(obj.date) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)))
 
   const flattenedMonthlyLogsData = dailyLogsForMonth.flat()
-  // .map((log) => {
-  //   return {
-  //     week: new Date(log.date).toDateString(),
-  //     score: log.percentile,
-  //   }
-  // })
-  // console.log(flattenedMonthlyLogsData, "monthly data")
 
   const today = new Date()
 
@@ -174,8 +112,6 @@ const MonthTab = () => {
     return new Date(year, month + 1, 0).getDate()
   }
 
-  // console.log(howManyDaysInthatMonth(today.getMonth(), today.getFullYear()), "how many days in that month", today.getMonth())
-
   const formattedData = []
 
   for (let i = 0; i < howManyDaysInthatMonth(today.getMonth(), today.getFullYear()); i++) {
@@ -183,69 +119,29 @@ const MonthTab = () => {
     const week = Math.floor((i + 1) / 8)
 
     formattedData.push({
-      // week: new Date(today.getFullYear(), today.getMonth(), i + 1).toDateString(),
       week: week,
       score: flattenedMonthlyLogsData.find((log) => new Date(log.date).toDateString() === new Date(today.getFullYear(), today.getMonth(), i + 1).toDateString())?.percentile || 0,
     })
   }
 
-  // console.log(formattedData, "monthly formatted data")
-
-  // const weeklyFrequency = {}
-
-  // for (let i = 0; i < formattedData.length; i++) {
-  //   const week = formattedData[i].week
-  //   console.log(week, "week")
-
-  //   let wn = week == 0 ? "Week1" : week == 1 ? "Week2" : week == 2 ? "Week3" : "Week4"
-  //   console.log(wn, "wn")
-
-  //   if (weeklyFrequency[wn]) {
-  //     weeklyFrequency[wn] = {
-  //       week: wn,
-  //       score: weeklyFrequency[wn].score + formattedData[i].score,
-  //     }
-  //   } else {
-  //     weeklyFrequency[wn] = {
-  //       week: wn,
-  //       score: formattedData[i].score,
-  //     }
-  //   }
-  // }
-
   const monthlyFrequency = formattedData.reduce<Record<string, { week: string; score: number }>>((acc, item) => {
-    // Convert week index (0-3) to a string ("Week1" to "Week4")
-    // const wn = item.week >= 0 && item.week <= 3 ? `Week${item.week + 1}` : "Week4";
     const wn = item.week >= 0 && item.week <= 3 ? `W${item.week + 1}` : "W4";
-
-    // Initialize or add to the accumulated score
-    // acc[wn] = {
-    //   week: wn,
-    //   score: (acc[wn]?.score || 0) + item.score
-    // };
-
-    // return acc;
 
     return acc[wn] ? { ...acc, [wn]: { ...acc[wn], score: acc[wn].score + item.score } } : { ...acc, [wn]: { week: wn, score: item.score } };
   }, {});
 
-
-  // console.log(monthlyFrequency, "monthly frequency")
-
   const monthlyFreqValues = Object.values(monthlyFrequency).map((item) => ({
     week: item.week,
-    score: Math.ceil(item.score/7),
+    score: Math.ceil(item.score / 7),
   }))
 
   console.log(monthlyFreqValues, "monthly freq values")
-
 
   return (
     <div className="space-y-6">
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart 
-            // data={monthData}
+          <LineChart
             data={monthlyFreqValues}
           >
             <CartesianGrid strokeDasharray="3 3" />
@@ -276,30 +172,17 @@ const WeekTab = () => {
 
   const currentHabit = habits.find(habit => Number(habit.id) == state.habitViewing)
 
-  // const habitLogs = dailyLogs.filter(log => Number(log.habitId) == state.habitViewing).map(log => log.logs.slice(-7))
-
-  // const habitLogs = dailyLogs.filter(log => Number(log.habitId) == state.habitViewing).map(log => log.logs.filter(obj => obj.date <= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)))
-
   // make this comparisons against two timestamps instead of date strings
   const habitLogs = dailyLogs.filter(log => Number(log.habitId) == state.habitViewing)
 
-  // console.log(habitLogs, "habit logs")
-
   const dailyLogsForWeek = habitLogs.map(log => log.logs.filter(obj => new Date(obj.date) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)))
-  // const dailyLogsForWeek = habitLogs
-
-  // console.log(dailyLogsForWeek, "week logs")
 
   const modifyWeekDataAsWeeklyDataFormat = dailyLogsForWeek.flat().map(log => {
     return {
-      // day: new Date(log.date).toDateString(),
-      // day needs to be in "Mon", "Tue"etc int this format
       day: new Date(log.date).toLocaleString('en-US', { weekday: 'short' }),
       completion: log.log_ids_with_notes.length / currentHabit?.steps.length! * 100
     }
   })
-
-  // console.log(modifyWeekDataAsWeeklyDataFormat, "modifyWeekDataAsWeeklyDataFormat")
 
   const withMissingDays = []
 
@@ -314,13 +197,10 @@ const WeekTab = () => {
 
   console.log(withMissingDays, "withMissingDays")
 
-
   return (
     <div className="h-64">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
-          // data={weekData}
-          // data={modifyWeekDataAsWeeklyDataFormat}
           data={withMissingDays}
         >
           <CartesianGrid strokeDasharray="3 3" />

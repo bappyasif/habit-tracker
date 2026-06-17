@@ -68,15 +68,6 @@ export const useToUpdateHabitStepsCompletion = () => {
 
     }, [date, dailyLogs])
 
-    // useEffect(() => {
-    //     updateOrReset()
-    // }, [state])
-
-    // const updatedHabit = {
-    //     ...habit,
-    //     steps: steps
-    // }
-
     const [updatedHabit, setUpdatedHabit] = useState({
         ...habit,
         steps: steps

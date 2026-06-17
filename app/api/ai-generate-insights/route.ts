@@ -21,8 +21,6 @@ export async function POST(request: NextRequest) {
     if (!hobbyName || !hobbyDescription || !hobbyFeedback) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
-    
-    // const insights = await generateAIInsights(hobbyName, hobbyDescription, hobbyFeedback);
 
     const insights = await fetch("http://127.0.0.1:8000/api/v1/genai/inference", {
       method: "POST",
@@ -30,7 +28,6 @@ export async function POST(request: NextRequest) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        // prompt: `Generate weekly insights for a hobby with the following details:\n\nHobby Name: ${hobbyName}\nHobby Description: ${hobbyDescription}\nHobby Feedback: ${hobbyFeedback}\n\nProvide a weekly summary and suggestions for improvement.`,
         hobby: hobbyName,
         description: hobbyDescription,
         feedback: hobbyFeedback,
