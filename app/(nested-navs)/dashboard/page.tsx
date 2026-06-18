@@ -20,7 +20,7 @@ export default function DashboardPage() {
 
   const { dispatch, state } = useTrackCtx()
 
-  const {habitInsights} = state
+  const { habitInsights } = state
 
   const weeklyText = habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.dailySummary
 
@@ -131,8 +131,8 @@ export default function DashboardPage() {
                           if (Number(habit.id) == state.habitViewing) {
                             const fh = state.habits.filter(habit => Number(habit.id)
                               !== state.habitViewing)[0]
-                                                        
-                              deleteHabitFromDb(habit.id)
+
+                            deleteHabitFromDb(habit.id)
                             if (!fh?.id) {
                               gotoCreateNewHabit()
                               dispatch({
@@ -167,26 +167,44 @@ export default function DashboardPage() {
           />
 
           {/* Notifications */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">Notifications</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="p-3 bg-accent/10 rounded-lg text-sm">
-                <p className="font-semibold text-accent mb-1">Daily Goal Reminder</p>
-                <p className="text-xs text-muted-foreground">You have {habit.steps.filter(step => !step.completed).length} steps to complete today</p>
-              </div>
-              <div className="p-3 bg-muted/50 rounded-lg text-sm">
-                <p className="font-semibold mb-1">Weekly Review</p>
-                <Link href="/reports" className="text-primary hover:underline">
-                  <p className="text-xs text-muted-foreground">Check your progress report</p>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+          <HabitNotifications />
         </div>
       </div>
     </main>
+  )
+}
+
+const HabitNotifications = () => {
+  const {state} = useTrackCtx()
+  
+  const {dailyLogs} = state
+
+  const today = new Date()
+
+  const habitLogs = dailyLogs.map(log => log.logs.filter(log => new Date(log.date).toDateString() == today.toDateString())).flat()
+
+  const habit = state.habits.find(habit => Number(habit.id) == state.habitViewing)
+
+  if (!habit) return null
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-sm">Notifications</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        <div className="p-3 bg-accent/10 rounded-lg text-sm">
+          <p className="font-semibold text-accent mb-1">Daily Goal Reminder</p>
+          <p className="text-xs text-muted-foreground">You have {habit!?.steps.filter(step => !step.completed)?.length - habitLogs?.[0]?.log_ids_with_notes.length} steps to complete today</p>
+        </div>
+        <div className="p-3 bg-muted/50 rounded-lg text-sm">
+          <p className="font-semibold mb-1">Weekly Review</p>
+          <Link href="/reports" className="text-primary hover:underline">
+            <p className="text-xs text-muted-foreground">Check your progress report</p>
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
   )
 }
 
@@ -209,7 +227,7 @@ const WhenEmpty = () => {
         </p>
       </header>
       <main
-      className="self-end flex flex-col gap-4 mr-20"
+        className="self-end flex flex-col gap-4 mr-20"
       >
         <div className="flex flex-col items-start justify-start gap-2">
           <Sparkles className="w-8 h-8 text-primary" />
