@@ -113,7 +113,7 @@ export default function ReportsPage() {
       steps: habit?.steps || [],
       totalCompleted: completionRate
     }).then(data => {
-      console.log(data, "weekly summary data from AI")
+      console.log("weekly summary data from AI")
       
       setWeeklySummary(data)
 
@@ -153,7 +153,7 @@ export default function ReportsPage() {
       })),
       totalCompleted: completionRate
     }).then(data => {
-      console.log(data, "monthly trends from AI")
+      console.log("monthly trends from AI")
       data && setMonthlyTrends(data)
     }).catch(err => console.log(err))
   }

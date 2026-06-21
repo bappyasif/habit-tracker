@@ -52,8 +52,6 @@ export function AIInsightsCard({ weeklyText, suggestions }: AIInsightsCardProps)
       props = { title: updatedHabitData?.title || "", steps: updatedHabitData?.steps || [], totalCompleted: updatedHabitData?.totalCompleted || 0 }
     }
 
-    console.log(props, "PROPS", habitData)
-
     fetchAiInsightsData(props)
       .then(async () => {
         setIsLoading(false)
@@ -63,11 +61,6 @@ export function AIInsightsCard({ weeklyText, suggestions }: AIInsightsCardProps)
   const insights = state.habitInsights?.find(insight => insight.habitId === state.habitViewing)?.insights
 
   const adjustReady = state.habitInsights?.find(insight => insight.habitId === state.habitViewing)?.daily?.length || 0 > 0
-
-  const handleOnAdjustPlan = () => {
-    // onAdjustPlan()
-    console.log("handleOnAdjustPlan", insights)
-  }
 
   return (
     <Card className="bg-linear-to-br from-primary/10 to-accent/10 border-primary/20">
@@ -99,7 +92,9 @@ export function AIInsightsCard({ weeklyText, suggestions }: AIInsightsCardProps)
 
         {/* CTA Buttons */}
         <div className="flex gap-2 pt-2">
-          <Button size="sm" variant="outline" onClick={handleOnAdjustPlan} className={`flex-1 bg-transparent transition ease-in-out delay-100 ${!adjustReady ? "cursor-not-allowed opacity-50" : "animate-pulse bg-primary/40"}`} disabled={!adjustReady}>
+          <Button 
+            size="sm" variant="outline" 
+            className={`flex-1 bg-transparent transition ease-in-out delay-100 ${!adjustReady ? "cursor-not-allowed opacity-50" : "animate-pulse bg-primary/40"}`} disabled={!adjustReady}>
             <Link
               href="/create-habit"
             >

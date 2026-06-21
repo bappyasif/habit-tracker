@@ -72,8 +72,16 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
     }
 
     const saveDailyTimelineInDb = (totalSteps: Steps[], percentile: number, completedSteps: Boolean[]) => {
-        // we will look into this after daily timeline is free of this final bit of bug where on after initial loading for a day (today) save doesnt really going through onbly after first restart its working fine
-
+        // const dbrq = {
+        //     habitId: habit.id,
+        //     week: {
+        //         weekStart: new Date(date.getTime() - (date.getDay() - 1) * 24 * 60 * 60 * 1000),
+        //         weekEnd: new Date(date.getTime() + (6 - date.getDay()) * 24 * 60 * 60 * 1000),
+        //         totalCompleted: completedSteps.length,
+        //         totalSteps: totalSteps.length,
+        //         percentile: percentile
+        //     }
+        // }
         // saveWeeklyTrackingTodb(dbrq)
 
         // save to db for daily tracking as well

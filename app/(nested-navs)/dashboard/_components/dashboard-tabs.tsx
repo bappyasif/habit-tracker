@@ -11,9 +11,7 @@ interface DashboardTabsProps {
   selectedHabitId: string
 }
 
-export function DashboardTabs(
-  { selectedHabitId }: DashboardTabsProps
-) {
+export function DashboardTabs() {
   const [activeTab, setActiveTab] = useState<"today" | "week" | "month">("today")
 
   const { state } = useTrackCtx()

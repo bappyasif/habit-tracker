@@ -97,13 +97,13 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     fetchAiInsightsData(props)
       .then(async (data) => {
         setIsLoading(false)
-        console.log(data, "AI insights data")
+        console.log("AI insights data")
       })
   }
 
   const saveToDb = (habitData: TrackTypes) => {
     createHabit(habitData).then(data => {
-      console.log(data, "created habit")
+      console.log("created habit")
       if (data) {
         onSave(habitData)
       }
@@ -144,7 +144,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
     const updatedHabit = { ...habit, steps: convertedSteps };
 
-    // updateHabit(habit)
     updateHabit(updatedHabit)
     onClose()
     // cleaning out old insights data for the habit being updated, we can choose to keep old insights data or not after update, if we want to keep then we can remove this dispatch call
@@ -158,7 +157,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
   const checkDailyStepsExists = trackState.habitInsights?.find(insight => insight.habitId === trackState.habitViewing)?.daily
 
-  // console.log(checkDailyStepsExists, "checkDailyStepsExists")
   useEffect(() => {
     if (trackState.habitViewing === -1) {
       setStage("new")
@@ -196,8 +194,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
       const reassignIdsForAiSuggestedDailySteps = checkDailyStepsExists.map(step => ({ ...step, id: crypto.randomUUID() }))
 
       habit.steps = onlyIncludeStepWithUniqueIds(habit.steps, reassignIdsForAiSuggestedDailySteps)
-
-      console.log(habit.steps, "habit.steps")
     }
   }, [checkDailyStepsExists])
 

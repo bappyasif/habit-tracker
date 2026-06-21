@@ -16,9 +16,7 @@ import { deleteHabit } from "@/server-calls/habits"
 import { useToFetchHabitDailyTimeline } from "./_hooks/fetchHabitDailyTimeline"
 
 export default function DashboardPage() {
-  const [selectedHabitId, setSelectedHabitId] = useState("")
-
-  const { dispatch, state } = useTrackCtx()
+  const { state } = useTrackCtx()
 
   const { habitInsights } = state
 
@@ -29,25 +27,6 @@ export default function DashboardPage() {
 
   // fetching habit daily timeline from server
   useToFetchHabitDailyTimeline()
-
-  useEffect(() => {
-    if (!selectedHabitId) return
-    dispatch({
-      type: 'UPDATE_HABIT_VIEWING',
-      payload: Number(selectedHabitId)
-    })
-  }, [selectedHabitId, state.habits])
-
-  const router = useRouter()
-
-  const gotoCreateNewHabit = () => {
-    alert("No habits available lets create one")
-    router.push("/create-habit")
-  }
-
-  const deleteHabitFromDb = async (id: string) => {
-    const res = await deleteHabit(id)
-  }
 
   if (!state.habits?.length) return null
 
@@ -79,86 +58,13 @@ export default function DashboardPage() {
           <h2 className="text-3xl font-bold my-10">Snapshots of your habits</h2>
 
           {/* Dashboard Tabs */}
-          <DashboardTabs selectedHabitId={selectedHabitId} />
+          <DashboardTabs />
         </div>
 
         {/* Right Sidebar */}
         <div className="space-y-6">
           {/* Habits List */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Your Habits</CardTitle>
-                <Link href="/create-habit" onClick={() => {
-                  dispatch({
-                    type: 'UPDATE_HABIT_VIEWING',
-                    payload: -1
-                  })
-                }}>
-                  <Button size="sm" variant="ghost">
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                </Link>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {state.habits.map((habit) => (
-                  <div key={habit.id} className="relative flex flex-col self-center justify-center">
-                    <button
-                      onClick={() => setSelectedHabitId(habit.id)}
-                      className={`w-full text-left p-3 rounded-lg border-2 transition-colors ${selectedHabitId === habit.id
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50"
-                        }`}
-                    >
-                      <p className="font-semibold text-sm">{habit.title}</p>
-                      <p className="text-xs text-muted-foreground mt-1">🔥 {habit.currentStreak} day streak</p>
-                    </button>
-
-                    <div className="absolute right-1.5 bg-secondary min-w-1/4 h-9 flex gap-2 items-center justify-evenly text-primary rounded">
-                      <Link
-                        className="p-2 bg-secondary rounded-full flex gap-2 items-center justify-center text-primary hover:text-secondary hover:bg-primary transition-colors px-2.5"
-                        href="/create-habit"
-                        onClick={() => {
-                          dispatch({ type: "UPDATE_HABIT_VIEWING", payload: habit.id })
-                        }}
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </Link>
-                      <Button
-                        onClick={() => {
-                          if (Number(habit.id) == state.habitViewing) {
-                            const fh = state.habits.filter(habit => Number(habit.id)
-                              !== state.habitViewing)[0]
-
-                            deleteHabitFromDb(habit.id)
-                            if (!fh?.id) {
-                              gotoCreateNewHabit()
-                              dispatch({
-                                type: 'UPDATE_HABIT_VIEWING',
-                                payload: -1
-                              })
-                              return
-                            }
-                            setSelectedHabitId(fh.id)
-                            dispatch({ type: "UPDATE_HABIT_VIEWING", payload: fh.id })
-                            dispatch({ type: "DELETE_HABIT", payload: habit.id })
-                          } else {
-                            deleteHabitFromDb(habit.id)
-                            dispatch({ type: "DELETE_HABIT", payload: habit.id })
-                          }
-                        }}
-                        className="bg-secondary w-1/4 h-9 px-2.5 rounded-full flex gap-2 items-center justify-center text-primary hover:bg-destructive transition-colors"
-                      >
-                        <Trash className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <HabitLists />
 
           {/* AI Insights */}
           <AIInsightsCard
@@ -174,10 +80,118 @@ export default function DashboardPage() {
   )
 }
 
+const HabitLists = (
+  // { selectedHabitId, setSelectedHabitId }: { selectedHabitId: string, setSelectedHabitId: (id: string) => void }
+) => {
+  const [selectedHabitId, setSelectedHabitId] = useState<string>('')
+  const { state, dispatch } = useTrackCtx()
+
+  const deleteHabitFromDb = async (id: string) => {
+    try {
+      const res = await deleteHabit(id)
+      console.log("successfully deleted")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const router = useRouter()
+
+  const gotoCreateNewHabit = () => {
+    alert("No habits available lets create one")
+    router.push("/create-habit")
+  }
+
+  useEffect(() => {
+    if (!selectedHabitId) return
+    dispatch({
+      type: 'UPDATE_HABIT_VIEWING',
+      payload: Number(selectedHabitId)
+    })
+  }, [selectedHabitId, state.habits])
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle>Your Habits</CardTitle>
+          <Link href="/create-habit" onClick={() => {
+            dispatch({
+              type: 'UPDATE_HABIT_VIEWING',
+              payload: -1
+            })
+          }}>
+            <Button size="sm" variant="ghost">
+              <Plus className="w-4 h-4" />
+            </Button>
+          </Link>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          {state.habits.map((habit) => (
+            <div key={habit.id} className="relative flex flex-col self-center justify-center">
+              <button
+                onClick={() => setSelectedHabitId(habit.id)}
+                className={`w-full text-left p-3 rounded-lg border-2 transition-colors ${selectedHabitId === habit.id
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-primary/50"
+                  }`}
+              >
+                <p className="font-semibold text-sm">{habit.title}</p>
+                <p className="text-xs text-muted-foreground mt-1">🔥 {habit.currentStreak} day streak</p>
+              </button>
+
+              <div className="absolute right-1.5 bg-secondary min-w-1/4 h-9 flex gap-2 items-center justify-evenly text-primary rounded">
+                <Link
+                  className="p-2 bg-secondary rounded-full flex gap-2 items-center justify-center text-primary hover:text-secondary hover:bg-primary transition-colors px-2.5"
+                  href="/create-habit"
+                  onClick={() => {
+                    dispatch({ type: "UPDATE_HABIT_VIEWING", payload: habit.id })
+                  }}
+                >
+                  <Pencil className="w-4 h-4" />
+                </Link>
+                <Button
+                  onClick={() => {
+                    if (Number(habit.id) == state.habitViewing) {
+                      const fh = state.habits.filter(habit => Number(habit.id)
+                        !== state.habitViewing)[0]
+
+                      deleteHabitFromDb(habit.id)
+                      if (!fh?.id) {
+                        gotoCreateNewHabit()
+                        dispatch({
+                          type: 'UPDATE_HABIT_VIEWING',
+                          payload: -1
+                        })
+                        return
+                      }
+                      setSelectedHabitId(fh.id)
+                      dispatch({ type: "UPDATE_HABIT_VIEWING", payload: fh.id })
+                      dispatch({ type: "DELETE_HABIT", payload: habit.id })
+                    } else {
+                      deleteHabitFromDb(habit.id)
+                      dispatch({ type: "DELETE_HABIT", payload: habit.id })
+                    }
+                  }}
+                  className="bg-secondary w-1/4 h-9 px-2.5 rounded-full flex gap-2 items-center justify-center text-primary hover:bg-destructive transition-colors"
+                >
+                  <Trash className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
 const HabitNotifications = () => {
-  const {state} = useTrackCtx()
-  
-  const {dailyLogs} = state
+  const { state } = useTrackCtx()
+
+  const { dailyLogs } = state
 
   const today = new Date()
 
