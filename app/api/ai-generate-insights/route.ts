@@ -1,19 +1,6 @@
 // write a post request for next js api endpoint that accepts hobbyName, hobbyDescription, hobbyFeedback in the request body and returns ai generated insights as response
 import { NextRequest, NextResponse } from 'next/server';
 
-// Mock function to simulate AI insights generation
-async function generateAIInsights(hobbyName: string, hobbyDescription: string, hobbyFeedback: string) {
-  // In a real implementation, you would call an AI service here
-  return {
-    weeklySummary: `This week, your engagement with ${hobbyName} has been impressive!`,
-    suggestions: [
-      `Try dedicating more time to ${hobbyName} on weekends.`,
-      `Consider joining a local group or community related to ${hobbyName}.`,
-      `Explore new techniques or tools to enhance your experience with ${hobbyName}.`
-    ]
-  };
-}
-
 export async function POST(request: NextRequest) {
   try {
     const { hobbyName, hobbyDescription, hobbyFeedback } = await request.json();
