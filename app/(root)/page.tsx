@@ -5,6 +5,7 @@ import { FeaturesSection } from "./_components/FeaturesSection"
 import { FooterSection } from "./_components/FooterSection"
 import { HeroSection } from "./_components/HeroSection"
 import { LanguageToggler } from "./_components/LanguageToggler"
+import { UserAuthToggleView } from "@/components/UserAuthToggleView"
 
 export default function Home() {
   // later on move this to context or global state using redux so that we can make this page ssr
@@ -17,8 +18,12 @@ export default function Home() {
 
   return (
     <main className="flex-1 min-h-screen">
+      <section className="flex justify-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <UserAuthToggleView />
+        <LanguageToggler language={language} updateLanguage={updateLanguage} />
+      </section>
       {/* Language Toggle */}
-      <LanguageToggler language={language} updateLanguage={updateLanguage} />
+      {/* <LanguageToggler language={language} updateLanguage={updateLanguage} /> */}
 
       {/* Hero Section */}
       <HeroSection language={language} />
