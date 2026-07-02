@@ -14,6 +14,7 @@ import { useToFetchHabits } from "./_hooks/fetchHabits"
 import { useRouter } from "next/navigation"
 import { deleteHabit } from "@/server-calls/habits"
 import { useToFetchHabitDailyTimeline } from "./_hooks/fetchHabitDailyTimeline"
+import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 
 export default function DashboardPage() {
   const { state } = useTrackCtx()
@@ -28,9 +29,13 @@ export default function DashboardPage() {
   // fetching habit daily timeline from server
   useToFetchHabitDailyTimeline()
 
+  const {state: authState} = useUserAuthCtx()
+
+  // console.log(authState)
+
   if (!state.habits?.length) return null
 
-  const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
+  const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)  
 
   if (!habit) return <WhenEmpty />
 
@@ -38,7 +43,7 @@ export default function DashboardPage() {
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Greeting */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Good morning, User</h1>
+        <h1 className="text-4xl font-bold mb-2">Good morning, {authState?.user?.name ?? "User"}</h1>
         <p className="text-muted-foreground">
           {new Date().toLocaleDateString("en-US", {
             weekday: "long",

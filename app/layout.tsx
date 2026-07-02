@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { AppHeader } from "@/components/app-header"
 import "./globals.css"
+import { WrapperContextProviders } from "@/components/WrapperContextProviders"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -24,8 +25,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans antialiased flex h-screen bg-background text-foreground ${_geist.className} ${_geistMono.className}`}>
         <div className="flex flex-col flex-1 w-full">
-          <AppHeader />
-          {children}
+          <WrapperContextProviders>
+            <AppHeader />
+            {children}
+          </WrapperContextProviders>
+          {/* <AppHeader />
+          {children} */}
         </div>
         <Analytics />
       </body>

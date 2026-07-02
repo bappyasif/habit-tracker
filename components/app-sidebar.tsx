@@ -2,21 +2,11 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { LayoutDashboard, BarChart3, Settings, Plus, LogOut, Zap, Home } from "lucide-react"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarSeparator,
-} from "@/components/ui/sidebar"
+import { LayoutDashboard, BarChart3, Settings, LogOut, Zap, Home } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
+import { signOut } from "next-auth/react"
+import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
+import { Button } from "./ui/button"
 
 const navigationItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -31,13 +21,36 @@ export const AppSidebar = () => {
 
   const { dispatch } = useTrackCtx()
 
+  const {dispatch: authDispatch} = useUserAuthCtx()
+
   // Hide sidebar on landing page
   if (pathname === "/") {
     return null
   }
 
-  const handleSignOut = () => {
-    router.push("/")
+  const handleSignOut = async () => {
+    // simply making user unauthenticated instead of calling signOut() as signOut() returns to this page after signout and user is not redirected to home page.
+    // authDispatch({ type: "SET_UNAUTHENTICATED" })
+    // this creates a race condition and brings user back to this page after signout, so we can just make user unauthenticated instead of calling signOut() and redirect to home page.
+    // router.push("/")
+    // await signOut()
+
+    // Trigger signOut and pass the target redirect URL
+    await signOut({ 
+        callbackUrl: "/", // Tells Auth.js to redirect to home after clearing cookies
+        redirect: true    // Ensures a clean, full-page transition
+    })
+    // now lets clean up user auth state
+    authDispatch({ type: "SET_UNAUTHENTICATED" })
+
+    // as signout retruns to this page after signout, we can just redirect to home page after signout but it seems like after signout it still remains in this page and user is not redirected to home page.
+    // signOut().then(() => {
+    //   router.push("/")
+    // }).catch((error) => {
+    //   console.error("Error signing out:", error)
+    // }).finally(() => {
+    //   router.push("/")
+    // })
   }
 
   const handleNewHabit = () => {
@@ -114,10 +127,14 @@ export const AppSidebar = () => {
       <div className="border-t">
         <div className="space-y-1">
           <div className="flex items-center gap-2 justify-center font-medium">
-            <Link href="/" className={`flex items-center gap-2 p-1 px-4 rounded-2xl bg-destructive/10 text-foreground justify-center w-full`} onClick={handleSignOut}>
+            <Button variant="destructive" onClick={handleSignOut}>
               <LogOut className="w-4 h-4" />
               <span className="text-xl">Sign Out</span>
-            </Link>
+            </Button>
+            {/* <Link href="/" className={`flex items-center gap-2 p-1 px-4 rounded-2xl bg-destructive/40 hover:bg-destructive text-foreground justify-center w-full`} onClick={handleSignOut}>
+              <LogOut className="w-4 h-4" />
+              <span className="text-xl">Sign Out</span>
+            </Link> */}
           </div>
         </div>
       </div>
