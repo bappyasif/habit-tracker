@@ -22,8 +22,6 @@ export default function Home() {
         <UserAuthToggleView />
         <LanguageToggler language={language} updateLanguage={updateLanguage} />
       </section>
-      {/* Language Toggle */}
-      {/* <LanguageToggler language={language} updateLanguage={updateLanguage} /> */}
 
       {/* Hero Section */}
       <HeroSection language={language} />

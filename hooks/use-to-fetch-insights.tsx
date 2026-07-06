@@ -56,8 +56,6 @@ export const useToFetchInsights = () => {
         // daily insights
         const data = await fetchAiInsights(payloadData.name, payloadData.description, payloadData.feedback)
 
-        console.log(data, "data")
-
         if (data?.response) {
             updateInsights(data.response?.actionable_steps || [], data.response?.areas_for_improvement || [], data.response?.strengths || [], data.response?.actions || [], data.response?.daily_summary || "")
             updateSteps(data.response?.actions || [])
@@ -74,8 +72,6 @@ export const useToFetchInsights = () => {
             "ai-weekly-summary-insights"
         )
 
-        console.log(data, "weekly ai summary data")
-
         if (data?.response) {
             return data.response?.summary
         }
@@ -90,8 +86,6 @@ export const useToFetchInsights = () => {
             `completed about ${totalCompleted.toString()} percent of the steps` || "", 
             "ai-monthly-trends"
         )
-
-        console.log(response, "monthly trends from AI")
 
         if (response?.trends) {
             return response.trends
