@@ -4,16 +4,14 @@ import { signIn, signOut, useSession } from "next-auth/react"
 import { Button } from "./ui/button"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { useEffect } from "react"
+import { sendReuestToServerForUserAuthorization } from "@/utils"
 
 export function UserAuthToggleView() {
     const { data: session } = useSession()
 
     const { state: authState, dispatch: authDispatch } = useUserAuthCtx()
 
-    const handleUserAuthToggle = () => {
-        authDispatch({ type: "TOGGLE_AUTHENTICATION", payload: session?.user })
-        console.log("User auth state toggled?:", authState, session?.user)
-    }
+    console.log("UserAuthToggleView session:", session)
 
     const handleSignIn = () => {
         signIn()
@@ -28,6 +26,11 @@ export function UserAuthToggleView() {
     useEffect(() => {
         if (session) {
             authDispatch({ type: "SET_AUTHENTICATED", payload: session.user })
+            sendReuestToServerForUserAuthorization({
+                email: session.user?.email ?? "",
+                name: session.user?.name ?? "",
+                image: session.user?.image ?? ""
+            })
         } else {
             authDispatch({ type: "SET_UNAUTHENTICATED" })
         }

@@ -1,9 +1,9 @@
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
-import { se } from "date-fns/locale"
 import { useSession } from "next-auth/react"
 import { useEffect } from "react"
-import { useToCheckUserAuthAndRedirect } from "./useToCheckUserAuthAndRedirect"
 import { useRouter } from "next/navigation"
+import { authorizeUserInDb } from "@/server-calls/habits"
+import { sendReuestToServerForUserAuthorization } from "@/utils"
 
 export const useToUpdateUserSession = () => {
     const {data:session} = useSession()
@@ -24,6 +24,17 @@ export const useToUpdateUserSession = () => {
             dispatch({ type: "SET_UNAUTHENTICATED" })
         } else if(session?.user) {
             dispatch({ type: "SET_AUTHENTICATED", payload: session.user })
+            // // send request to db for user authorization record creation if not exists
+            // authorizeUserInDb({
+            //     email: session.user.email ?? "",
+            //     name: session.user.name ?? "",
+            //     image: session.user.image ?? ""
+            // })
+            sendReuestToServerForUserAuthorization({
+                email: session.user?.email ?? "",
+                name: session.user?.name ?? "",
+                image: session.user?.image ?? ""
+            })
         }
     }, [session])
 }

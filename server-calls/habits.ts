@@ -112,3 +112,21 @@ export const updateHabitDailyTimeline = async (habit: {
     }
     return res.json()
 }
+
+// send request to api with authorized outh response
+export const authorizeUserInDb = async (user: { email: string; name: string; image: string }) => {
+    const res = await fetch("/api/user/authorize", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(user)
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.message || "Failed to authorize user in db")
+    }
+    
+    return res.json()
+}
