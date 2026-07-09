@@ -3,7 +3,7 @@ import { createContext, useContext, useReducer } from "react"
 type UserAuthCtxState = {
   isAuthenticated: boolean
   user: {
-    // id: string
+    id: number
     name: string
     email: string
     image?: string

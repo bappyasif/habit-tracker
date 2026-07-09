@@ -6,7 +6,7 @@ export const getAllHabits = async () => {
     return res.json()
 }
 
-export const createHabit = async (habit: TrackTypes) => {
+export const createHabit = async (habit: TrackTypes & { userId: number }) => {
     const res = await fetch("/api/habits/", {
         method: "POST",
         headers: {

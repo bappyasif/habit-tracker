@@ -10,6 +10,7 @@ import { NewHabit } from "./new-habit"
 import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
 import { createHabit, updateHabit } from "@/server-calls/habits"
 import Link from "next/link"
+import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 
 interface Step {
   id: string
@@ -101,8 +102,14 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
       })
   }
 
+  const {state: authState} = useUserAuthCtx()
+
+  // habitData: TrackTypes & {"userId": string}
   const saveToDb = (habitData: TrackTypes) => {
-    createHabit(habitData).then(data => {
+    const userId = authState.user?.id!
+    const updatedData = { ...habitData, userId }
+
+    createHabit(updatedData).then(data => {
       console.log("created habit")
       if (data) {
         onSave(habitData)

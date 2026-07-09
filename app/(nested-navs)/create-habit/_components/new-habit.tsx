@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Steps, TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
+import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { createHabit } from "@/server-calls/habits"
 import { Plus, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -33,6 +34,8 @@ export const NewHabit = () => {
 
     const router = useRouter()
 
+    const {state: authState} = useUserAuthCtx()
+
     const saveToDb = (habitData: TrackTypes) => {
         const addingJunkNotesToSteps = habitData.steps.map(step => {
             return {
@@ -41,9 +44,12 @@ export const NewHabit = () => {
             }
         })
 
+        const userId = authState.user?.id!
+
         const moddedData = {
             ...habitData,
-            steps: addingJunkNotesToSteps
+            steps: addingJunkNotesToSteps,
+            userId
         }
 
         createHabit(moddedData).then(data => {

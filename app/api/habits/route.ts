@@ -20,7 +20,8 @@ export const POST = async (request: Request) => {
         frequency: usrInp.frequency,
         duration: usrInp.duration,
         measurement: usrInp.measurement,
-        steps: usrInp.steps
+        steps: usrInp.steps,
+        userId: usrInp.userId
     }
 
     const res = await fetch("http://0.0.0.0:8000/api/v1/habits/create", {

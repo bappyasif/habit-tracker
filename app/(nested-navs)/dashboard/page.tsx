@@ -228,6 +228,8 @@ const HabitNotifications = () => {
 }
 
 const WhenEmpty = () => {
+  const {state: authState} = useUserAuthCtx()
+
   return (
     <div
       className="flex flex-col min-w-3/4 gap-40"
@@ -235,7 +237,7 @@ const WhenEmpty = () => {
       <header
         className="mb-40 flex flex-col self-start m-10"
       >
-        <h1 className="text-4xl font-bold mb-2">Good morning </h1>
+        <h1 className="text-4xl font-bold mb-2">Good morning {authState?.user?.name ?? "User"}</h1>
         <p className="text-muted-foreground">
           {new Date().toLocaleDateString("en-US", {
             weekday: "long",

@@ -15,6 +15,15 @@ export function UserAuthToggleView() {
 
     const handleSignIn = () => {
         signIn()
+        // .then(() => {
+        //     if (session) {
+        //         sendReuestToServerForUserAuthorization({
+        //         email: session.user?.email ?? "",
+        //         name: session.user?.name ?? "",
+        //         image: session.user?.image ?? ""
+        //     })
+        //     }
+        // })
         // handleUserAuthToggle()
     }
 
