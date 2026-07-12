@@ -130,3 +130,20 @@ export const authorizeUserInDb = async (user: { email: string; name: string; ima
     
     return res.json()
 }
+
+// get a user habits from db
+export const getUserHabitsFromDb = async (userId: number) => {
+    // const res = await fetch(`/api/user/habits?userId=${userId}`)
+    const url = `/api/user/habits?userId=${userId}`
+
+    console.log(url, "url!!", userId, "userId!!")
+
+    const res = await fetch(url)
+
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.message || "Failed to get user habits from db")
+    }
+
+    return res.json()
+}
