@@ -54,7 +54,7 @@ export function UserAuthToggleView() {
                 image: session.user.image ?? ""
             }).then((data) => {
                 console.log("User authorization response: from userAuthToggleView", data)
-                authDispatch({ type: "SET_AUTHENTICATED", payload: data.data.user })
+                authDispatch({ type: "SET_AUTHENTICATED", payload: {...data.data.user, token: data.data.access_token} })
             }).catch((error) => {
                 console.error("Error authorizing user:", error)
                 authDispatch({ type: "SET_UNAUTHENTICATED" })

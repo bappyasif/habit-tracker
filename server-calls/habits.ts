@@ -132,13 +132,22 @@ export const authorizeUserInDb = async (user: { email: string; name: string; ima
 }
 
 // get a user habits from db
-export const getUserHabitsFromDb = async (userId: number) => {
+export const getUserHabitsFromDb = async (userId: number, token: string) => {
     // const res = await fetch(`/api/user/habits?userId=${userId}`)
-    const url = `/api/user/habits?userId=${userId}`
+    // const url = `/api/user/habits?userId=${userId}` // as will be sending out tokens and decode user id from there no need to hard code this in url
+    // const url = `/api/user/habits?userId=${userId}&token=${token}`
 
-    console.log(url, "url!!", userId, "userId!!")
+    const url = `/api/user/habits`
 
-    const res = await fetch(url)
+    console.log(url, "url!!", userId, "userId!!", token, "token!!")
+
+    // const res = await fetch(url)
+    const res = await fetch(url, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
+    })
 
     if (!res.ok) {
         const errorData = await res.json()

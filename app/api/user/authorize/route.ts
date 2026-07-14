@@ -11,7 +11,8 @@ export const POST = async (request: Request) => {
 
     console.log(usrInp, "User authorization request:", siphenedData)
 
-    const url = "http://0.0.0.0:8000/api/v1/user-authorize"
+    // const url = "http://0.0.0.0:8000/api/v1/user-authorize"
+    const url = "http://0.0.0.0:8000/api/v1/user-authorize/with-jwt"
     
     const res = await fetch(url, {
         method: "POST",

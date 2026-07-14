@@ -24,8 +24,8 @@ export const useToFetchHabits = () => {
     
     useEffect(() => {
         if (authState.user) {
-            console.log(authState.user.id, "authState.user.id", authState)
-            getUserHabitsFromDb(authState.user.id)
+            console.log(authState.user.id, "authState.user.id", authState, authState?.user?.token)
+            getUserHabitsFromDb(authState.user.id, authState?.user?.token!)
                 .then(payload => {
                     console.log(payload, "PAYLOAD")
                     if (payload?.data?.habits?.length) {

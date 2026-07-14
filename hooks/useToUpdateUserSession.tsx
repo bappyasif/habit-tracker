@@ -51,7 +51,8 @@ export const useToUpdateUserSession = () => {
                 image: session.user.image ?? ""
             }).then((authorizedUser) => {
                 console.log("User authorization response: from useToUpdateUserSession", authorizedUser.data.user)
-                dispatch({ type: "SET_AUTHENTICATED", payload: authorizedUser.data.user })
+                // dispatch({ type: "SET_AUTHENTICATED", payload: authorizedUser.data.user })
+                dispatch({ type: "SET_AUTHENTICATED", payload: {...authorizedUser.data.user, token: authorizedUser.data.access_token} })
             }).catch((error) => {
                 console.error("Error authorizing user:", error)
                 dispatch({ type: "SET_UNAUTHENTICATED" })
