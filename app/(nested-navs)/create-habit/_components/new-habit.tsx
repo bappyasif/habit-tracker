@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Steps, TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
-import { createHabit } from "@/server-calls/habits"
+import { createHabit, createHabitSecurely } from "@/server-calls/habits"
 import { Plus, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -45,14 +45,19 @@ export const NewHabit = () => {
         })
 
         const userId = authState.user?.id!
+        const token = authState.user?.token!
 
         const moddedData = {
             ...habitData,
             steps: addingJunkNotesToSteps,
-            userId
+            userId,
+            token
         }
 
-        createHabit(moddedData).then(data => {
+        // createHabit(moddedData).then(data => {
+        //   console.log("created a habit successfully")
+        // }).catch(err => console.log(err))
+        createHabitSecurely(moddedData).then(data => {
           console.log("created a habit successfully")
         }).catch(err => console.log(err))
       }

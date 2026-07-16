@@ -46,3 +46,49 @@ export const GET = async (request: Request) => {
     })
     // return NextResponse.json(data, { status: res.status, statusText: res.statusText });
 }
+
+export const POST = async (request: Request) => {
+    const usrInp = await request.json()
+
+    if(!usrInp.userId) {
+        return NextResponse.json({
+            message: "User ID is required"
+        })
+    }
+
+    const siphenedData = {
+        id: usrInp.id,
+        title: usrInp.title,
+        description: usrInp.description || "None",
+        frequency: usrInp.frequency,
+        duration: usrInp.duration,
+        measurement: usrInp.measurement,
+        steps: usrInp.steps,
+        userId: usrInp.userId
+    }
+
+    const bearerToken = request.headers.get("authorization")
+    console.log(bearerToken, "!!bearerToken!!")
+
+    if (!bearerToken) {
+        return NextResponse.json({ error: 'Missing token' }, { status: 401 });
+    }
+
+    const authToken = bearerToken.replace(/"/g, '');
+
+    const res = await fetch("http://0.0.0.0:8000/api/v1/user-habits/create-securely", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": authToken
+        },
+        body: JSON.stringify(siphenedData)
+    })
+
+    const data = await res.json()
+
+    return NextResponse.json({
+        message: "Habit created successfully",
+        data: data
+    })
+}

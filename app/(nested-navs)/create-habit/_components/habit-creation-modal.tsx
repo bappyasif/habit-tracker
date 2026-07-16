@@ -8,7 +8,7 @@ import { HabitPreview } from "./habit-preview"
 import { HabitEdit } from "./habit-edit"
 import { NewHabit } from "./new-habit"
 import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
-import { createHabit, updateHabit } from "@/server-calls/habits"
+import { createHabit, createHabitSecurely, updateHabit } from "@/server-calls/habits"
 import Link from "next/link"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 
@@ -105,11 +105,24 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
   const {state: authState} = useUserAuthCtx()
 
   // habitData: TrackTypes & {"userId": string}
+  // const saveToDb = (habitData: TrackTypes) => {
+  //   const userId = authState.user?.id!
+  //   const updatedData = { ...habitData, userId }
+
+  //   createHabit(updatedData).then(data => {
+  //     console.log("created habit")
+  //     if (data) {
+  //       onSave(habitData)
+  //     }
+  //   }).catch(err => console.log(err))
+  // }
+
   const saveToDb = (habitData: TrackTypes) => {
     const userId = authState.user?.id!
-    const updatedData = { ...habitData, userId }
+    const token = authState.user?.token!
+    const updatedData = { ...habitData, userId, token }
 
-    createHabit(updatedData).then(data => {
+    createHabitSecurely(updatedData).then(data => {
       console.log("created habit")
       if (data) {
         onSave(habitData)

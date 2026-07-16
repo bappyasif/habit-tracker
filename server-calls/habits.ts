@@ -156,3 +156,15 @@ export const getUserHabitsFromDb = async (userId: number, token: string) => {
 
     return res.json()
 }
+
+export const createHabitSecurely = async (habit: TrackTypes & { userId: number, token: string }) => {
+    const res = await fetch("/api/user/habits/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json", 
+            Authorization: `Bearer ${habit.token}`
+        },
+        body: JSON.stringify(habit)
+    })
+    return res.json()
+}
