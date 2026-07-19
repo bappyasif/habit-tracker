@@ -8,7 +8,7 @@ import { HabitPreview } from "./habit-preview"
 import { HabitEdit } from "./habit-edit"
 import { NewHabit } from "./new-habit"
 import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
-import { createHabit, createHabitSecurely, updateHabit } from "@/server-calls/habits"
+import { createHabit, createHabitSecurely, updateHabit, updateHabitSecurely } from "@/server-calls/habits"
 import Link from "next/link"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 
@@ -102,7 +102,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
       })
   }
 
-  const {state: authState} = useUserAuthCtx()
+  const { state: authState } = useUserAuthCtx()
 
   // habitData: TrackTypes & {"userId": string}
   // const saveToDb = (habitData: TrackTypes) => {
@@ -162,9 +162,13 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
       return { ...step, time: date.toISOString() };
     });
 
-    const updatedHabit = { ...habit, steps: convertedSteps };
+    const token = authState?.user?.token!
+    const userId = authState?.user?.id!
 
-    updateHabit(updatedHabit)
+    const updatedHabit = { ...habit, steps: convertedSteps, token, userId };
+
+    // updateHabit(updatedHabit)
+    updateHabitSecurely(updatedHabit)
     onClose()
     // cleaning out old insights data for the habit being updated, we can choose to keep old insights data or not after update, if we want to keep then we can remove this dispatch call
     trackDispatch({

@@ -168,3 +168,29 @@ export const createHabitSecurely = async (habit: TrackTypes & { userId: number, 
     })
     return res.json()
 }
+
+export const deleteHabitSecurely = async (id: string, token: string) => {
+    const res = await fetch(`/api/user/habits/`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            id: id
+        })
+    })
+    return res.json()
+}
+
+export const updateHabitSecurely = async (habit: TrackTypes & { userId: number, token: string }) => {
+    const res = await fetch("/api/user/habits/", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${habit.token}`
+        },
+        body: JSON.stringify(habit)
+    })
+    return res.json()
+}
