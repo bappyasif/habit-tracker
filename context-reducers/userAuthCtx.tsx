@@ -14,21 +14,18 @@ type UserAuthCtxState = {
 const userAuthCtxReducer = (state: UserAuthCtxState, action: { type: string; payload?: any }): UserAuthCtxState => {
     switch (action.type) {
         case 'SET_AUTHENTICATED':
-            console.log("SET_AUTHENTICATED action.payload:", action.payload)
             return {
                 ...state,
                 isAuthenticated: true,
                 user: action.payload
             }
         case 'SET_UNAUTHENTICATED':
-            console.log("SET_UNAUTHENTICATED action.payload:", action.payload)
             return {
                 ...state,
                 isAuthenticated: false,
                 user: null
             }
         case 'TOGGLE_AUTHENTICATION':
-            console.log("TOGGLE_AUTHENTICATION action.payload:", action.payload)
             return {
                 ...state,
                 isAuthenticated: !state.isAuthenticated,

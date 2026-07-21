@@ -50,7 +50,6 @@ export const useToUpdateHabitStepsCompletion = () => {
             })
 
             if (findDate?.log_ids_with_notes?.length) {
-                // updateSteps(findDate.ids)
                 updateSteps(findDate.log_ids_with_notes.map((obj: { id: string; notes: string }) => obj.id))
             } else {
                 resetSteps()

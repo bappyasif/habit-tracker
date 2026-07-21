@@ -1,7 +1,6 @@
 import { TrackTypes } from "@/context-reducers/trackCtx"
 
 export const getAllHabits = async () => {
-    // const res = await fetch("http://127.0.0.1:8000/api/v1/habits/")
     const res = await fetch("/api/habits/")
     return res.json()
 }
@@ -133,15 +132,8 @@ export const authorizeUserInDb = async (user: { email: string; name: string; ima
 
 // get a user habits from db
 export const getUserHabitsFromDb = async (userId: number, token: string) => {
-    // const res = await fetch(`/api/user/habits?userId=${userId}`)
-    // const url = `/api/user/habits?userId=${userId}` // as will be sending out tokens and decode user id from there no need to hard code this in url
-    // const url = `/api/user/habits?userId=${userId}&token=${token}`
-
     const url = `/api/user/habits`
 
-    console.log(url, "url!!", userId, "userId!!", token, "token!!")
-
-    // const res = await fetch(url)
     const res = await fetch(url, {
         headers: {
             Authorization: `Bearer ${token}`,
@@ -192,5 +184,77 @@ export const updateHabitSecurely = async (habit: TrackTypes & { userId: number, 
         },
         body: JSON.stringify(habit)
     })
+    return res.json()
+}
+
+export const securelyCreateHabitDailyTimeline = async (habit: TrackTypes, token: string) => {
+    const res = await fetch("/api/user/habits/timeline", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(habit)
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.message || "Failed to create habit timeline")
+    }
+
+    return res.json()
+}
+
+export const securelyGetHabitDailyTimeline = async (habitId: string, token: string) => {
+    const endpoint = `/api/user/habits/timeline?habitId=${habitId}`
+
+    const res = await fetch(endpoint, {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        }
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.message || "Failed to fetch habit daily log timeline")
+    }
+    return res.json()
+}
+
+export const securelyUpdateHabitDailyTimeline = async (habit: {
+    habitId: string;
+    dateStamp: Date;
+    totalSteps: number;
+    steps: {
+        id: string;
+        // note: string;
+        title: string;
+        time: string;
+        completed: boolean;
+    }[];
+    completedSteps: {
+        id: string;
+        // note: string;
+        title: string;
+        time: string;
+        completed: boolean;
+    }[];
+}, token: string) => {
+
+    const res = await fetch("/api/user/habits/timeline", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ ...habit })
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.message || "Failed to update habit daily log timeline")
+    }
+
     return res.json()
 }

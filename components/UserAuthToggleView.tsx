@@ -4,7 +4,6 @@ import { signIn, signOut, useSession } from "next-auth/react"
 import { Button } from "./ui/button"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { useEffect } from "react"
-// import { sendReuestToServerForUserAuthorization } from "@/utils"
 import { authorizeUserInDb } from "@/server-calls/habits"
 
 export function UserAuthToggleView() {
@@ -12,48 +11,21 @@ export function UserAuthToggleView() {
 
     const { state: authState, dispatch: authDispatch } = useUserAuthCtx()
 
-    // console.log("UserAuthToggleView session:", session)
-
     const handleSignIn = () => {
         signIn()
-        // .then(() => {
-        //     if (session) {
-        //         sendReuestToServerForUserAuthorization({
-        //         email: session.user?.email ?? "",
-        //         name: session.user?.name ?? "",
-        //         image: session.user?.image ?? ""
-        //     })
-        //     }
-        // })
-        // handleUserAuthToggle()
     }
 
     const handleSignOut = () => {
         signOut()
-        // handleUserAuthToggle()
     }
 
     useEffect(() => {
         if (session && session.user) {
-            // authDispatch({ type: "SET_AUTHENTICATED", payload: session.user })
-            // sendReuestToServerForUserAuthorization({
-            //     email: session.user?.email ?? "",
-            //     name: session.user?.name ?? "",
-            //     image: session.user?.image ?? ""
-            // }).then((data) => {
-            //     console.log("User authorization response:", data)
-            //     authDispatch({ type: "SET_AUTHENTICATED", payload: session.user })
-            //     console.log(authState, "authState from authToggleView")
-            // }).catch((error) => {
-            //     console.error("Error authorizing user:", error)
-            //     authDispatch({ type: "SET_UNAUTHENTICATED" })
-            // })
             authorizeUserInDb({
                 email: session.user.email ?? "",
                 name: session.user.name ?? "",
                 image: session.user.image ?? ""
             }).then((data) => {
-                console.log("User authorization response: from userAuthToggleView", data)
                 authDispatch({ type: "SET_AUTHENTICATED", payload: {...data.data.user, token: data.data.access_token} })
             }).catch((error) => {
                 console.error("Error authorizing user:", error)

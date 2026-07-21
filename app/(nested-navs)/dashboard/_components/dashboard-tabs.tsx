@@ -7,10 +7,6 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { useToUpdateHabitStepsCompletion } from "../_hooks/useToUpdateHabitStepsCompletion"
 
-interface DashboardTabsProps {
-  selectedHabitId: string
-}
-
 export function DashboardTabs() {
   const [activeTab, setActiveTab] = useState<"today" | "week" | "month">("today")
 
@@ -133,8 +129,6 @@ const MonthTab = () => {
     score: Math.ceil(item.score / 7),
   }))
 
-  console.log(monthlyFreqValues, "monthly freq values")
-
   return (
     <div className="space-y-6">
       <div className="h-64">
@@ -192,8 +186,6 @@ const WeekTab = () => {
       withMissingDays.push({ day: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000 + i * 24 * 60 * 60 * 1000).toLocaleString('en-US', { weekday: 'short' }), completion: 0 })
     }
   }
-
-  console.log(withMissingDays, "withMissingDays")
 
   return (
     <div className="h-64">

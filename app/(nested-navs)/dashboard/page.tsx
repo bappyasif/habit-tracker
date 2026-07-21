@@ -12,7 +12,7 @@ import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { TodaysFocus } from "./_components/todays-focus"
 import { useToFetchHabits } from "./_hooks/fetchHabits"
 import { useRouter } from "next/navigation"
-import { deleteHabit, deleteHabitSecurely } from "@/server-calls/habits"
+import { deleteHabitSecurely } from "@/server-calls/habits"
 import { useToFetchHabitDailyTimeline } from "./_hooks/fetchHabitDailyTimeline"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 
@@ -30,8 +30,6 @@ export default function DashboardPage() {
   useToFetchHabitDailyTimeline()
 
   const {state: authState} = useUserAuthCtx()
-
-  // console.log(authState)
 
   if (!state.habits?.length) return null
 
@@ -85,9 +83,7 @@ export default function DashboardPage() {
   )
 }
 
-const HabitLists = (
-  // { selectedHabitId, setSelectedHabitId }: { selectedHabitId: string, setSelectedHabitId: (id: string) => void }
-) => {
+const HabitLists = () => {
   const [selectedHabitId, setSelectedHabitId] = useState<string>('')
   const { state, dispatch } = useTrackCtx()
 
@@ -96,7 +92,6 @@ const HabitLists = (
   const deleteHabitFromDb = async (id: string) => {
     try {
       const token = authState?.user?.token!
-      // const res = await deleteHabit(id)
       await deleteHabitSecurely(id, token)
       console.log("successfully deleted")
     } catch (error) {

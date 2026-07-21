@@ -9,9 +9,6 @@ export const POST = async (request: Request) => {
         name: usrInp.name
     }
 
-    console.log(usrInp, "User authorization request:", siphenedData)
-
-    // const url = "http://0.0.0.0:8000/api/v1/user-authorize"
     const url = "http://0.0.0.0:8000/api/v1/user-authorize/with-jwt"
     
     const res = await fetch(url, {
@@ -23,8 +20,6 @@ export const POST = async (request: Request) => {
     })
 
     const data = await res.json()
-
-    console.log("User authorization response:", data)
 
     return NextResponse.json({
         message: "User authorized successfully",

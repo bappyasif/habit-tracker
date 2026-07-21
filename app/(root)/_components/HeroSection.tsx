@@ -34,16 +34,6 @@ export const HeroSection = ({ language }: { language: "en" | "bn" }) => {
 
           {/* Quick Sample Cards */}
           <SampleCards language={language} />
-          {/* <div className="mt-16">
-            <p className="text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wide">{t.quickStart}</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {sampleHabits.map((habit) => (
-                <Link key={habit.title} href="/create-habit">
-                  <HabitCard {...habit} />
-                </Link>
-              ))}
-            </div>
-          </div> */}
         </div>
       </section>
     )

@@ -8,7 +8,7 @@ import { HabitPreview } from "./habit-preview"
 import { HabitEdit } from "./habit-edit"
 import { NewHabit } from "./new-habit"
 import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
-import { createHabit, createHabitSecurely, updateHabit, updateHabitSecurely } from "@/server-calls/habits"
+import { createHabitSecurely, updateHabitSecurely } from "@/server-calls/habits"
 import Link from "next/link"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 
@@ -104,19 +104,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
   const { state: authState } = useUserAuthCtx()
 
-  // habitData: TrackTypes & {"userId": string}
-  // const saveToDb = (habitData: TrackTypes) => {
-  //   const userId = authState.user?.id!
-  //   const updatedData = { ...habitData, userId }
-
-  //   createHabit(updatedData).then(data => {
-  //     console.log("created habit")
-  //     if (data) {
-  //       onSave(habitData)
-  //     }
-  //   }).catch(err => console.log(err))
-  // }
-
   const saveToDb = (habitData: TrackTypes) => {
     const userId = authState.user?.id!
     const token = authState.user?.token!
@@ -167,7 +154,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
     const updatedHabit = { ...habit, steps: convertedSteps, token, userId };
 
-    // updateHabit(updatedHabit)
     updateHabitSecurely(updatedHabit)
     onClose()
     // cleaning out old insights data for the habit being updated, we can choose to keep old insights data or not after update, if we want to keep then we can remove this dispatch call

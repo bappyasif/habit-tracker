@@ -29,12 +29,6 @@ export const AppSidebar = () => {
   }
 
   const handleSignOut = async () => {
-    // simply making user unauthenticated instead of calling signOut() as signOut() returns to this page after signout and user is not redirected to home page.
-    // authDispatch({ type: "SET_UNAUTHENTICATED" })
-    // this creates a race condition and brings user back to this page after signout, so we can just make user unauthenticated instead of calling signOut() and redirect to home page.
-    // router.push("/")
-    // await signOut()
-
     // Trigger signOut and pass the target redirect URL
     await signOut({ 
         callbackUrl: "/", // Tells Auth.js to redirect to home after clearing cookies
@@ -42,15 +36,6 @@ export const AppSidebar = () => {
     })
     // now lets clean up user auth state
     authDispatch({ type: "SET_UNAUTHENTICATED" })
-
-    // as signout retruns to this page after signout, we can just redirect to home page after signout but it seems like after signout it still remains in this page and user is not redirected to home page.
-    // signOut().then(() => {
-    //   router.push("/")
-    // }).catch((error) => {
-    //   console.error("Error signing out:", error)
-    // }).finally(() => {
-    //   router.push("/")
-    // })
   }
 
   const handleNewHabit = () => {
@@ -103,7 +88,6 @@ export const AppSidebar = () => {
       {
         grps.map((grp) => {
           const isActive = pathname === grp.path
-          // console.log(grp, "grp")
           return (
             (
               <div className="space-y-3" key={grp.path}>
@@ -131,10 +115,6 @@ export const AppSidebar = () => {
               <LogOut className="w-4 h-4" />
               <span className="text-xl">Sign Out</span>
             </Button>
-            {/* <Link href="/" className={`flex items-center gap-2 p-1 px-4 rounded-2xl bg-destructive/40 hover:bg-destructive text-foreground justify-center w-full`} onClick={handleSignOut}>
-              <LogOut className="w-4 h-4" />
-              <span className="text-xl">Sign Out</span>
-            </Link> */}
           </div>
         </div>
       </div>
