@@ -1,11 +1,14 @@
 import { Steps, TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
-import { createHabitDailyTimeline, createHabitWeeklyTimeline, updateHabitDailyTimeline } from "@/server-calls/habits"
+import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
+import { createHabitDailyTimeline, createHabitWeeklyTimeline, securelyCreateHabitDailyTimeline, securelyUpdateHabitDailyTimeline, updateHabitDailyTimeline } from "@/server-calls/habits"
 import { useState } from "react"
 
 export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updateSteps }: { habit: TrackTypes, date: Date, steps: Steps[], updateSteps: (ids: (number | string)[]) => void }) => {
     const [isSaving, setIsSaving] = useState(false)
 
     const { state, dispatch } = useTrackCtx()
+
+    const { state: authState } = useUserAuthCtx()
 
     const { dailyLogs } = state
     const saveWeeklyTrackingTodb = async (data: any) => {
@@ -14,7 +17,10 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
     }
 
     const saveDailyTrackingTodb = async (data: any) => {
-        const response = await createHabitDailyTimeline(data)
+        const token = authState?.user?.token!
+        const response = await securelyCreateHabitDailyTimeline(data, token)
+        
+        // const response = await createHabitDailyTimeline(data)
         console.log(response, "response from saving timeline data for daily tracking", data)
         return response
     }
@@ -53,7 +59,11 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
             })),
         }
 
-        updateHabitDailyTimeline(tt).then((resp) => {
+        const token = authState?.user?.token!
+
+        // updateHabitDailyTimeline(tt)
+        securelyUpdateHabitDailyTimeline(tt, token)
+        .then((resp) => {
             const dataUpdated = resp?.data?.entry?.filter((item: any) => item.habit_id == habit.id && new Date(item.date_stamp).toDateString() == date.toDateString())?.[0] || null
 
             if (dataUpdated) {

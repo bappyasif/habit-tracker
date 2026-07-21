@@ -194,3 +194,76 @@ export const updateHabitSecurely = async (habit: TrackTypes & { userId: number, 
     })
     return res.json()
 }
+
+export const securelyCreateHabitDailyTimeline = async (habit: TrackTypes, token: string) => {
+    const res = await fetch("/api/user/habits/timeline", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(habit)
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.message || "Failed to create habit timeline")
+    }
+
+    return res.json()
+}
+
+export const securelyGetHabitDailyTimeline = async (habitId: string, token: string) => {
+    const endpoint = `/api/user/habits/timeline?habitId=${habitId}`
+
+    // const res = await fetch(`/api/habits/timeline?habitId=${habitId}`)
+    const res = await fetch(endpoint, {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        }
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.message || "Failed to fetch habit daily log timeline")
+    }
+    return res.json()
+}
+
+export const securelyUpdateHabitDailyTimeline = async (habit: {
+    habitId: string;
+    dateStamp: Date;
+    totalSteps: number;
+    steps: {
+        id: string;
+        // note: string;
+        title: string;
+        time: string;
+        completed: boolean;
+    }[];
+    completedSteps: {
+        id: string;
+        // note: string;
+        title: string;
+        time: string;
+        completed: boolean;
+    }[];
+}, token: string) => {
+
+    const res = await fetch("/api/user/habits/timeline", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ ...habit })
+    })
+
+    if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.message || "Failed to update habit daily log timeline")
+    }
+    
+    return res.json()
+}

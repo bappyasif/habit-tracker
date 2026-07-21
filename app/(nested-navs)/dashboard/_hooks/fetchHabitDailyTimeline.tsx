@@ -1,14 +1,21 @@
 import { useTrackCtx } from "@/context-reducers/trackCtx"
-import { getHabitDailyTimeline } from "@/server-calls/habits"
+import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
+import { getHabitDailyTimeline, securelyGetHabitDailyTimeline } from "@/server-calls/habits"
 import { useEffect } from "react"
 
 export const useToFetchHabitDailyTimeline = async () => {
     const { state, dispatch } = useTrackCtx()
     const habitId = state.habitViewing.toString()
 
+    const {state: authState} = useUserAuthCtx()
+
     const fetchTimeline = async () => {
         if (!habitId) return
-        const res = await getHabitDailyTimeline(habitId)
+        const token = authState?.user?.token
+        if(!token) return
+
+        const res = await securelyGetHabitDailyTimeline(habitId, token)
+        // const res = await getHabitDailyTimeline(habitId)
 
         if(res?.data?.daily_tracking_timeline) {
             const modded = res.data.daily_tracking_timeline.map((entry: any) => ({
