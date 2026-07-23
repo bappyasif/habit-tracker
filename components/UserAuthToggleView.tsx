@@ -5,6 +5,7 @@ import { Button } from "./ui/button"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { useEffect } from "react"
 import { authorizeUserInDb } from "@/server-calls/habits"
+import useFcmToken from "@/hooks/useFcmToken"
 
 export function UserAuthToggleView() {
     const { data: session } = useSession()
@@ -26,7 +27,7 @@ export function UserAuthToggleView() {
                 name: session.user.name ?? "",
                 image: session.user.image ?? ""
             }).then((data) => {
-                authDispatch({ type: "SET_AUTHENTICATED", payload: {...data.data.user, token: data.data.access_token} })
+                authDispatch({ type: "SET_AUTHENTICATED", payload: { ...data.data.user, token: data.data.access_token } })
             }).catch((error) => {
                 console.error("Error authorizing user:", error)
                 authDispatch({ type: "SET_UNAUTHENTICATED" })
@@ -42,6 +43,7 @@ export function UserAuthToggleView() {
                 <span className="text-lg">Signed in as {session.user?.name}</span>
                 <br />
                 <Button onClick={() => handleSignOut()}>Sign out</Button>
+                <TestFcmPushNotification />
             </div>
         )
     }
@@ -50,6 +52,20 @@ export function UserAuthToggleView() {
         <div className="flex items-center w-3/4 gap-4">
             <span className="">Not signed in</span>
             <Button onClick={() => handleSignIn()}>Sign in</Button>
+            {/* <TestFcmPushNotification /> */}
         </div>
     )
+}
+
+const TestFcmPushNotification = () => {
+    const {  requestPermission, installationId: token } = useFcmToken();
+
+    return (
+        <div>
+            <button onClick={requestPermission} className="p-2 bg-blue-600">
+                Enable Push Notifications!!
+            </button>
+            {token && <p className="text-xs text-green-600 mt-2">Notifications Enabled!</p>}
+        </div>
+    );
 }

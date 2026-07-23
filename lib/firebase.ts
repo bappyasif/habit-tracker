@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
+import { getMessaging, onMessage, register, onRegistered } from "firebase/messaging";
 import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -16,6 +17,16 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+// Initialize Firebase only on the client-side
+let app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+let messaging: ReturnType<typeof getMessaging> | null = null;
+
+if (typeof window !== 'undefined') {
+  messaging = getMessaging(app);
+}
+
+export { messaging, onMessage, register, onRegistered };
+
+// // Initialize Firebase
+// const app = initializeApp(firebaseConfig);
+// const analytics = getAnalytics(app);
