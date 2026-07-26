@@ -1,10 +1,21 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import { messaging, onMessage, onRegistered, register } from '@/lib/firebase';
+import { useUserAuthCtx } from '@/context-reducers/userAuthCtx';
+import { registerOrUpdateFcmTokenWithBackend } from '@/app/server-actions/notifications';
 // Import 'register' and 'onRegistered' instead of 'getToken'
 
 export default function useFcmToken() {
   const [installationId, setInstallationId] = useState<string | null>(null);
+  const {state: authState} = useUserAuthCtx()
+  const authToken = authState?.user?.token
+
+  useEffect(() => {
+    if (!authToken) return;
+    if (!installationId) return;
+    registerOrUpdateFcmTokenWithBackend(installationId, authToken);
+  }, [installationId, authToken]);
 
   useEffect(() => {
     if (!messaging) return;
@@ -12,8 +23,17 @@ export default function useFcmToken() {
     // 1. Listen for the registration ID when it's generated/updated
     const unsubscribeToken = onRegistered(messaging, (id) => {
       console.log('Firebase Installation ID (FID):', id);
+      console.log("auth token: ", authToken, authState)
+      
       setInstallationId(id);
+      
       // TODO: Send this 'id' to your Python/SQLAlchemy backend instead of the old FCM token
+      if(!authToken) {
+        alert("No auth token found, login first")
+        return
+      }
+
+      registerOrUpdateFcmTokenWithBackend(id, authToken);
     });
 
     // 2. Handle foreground messages
