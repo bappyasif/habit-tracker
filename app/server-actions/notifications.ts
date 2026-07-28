@@ -29,3 +29,38 @@ export const registerOrUpdateFcmTokenWithBackend = async (fcmToken: string, auth
     console.error('Network error saving FCM token:', error);
   }
 };
+
+export const sendPushNotificationsToUser = async (authToken: string, title: string, body: string) => {
+  try {
+
+    if (!authToken) {
+      console.error('Auth token not found');
+      return;
+    }
+
+    const url = 'http://localhost:8000/api/v1/notifications/push-to-user-device-securely'
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + authToken
+      },
+      body: JSON.stringify({
+        // fcm_token: fcmToken,
+        message_title: title,
+        message_body: body,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('Failed to send push notifications');
+      // throw new Error('Failed to send push notifications');
+    }
+    
+    return response.json();
+
+  } catch (error) {
+    console.error('Network error sending push notifications:', error);
+  }
+}

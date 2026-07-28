@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button"
 import { CheckCircle2 } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { useToUpdateHabitStepsCompletion } from "../_hooks/useToUpdateHabitStepsCompletion"
+import { sendPushNotificationsToUser } from "@/app/server-actions/notifications"
+import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
+import { useEffect } from "react"
 
 export const TodaysFocus = () => {
   const { state } = useTrackCtx()
@@ -12,6 +15,18 @@ export const TodaysFocus = () => {
   const { habits } = state
 
   const currentHabit = useToUpdateHabitStepsCompletion().updatedHabit || habits[0]
+
+  const percentile = Math.round(
+    (currentHabit.steps.filter((s) => s.completed).length / currentHabit.steps.length) * 100,
+  )
+
+  const { state: authState } = useUserAuthCtx()
+
+  useEffect(() => {
+    if (percentile == 100) {
+      sendPushNotificationsToUser(authState?.user?.token!, "Congrats!", "You have completed your habit for today!").then(res => console.log(res)).catch(err => console.log(err))
+    }
+  }, [percentile, authState])
 
   return (
     <Card className="border-2 border-primary/20">
@@ -22,9 +37,10 @@ export const TodaysFocus = () => {
       <CardContent>
         <div className="flex items-center justify-between mb-6">
           <ProgressRing
-            percentage={Math.round(
-              (currentHabit.steps.filter((s) => s.completed).length / currentHabit.steps.length) * 100,
-            )}
+            percentage={percentile}
+          // percentage={Math.round(
+          //   (currentHabit.steps.filter((s) => s.completed).length / currentHabit.steps.length) * 100,
+          // )}
           />
           <div className="flex-1 ml-6">
             <h3 className="font-semibold mb-4">Next Step</h3>
