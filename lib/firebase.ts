@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from "firebase/app";
-import { getMessaging, onMessage, register, onRegistered } from "firebase/messaging";
+import { getMessaging, onMessage, register, onRegistered, getToken } from "firebase/messaging";
 import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -18,14 +18,30 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase only on the client-side
-let app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
-let messaging: ReturnType<typeof getMessaging> | null = null;
+// let app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+// let messaging: ReturnType<typeof getMessaging> | null = null;
 
-if (typeof window !== 'undefined') {
-  messaging = getMessaging(app);
+// if (typeof window !== 'undefined') {
+//   messaging = getMessaging(app);
+// }
+
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+const messaging = typeof window !== 'undefined' ? getMessaging(app) : null;
+
+// 🔥 GLOBAL FOREGROUND LISTENER (Runs once on app load, NEVER unmounts)
+if (typeof window !== 'undefined' && messaging) {
+  onMessage(messaging, (payload) => {
+    console.log('🔥 GLOBAL FOREGROUND PAYLOAD RECEIVED:', payload);
+    
+    if (Notification.permission === 'granted') {
+      const title = payload.notification?.title || "New Notification";
+      const body = payload.notification?.body || "Habitflow update!";
+      new Notification(title, { body, icon: '/icon.png' });
+    }
+  });
 }
 
-export { messaging, onMessage, register, onRegistered };
+export { messaging, onMessage, register, onRegistered, getToken };
 
 // // Initialize Firebase
 // const app = initializeApp(firebaseConfig);

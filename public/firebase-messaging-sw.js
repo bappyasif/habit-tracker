@@ -21,6 +21,14 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
+// Required to force Chrome/Firefox to register a functional fetch/push handler type
+// testing in the browser
+// self.addEventListener('fetch', (event) => {
+//   // Necessary pass-through to satisfy browser service worker requirements
+//   event.respondWith(fetch(event.request));
+//   console.log('Service Worker: Fetch event for:', event.request.url);
+// });
+
 // 3. Background message handler
 messaging.onBackgroundMessage((payload) => {
   console.log('[firebase-messaging-sw.js] Received background message: ', payload);

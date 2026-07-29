@@ -58,7 +58,7 @@ export function UserAuthToggleView() {
 }
 
 const TestFcmPushNotification = () => {
-    const {  requestPermission, installationId: token } = useFcmToken();
+    const {  requestPermission, token } = useFcmToken();
 
     return (
         <div>
