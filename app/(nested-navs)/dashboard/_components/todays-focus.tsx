@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { CheckCircle2 } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { useToUpdateHabitStepsCompletion } from "../_hooks/useToUpdateHabitStepsCompletion"
-import { sendPushNotificationsToUser } from "@/app/server-actions/notifications"
+import { sendPushNotificationsToUserWhenFullyCompletedHabitStepsForDay } from "@/app/server-actions/notifications"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { useEffect } from "react"
 
@@ -24,7 +24,7 @@ export const TodaysFocus = () => {
 
   useEffect(() => {
     if (percentile == 100) {
-      sendPushNotificationsToUser(authState?.user?.token!, "Congrats!", "You have completed your habit for today!").then(res => console.log(res)).catch(err => console.log(err))
+      sendPushNotificationsToUserWhenFullyCompletedHabitStepsForDay(authState?.user?.token!, "Congrats!", "You have completed your habit for today!").then(res => console.log(res)).catch(err => console.log(err))
     }
   }, [percentile, authState])
 

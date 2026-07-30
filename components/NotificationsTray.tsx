@@ -24,7 +24,7 @@ export const NotificationsTray = () => {
 
     useEffect(() => {
         if (authState.user?.token) {
-            console.log("fetching notifications")
+            // console.log("fetching notifications")
             fetchNotificationsFromBackend(authState.user.token)
             .then(data => {
                 console.log(data, "!notifications data!")
@@ -34,9 +34,11 @@ export const NotificationsTray = () => {
                     setUnreadCount(notifications?.filter((n: NotificationTrayItemProps) => !n.isRead).length);
                 }
             }).catch(err => console.log(err))
-            console.log("notifications fetched")
+            // console.log("notifications fetched")
         }
     }, [authState.user?.token])
+
+    console.log(notifications)
 
     return (
         <div className="relative">

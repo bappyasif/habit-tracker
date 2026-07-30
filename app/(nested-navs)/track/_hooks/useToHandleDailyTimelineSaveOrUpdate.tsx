@@ -1,3 +1,4 @@
+import { sendPushNotificationsToUserWhenCompletedHabitSteps } from "@/app/server-actions/notifications"
 import { Steps, TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { createHabitDailyTimeline, createHabitWeeklyTimeline, securelyCreateHabitDailyTimeline, securelyUpdateHabitDailyTimeline, updateHabitDailyTimeline } from "@/server-calls/habits"
@@ -101,6 +102,9 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
         }).then((resp) => {
             // problem is here on initial save after loading of today's log it creates a record in db apparently but not sending back a response from server!!
             console.log("saved daily timeline in db and got returned this resp: ", resp)
+
+            // add a notification for step completed successfully
+            sendPushNotificationsToUserWhenCompletedHabitSteps(authState?.user?.token!)
         }).catch((err) => {
             console.log("error while saving daily timeline in db: ", err)
         })
