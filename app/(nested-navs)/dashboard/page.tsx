@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation"
 import { deleteHabitSecurely } from "@/server-calls/habits"
 import { useToFetchHabitDailyTimeline } from "./_hooks/fetchHabitDailyTimeline"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
+import { NotificationsTray } from "@/components/NotificationsTray"
 
 export default function DashboardPage() {
   const { state } = useTrackCtx()
@@ -29,28 +30,31 @@ export default function DashboardPage() {
   // fetching habit daily timeline from server
   useToFetchHabitDailyTimeline()
 
-  const {state: authState} = useUserAuthCtx()
+  const { state: authState } = useUserAuthCtx()
 
   if (!state.habits?.length) return null
 
-  const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)  
+  const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
 
   if (!habit) return <WhenEmpty />
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Greeting */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Good morning, {authState?.user?.name ?? "User"}</h1>
-        <p className="text-muted-foreground">
-          {new Date().toLocaleDateString("en-US", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
-      </div>
+      <section className="flex justify-between items-center">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-2">Good morning, {authState?.user?.name ?? "User"}</h1>
+          <p className="text-muted-foreground">
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+        </div>
+        <NotificationsTray />
+      </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
@@ -87,7 +91,7 @@ const HabitLists = () => {
   const [selectedHabitId, setSelectedHabitId] = useState<string>('')
   const { state, dispatch } = useTrackCtx()
 
-  const {state: authState} = useUserAuthCtx()
+  const { state: authState } = useUserAuthCtx()
 
   const deleteHabitFromDb = async (id: string) => {
     try {
@@ -227,7 +231,7 @@ const HabitNotifications = () => {
 }
 
 const WhenEmpty = () => {
-  const {state: authState} = useUserAuthCtx()
+  const { state: authState } = useUserAuthCtx()
 
   return (
     <div

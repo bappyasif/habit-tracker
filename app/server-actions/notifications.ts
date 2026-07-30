@@ -2,7 +2,6 @@
 export const registerOrUpdateFcmTokenWithBackend = async (fcmToken: string, authToken: string) => {
   try {
     // 0.0.0.0:8000 will throw an CORS error
-    // const url = 'http://0.0.0.0:8000/api/v1/notifications/fcm-token-save-or-update-securely'
     const url = 'http://localhost:8000/api/v1/notifications/fcm-token-save-or-update-securely'
 
     const response = await fetch(url, {
@@ -47,7 +46,6 @@ export const sendPushNotificationsToUser = async (authToken: string, title: stri
         'Authorization': 'Bearer ' + authToken
       },
       body: JSON.stringify({
-        // fcm_token: fcmToken,
         message_title: title,
         message_body: body,
       }),
@@ -62,5 +60,34 @@ export const sendPushNotificationsToUser = async (authToken: string, title: stri
 
   } catch (error) {
     console.error('Network error sending push notifications:', error);
+  }
+}
+
+export const fetchNotificationsFromBackend = async (authToken: string) => {
+  try {
+    if (!authToken) {
+      console.error('Auth token not found');
+      return;
+    }
+
+    const url = 'http://localhost:8000/api/v1/notifications/tray-list-securely'
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + authToken
+      },
+    });
+
+    if (!response.ok) {
+      console.error('Failed to fetch notifications');
+      throw new Error('Failed to fetch notifications');
+    }
+    
+    return response.json();
+
+  } catch (error) {
+    console.error('Network error fetching notifications:', error);
   }
 }

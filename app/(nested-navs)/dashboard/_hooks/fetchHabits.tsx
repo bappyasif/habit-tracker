@@ -1,7 +1,7 @@
-import { TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
+import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { mockHabits } from "@/lib/mock-data"
-import { createHabit, getAllHabits, getUserHabitsFromDb } from "@/server-calls/habits"
+import { getUserHabitsFromDb } from "@/server-calls/habits"
 import { useEffect } from "react"
 
 export const useToFetchHabits = () => {

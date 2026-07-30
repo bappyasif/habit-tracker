@@ -52,7 +52,6 @@ export function UserAuthToggleView() {
         <div className="flex items-center w-3/4 gap-4">
             <span className="">Not signed in</span>
             <Button onClick={() => handleSignIn()}>Sign in</Button>
-            {/* <TestFcmPushNotification /> */}
         </div>
     )
 }

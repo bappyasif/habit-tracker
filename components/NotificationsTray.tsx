@@ -1,0 +1,85 @@
+"use client"
+
+import { fetchNotificationsFromBackend } from "@/app/server-actions/notifications"
+import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
+import { useState, useEffect } from "react"
+
+interface NotificationTrayItemProps {
+    id: Number
+    title: string
+    description: string
+    isRead: boolean
+    createdAt: Date
+}
+
+export const NotificationsTray = () => {
+    const { state: authState } = useUserAuthCtx()
+
+    const [notifications, setNotifications] = useState<NotificationTrayItemProps[]>([])
+
+    const [isOpen, setIsOpen] = useState(false)
+    const [unreadCount, setUnreadCount] = useState(0)
+
+    // fetch notifications
+
+    useEffect(() => {
+        if (authState.user?.token) {
+            console.log("fetching notifications")
+            fetchNotificationsFromBackend(authState.user.token)
+            .then(data => {
+                console.log(data, "!notifications data!")
+                const notifications = data?.notifications
+                if (notifications?.length) {
+                    setNotifications(notifications);
+                    setUnreadCount(notifications?.filter((n: NotificationTrayItemProps) => !n.isRead).length);
+                }
+            }).catch(err => console.log(err))
+            console.log("notifications fetched")
+        }
+    }, [authState.user?.token])
+
+    return (
+        <div className="relative">
+            {/* Bell Icon Button */}
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="relative p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition"
+            >
+                🔔
+                {unreadCount > 0 && (
+                    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                        {unreadCount}
+                    </span>
+                )}
+            </button>
+
+            {/* Tray Dropdown Menu */}
+            {isOpen && (
+                <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-lg rounded-lg py-2 z-50">
+                    <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-800 font-semibold text-sm">
+                        Notifications
+                    </div>
+
+                    <div className="max-h-64 overflow-y-auto">
+                        {notifications?.length === 0 ? (
+                            <p className="text-center text-xs text-gray-500 py-4">No notifications yet.</p>
+                        ) : (
+                            notifications?.map((notif) => (
+                                <div
+                                    key={notif.id as number}
+                                    className={`px-4 py-3 border-b border-gray-100 dark:border-gray-800 text-xs ${!notif.isRead ? 'bg-blue-50 dark:bg-gray-800/50' : ''}`}
+                                >
+                                    <p className="font-bold text-gray-800 dark:text-gray-200">{notif.title}</p>
+                                    <p className="text-gray-600 dark:text-gray-400 mt-0.5">{notif.description}</p>
+                                    <span className="text-[10px] text-gray-400 mt-1 block">
+                                        {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </span>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+            )}
+        </div>
+    )
+}

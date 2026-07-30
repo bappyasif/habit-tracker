@@ -29,8 +29,6 @@ export default function RootLayout({
             <AppHeader />
             {children}
           </WrapperContextProviders>
-          {/* <AppHeader />
-          {children} */}
         </div>
         <Analytics />
       </body>
