@@ -1,6 +1,6 @@
 "use client"
 
-import { fetchNotificationsFromBackend } from "@/app/server-actions/notifications"
+import { fetchNotificationsFromBackend, updatePushNotificationIsRead } from "@/app/server-actions/notifications"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { useState, useEffect } from "react"
 
@@ -26,14 +26,14 @@ export const NotificationsTray = () => {
         if (authState.user?.token) {
             // console.log("fetching notifications")
             fetchNotificationsFromBackend(authState.user.token)
-            .then(data => {
-                console.log(data, "!notifications data!")
-                const notifications = data?.notifications
-                if (notifications?.length) {
-                    setNotifications(notifications);
-                    setUnreadCount(notifications?.filter((n: NotificationTrayItemProps) => !n.isRead).length);
-                }
-            }).catch(err => console.log(err))
+                .then(data => {
+                    console.log(data, "!notifications data!")
+                    const notifications = data?.notifications
+                    if (notifications?.length) {
+                        setNotifications(notifications);
+                        setUnreadCount(notifications?.filter((n: NotificationTrayItemProps) => !n.isRead).length);
+                    }
+                }).catch(err => console.log(err))
             // console.log("notifications fetched")
         }
     }, [authState.user?.token])
@@ -69,7 +69,23 @@ export const NotificationsTray = () => {
                             notifications?.map((notif) => (
                                 <div
                                     key={notif.id as number}
-                                    className={`px-4 py-3 border-b border-gray-100 dark:border-gray-800 text-xs ${!notif.isRead ? 'bg-blue-50 dark:bg-gray-800/50' : ''}`}
+                                    className={`px-4 py-3 border-b border-gray-100 dark:border-gray-800 text-xs ${!notif.isRead ? 'bg-blue-50 dark:bg-gray-800/50' : ''} hover: cursor-pointer`}
+                                    onClick={() => {
+                                        // Update the notification in the database
+                                        if (authState.user?.token) {
+                                            updatePushNotificationIsRead(authState.user.token, notif.id as number)
+                                                .then(() => {
+                                                    console.log(`Notification ${notif.id} marked as read in the database.`);
+                                                    // Mark as read logic here
+                                                    setNotifications(prevNotifs => prevNotifs.map(n => n.id === notif.id ? { ...n, isRead: true } : n));
+                                                    setUnreadCount(prevCount => prevCount - 1);
+                                                })
+                                                .catch(err => {
+                                                    console.error(`Failed to mark notification ${notif.id} as read:`, err);
+                                                });
+                                        }
+                                    }
+                                    }
                                 >
                                     <p className="font-bold text-gray-800 dark:text-gray-200">{notif.title}</p>
                                     <p className="text-gray-600 dark:text-gray-400 mt-0.5">{notif.description}</p>

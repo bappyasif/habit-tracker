@@ -64,6 +64,9 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
             const dataUpdated = resp?.data?.entry?.filter((item: any) => item.habit_id == habit.id && new Date(item.date_stamp).toDateString() == date.toDateString())?.[0] || null
 
             if (dataUpdated) {
+                // lets send a notification to user for updating steps for the habit for today
+                sendPushNotificationsToUserWhenCompletedHabitSteps(authState?.user?.token!)
+                
                 dispatch({
                     type: "ADJUST_DAILY_TRACKING_LOG",
                     payload: {

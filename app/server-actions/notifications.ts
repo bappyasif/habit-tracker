@@ -60,6 +60,18 @@ export const sendPushNotificationsToUserWhenCompletedHabitSteps = async (authTok
   return secureRequest(url, {}, authToken, 'POST')
 }
 
+export const sendPushNotificationsToUserWhenUpdatedHabitSteps = async (authToken: string) => {
+  const url = 'http://localhost:8000/api/v1/notifications/daily-habit-step-updates-securely'
+
+  return secureRequest(url, {}, authToken, 'POST')
+}
+
+export const updatePushNotificationIsRead = async (authToken: string, notificationId: number) => {
+  const url = 'http://localhost:8000/api/v1/notifications/mark-notification-as-read-securely/' + notificationId
+
+  return secureRequest(url, {}, authToken, 'PUT')
+}
+
 export const sendPushNotificationsToUserWhenFullyCompletedHabitStepsForDay = async (authToken: string, title: string, body: string) => {
   const url = 'http://localhost:8000/api/v1/notifications/habit-daily-total-steps-completion-securely'
 
