@@ -2,7 +2,7 @@
 
 import { fetchNotificationsFromBackend, updatePushNotificationIsRead } from "@/app/server-actions/notifications"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
-import { useState, useEffect } from "react"
+import { useState, useEffect, use } from "react"
 
 interface NotificationTrayItemProps {
     id: Number
@@ -19,6 +19,8 @@ export const NotificationsTray = () => {
 
     const [isOpen, setIsOpen] = useState(false)
     const [unreadCount, setUnreadCount] = useState(0)
+
+    const [showAllNotifications, setShowAllNotifications] = useState(false)
 
     // fetch notifications
 
@@ -38,7 +40,11 @@ export const NotificationsTray = () => {
         }
     }, [authState.user?.token])
 
-    console.log(notifications)
+    // console.log(notifications)
+
+    const filteredNotifications = showAllNotifications ? notifications : notifications?.filter((n: NotificationTrayItemProps) => !n.isRead)
+
+    const sortedNotifications = filteredNotifications?.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
     return (
         <div className="relative">
@@ -48,11 +54,22 @@ export const NotificationsTray = () => {
                 className="relative p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition"
             >
                 🔔
-                {unreadCount > 0 && (
-                    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                        {unreadCount}
-                    </span>
-                )}
+                <span className={`absolute ${isOpen ? '-top-7 -right-3 w-10 h-10' : 'top-0 right-0 w-4 h-4'} bg-red-500 text-white text-xs flex items-center justify-center rounded-full`}>
+                    {isOpen ? `${unreadCount}/${notifications?.length}` : ` ${unreadCount}`}
+                </span>
+                {/* {unreadCount > 0 && (
+
+                    isOpen ? (
+                        <span className="absolute -top-7 -right-3 bg-red-500 text-white text-xs w-10 h-10 flex items-center justify-center rounded-full">
+                            {unreadCount}/{notifications?.length}
+                        </span>
+                    ) : (
+                        <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-500 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                            {unreadCount}
+                        </span>
+                    )
+
+                )} */}
             </button>
 
             {/* Tray Dropdown Menu */}
@@ -62,11 +79,37 @@ export const NotificationsTray = () => {
                         Notifications
                     </div>
 
+                    {/* two radio buttons for to see all or only unread notifications */}
+                    <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100 dark:border-gray-800">
+                        <div className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                id="unread"
+                                name="notificationFilter"
+                                value="unread"
+                                checked={!showAllNotifications}
+                                onChange={() => setShowAllNotifications(false)}
+                            />
+                            <label htmlFor="unread" className="text-sm text-gray-700 dark:text-gray-300">Unread</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                id="all"
+                                name="notificationFilter"
+                                value="all"
+                                checked={showAllNotifications}
+                                onChange={() => setShowAllNotifications(true)}
+                            />
+                            <label htmlFor="all" className="text-sm text-gray-700 dark:text-gray-300">All</label>
+                        </div>
+                    </div>
+
                     <div className="max-h-64 overflow-y-auto">
                         {notifications?.length === 0 ? (
                             <p className="text-center text-xs text-gray-500 py-4">No notifications yet.</p>
                         ) : (
-                            notifications?.map((notif) => (
+                            sortedNotifications?.map((notif) => (
                                 <div
                                     key={notif.id as number}
                                     className={`px-4 py-3 border-b border-gray-100 dark:border-gray-800 text-xs ${!notif.isRead ? 'bg-blue-50 dark:bg-gray-800/50' : ''} hover: cursor-pointer`}
