@@ -2,7 +2,7 @@
 
 import { fetchNotificationsFromBackend, updatePushNotificationIsRead } from "@/app/server-actions/notifications"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
-import { useState, useEffect, use } from "react"
+import { useState, useEffect } from "react"
 
 interface NotificationTrayItemProps {
     id: Number
@@ -22,25 +22,18 @@ export const NotificationsTray = () => {
 
     const [showAllNotifications, setShowAllNotifications] = useState(false)
 
-    // fetch notifications
-
     useEffect(() => {
         if (authState.user?.token) {
-            // console.log("fetching notifications")
             fetchNotificationsFromBackend(authState.user.token)
                 .then(data => {
-                    console.log(data, "!notifications data!")
                     const notifications = data?.notifications
                     if (notifications?.length) {
                         setNotifications(notifications);
                         setUnreadCount(notifications?.filter((n: NotificationTrayItemProps) => !n.isRead).length);
                     }
                 }).catch(err => console.log(err))
-            // console.log("notifications fetched")
         }
     }, [authState.user?.token])
-
-    // console.log(notifications)
 
     const filteredNotifications = showAllNotifications ? notifications : notifications?.filter((n: NotificationTrayItemProps) => !n.isRead)
 
@@ -57,19 +50,6 @@ export const NotificationsTray = () => {
                 <span className={`absolute ${isOpen ? '-top-7 -right-3 w-10 h-10' : 'top-0 right-0 w-4 h-4'} bg-red-500 text-white text-xs flex items-center justify-center rounded-full`}>
                     {isOpen ? `${unreadCount}/${notifications?.length}` : ` ${unreadCount}`}
                 </span>
-                {/* {unreadCount > 0 && (
-
-                    isOpen ? (
-                        <span className="absolute -top-7 -right-3 bg-red-500 text-white text-xs w-10 h-10 flex items-center justify-center rounded-full">
-                            {unreadCount}/{notifications?.length}
-                        </span>
-                    ) : (
-                        <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-500 rounded-full transform translate-x-1/2 -translate-y-1/2">
-                            {unreadCount}
-                        </span>
-                    )
-
-                )} */}
             </button>
 
             {/* Tray Dropdown Menu */}

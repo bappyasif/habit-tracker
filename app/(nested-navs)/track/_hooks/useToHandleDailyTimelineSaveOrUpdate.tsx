@@ -1,7 +1,7 @@
 import { sendPushNotificationsToUserWhenCompletedHabitSteps } from "@/app/server-actions/notifications"
 import { Steps, TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
-import { createHabitDailyTimeline, createHabitWeeklyTimeline, securelyCreateHabitDailyTimeline, securelyUpdateHabitDailyTimeline, updateHabitDailyTimeline } from "@/server-calls/habits"
+import { createHabitWeeklyTimeline, securelyCreateHabitDailyTimeline, securelyUpdateHabitDailyTimeline } from "@/server-calls/habits"
 import { useState } from "react"
 
 export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updateSteps }: { habit: TrackTypes, date: Date, steps: Steps[], updateSteps: (ids: (number | string)[]) => void }) => {

@@ -18,13 +18,6 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase only on the client-side
-// let app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
-// let messaging: ReturnType<typeof getMessaging> | null = null;
-
-// if (typeof window !== 'undefined') {
-//   messaging = getMessaging(app);
-// }
-
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 const messaging = typeof window !== 'undefined' ? getMessaging(app) : null;
 
@@ -42,7 +35,3 @@ if (typeof window !== 'undefined' && messaging) {
 }
 
 export { messaging, onMessage, register, onRegistered, getToken };
-
-// // Initialize Firebase
-// const app = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app);

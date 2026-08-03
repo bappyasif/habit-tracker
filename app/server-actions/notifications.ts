@@ -76,45 +76,9 @@ export const sendPushNotificationsToUserWhenFullyCompletedHabitStepsForDay = asy
   const url = 'http://localhost:8000/api/v1/notifications/habit-daily-total-steps-completion-securely'
 
   return secureRequest(url, { message_title: title, message_body: body }, authToken, 'POST')
-
-  // try {
-
-  //   if (!authToken) {
-  //     console.error('Auth token not found');
-  //     return;
-  //   }
-
-  //   const url = 'http://localhost:8000/api/v1/notifications/push-to-user-device-securely'
-
-  //   const response = await fetch(url, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': 'Bearer ' + authToken
-  //     },
-  //     body: JSON.stringify({
-  //       message_title: title,
-  //       message_body: body,
-  //     }),
-  //   });
-
-  //   if (!response.ok) {
-  //     console.error('Failed to send push notifications');
-  //     // throw new Error('Failed to send push notifications');
-  //   }
-    
-  //   return response.json();
-
-  // } catch (error) {
-  //   console.error('Network error sending push notifications:', error);
-  // }
 }
 
 export const fetchNotificationsFromBackend = async (authToken: string) => {
-  // const url = 'http://localhost:8000/api/v1/notifications/tray-list-securely'
-
-  // return secureRequest(url, {}, authToken, 'GET')
-
   try {
     if (!authToken) {
       console.error('Auth token not found');

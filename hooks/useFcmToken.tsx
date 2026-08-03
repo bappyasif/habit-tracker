@@ -25,7 +25,6 @@ export default function useFcmToken() {
         let swRegistration: ServiceWorkerRegistration | undefined;
         if ('serviceWorker' in navigator) {
           swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-          console.log('Service Worker registered successfully:', swRegistration);
         }
 
         // Retrieve the FCM token (bypassing the TS deprecation warning safely)
@@ -37,14 +36,11 @@ export default function useFcmToken() {
         });
 
         if (currentToken) {
-          console.log('FCM Token generated successfully:', currentToken);
           setToken(currentToken);
 
           // Send token immediately to your Python FastAPI backend
           if (currentToken) {
-            console.log("Sending token to backend for current user:", currentToken);
             const response = await registerOrUpdateFcmTokenWithBackend(currentToken, authToken);
-            console.log("Backend sync result:", response);
           }
         } else {
           console.log('No FCM registration token available.');
