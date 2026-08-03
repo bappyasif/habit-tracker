@@ -5,6 +5,7 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  workflow_dispatch:  # <--- THIS ENABLES THE MANUAL "RUN WORKFLOW" BUTTON
 
 jobs:
   build-frontend:
