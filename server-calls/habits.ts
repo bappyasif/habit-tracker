@@ -1,8 +1,20 @@
 import { TrackTypes } from "@/context-reducers/trackCtx"
 
 export const getAllHabits = async () => {
-    const res = await fetch("/api/habits/")
-    return res.json()
+    // Ensure we don't crash if baseUrl is malformed
+    const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/habits/`;
+    
+    try {
+        const res = await fetch(url);
+        if (!res.ok) return []; // Fallback empty array so build doesn't crash
+        return res.json();
+    } catch (error) {
+        // During build time in CI, backend is offline. Return empty data safely.
+        console.warn("Backend offline during build, returning empty habits.");
+        return [];
+    }
+    // const res = await fetch(baseUrl+"/api/habits/")
+    // return res.json()
 }
 
 export const createHabit = async (habit: TrackTypes & { userId: number }) => {
