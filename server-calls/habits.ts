@@ -124,9 +124,25 @@ export const updateHabitDailyTimeline = async (habit: {
     return res.json()
 }
 
+const getBaseUrl = () => {
+    // If we are in the browser, relative paths are fine
+    if (typeof window !== 'undefined') return '';
+    
+    // If we are on the server (like during SSR or Build), we MUST use an absolute URL
+    if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
+    
+    // Fallback for local server runs
+    return 'http://localhost:3000';
+};
+
 // send request to api with authorized outh response
 export const authorizeUserInDb = async (user: { email: string; name: string; image: string }) => {
-    const res = await fetch("/api/user/authorize", {
+    const url = `${getBaseUrl()}/api/user/authorize`;
+    
+    const res = await fetch(
+        // "/api/user/authorize", 
+        url,
+        {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -144,7 +160,9 @@ export const authorizeUserInDb = async (user: { email: string; name: string; ima
 
 // get a user habits from db
 export const getUserHabitsFromDb = async (userId: number, token: string) => {
-    const url = `/api/user/habits`
+    const url = `${getBaseUrl()}/api/user/habits`;
+    // const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+    // const url = `${baseUrl}/api/user/habits`
 
     const res = await fetch(url, {
         headers: {
@@ -218,7 +236,10 @@ export const securelyCreateHabitDailyTimeline = async (habit: TrackTypes, token:
 }
 
 export const securelyGetHabitDailyTimeline = async (habitId: string, token: string) => {
-    const endpoint = `/api/user/habits/timeline?habitId=${habitId}`
+    // const endpoint = `/api/user/habits/timeline?habitId=${habitId}`
+    const endpoint = `${getBaseUrl()}/api/user/habits/timeline?habitId=${habitId}`
+    // const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+    // const endpoint = `${baseUrl}/api/user/habits/timeline?habitId=${habitId}`
 
     const res = await fetch(endpoint, {
         headers: {
