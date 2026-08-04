@@ -20,6 +20,8 @@ export function UserAuthToggleView() {
         signOut()
     }
 
+    const {  requestPermission } = useFcmToken();
+
     useEffect(() => {
         if (session && session.user) {
             authorizeUserInDb({
@@ -28,6 +30,7 @@ export function UserAuthToggleView() {
                 image: session.user.image ?? ""
             }).then((data) => {
                 authDispatch({ type: "SET_AUTHENTICATED", payload: { ...data.data.user, token: data.data.access_token } })
+                requestPermission() // Request permission for push notifications after successful authentication
             }).catch((error) => {
                 console.error("Error authorizing user:", error)
                 authDispatch({ type: "SET_UNAUTHENTICATED" })
@@ -43,7 +46,7 @@ export function UserAuthToggleView() {
                 <span className="text-lg">Signed in as {session.user?.name}</span>
                 <br />
                 <Button onClick={() => handleSignOut()}>Sign out</Button>
-                <TestFcmPushNotification />
+                {/* <TestFcmPushNotification /> */}
             </div>
         )
     }
@@ -56,15 +59,15 @@ export function UserAuthToggleView() {
     )
 }
 
-const TestFcmPushNotification = () => {
-    const {  requestPermission, token } = useFcmToken();
+// const TestFcmPushNotification = () => {
+//     const {  requestPermission, token } = useFcmToken();
 
-    return (
-        <div>
-            <button onClick={requestPermission} className="p-2 bg-blue-600">
-                Enable Push Notifications!!
-            </button>
-            {token && <p className="text-xs text-green-600 mt-2">Notifications Enabled!</p>}
-        </div>
-    );
-}
+//     return (
+//         <div>
+//             <button onClick={requestPermission} className="p-2 bg-blue-600">
+//                 Enable Push Notifications!!
+//             </button>
+//             {token && <p className="text-xs text-green-600 mt-2">Notifications Enabled!</p>}
+//         </div>
+//     );
+// }

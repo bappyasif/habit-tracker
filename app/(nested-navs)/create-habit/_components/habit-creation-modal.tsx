@@ -11,6 +11,7 @@ import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
 import { createHabitSecurely, updateHabitSecurely } from "@/server-calls/habits"
 import Link from "next/link"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
+import { sendPushNotificationsToUserWhenCreatedNewHabit, sendPushNotificationsToUserWhenUpdatedHabit } from "@/app/server-actions/notifications"
 
 interface Step {
   id: string
@@ -112,6 +113,8 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     createHabitSecurely(updatedData).then(data => {
       console.log("created habit")
       if (data) {
+        // lets show a notification to user that habit is created successfully
+        sendPushNotificationsToUserWhenCreatedNewHabit(token)
         onSave(habitData)
       }
     }).catch(err => console.log(err))
@@ -123,7 +126,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
   }
 
   const handleUpdate = () => {
-    alert("update")
+    // alert("update")
 
     // need convert habit steps time to date time string before saving to db, currently steps time is in "HH:mm" format which is good for displaying and editing in UI but when saving to db we want to convert it to date time string so that we can use it for daily timeline and insights generation
     const convertedSteps = habit.steps.map(step => {
@@ -154,7 +157,10 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
 
     const updatedHabit = { ...habit, steps: convertedSteps, token, userId };
 
-    updateHabitSecurely(updatedHabit)
+    updateHabitSecurely(updatedHabit).then(data => {
+      // lets send a notification to user that habit is updated successfully
+      sendPushNotificationsToUserWhenUpdatedHabit(authState?.user?.token!)
+    })
     onClose()
     // cleaning out old insights data for the habit being updated, we can choose to keep old insights data or not after update, if we want to keep then we can remove this dispatch call
     trackDispatch({

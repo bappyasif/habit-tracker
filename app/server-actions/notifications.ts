@@ -54,6 +54,24 @@ const secureRequest = async (url: string, data: any, authToken: string, method: 
   }
 };
 
+export const sendPushNotificationsToUserWhenCreatedNewHabit = async (authToken: string) => {
+  const url = 'http://localhost:8000/api/v1/notifications/created-new-habit-securely'
+
+  return secureRequest(url, {}, authToken, 'POST')
+}
+
+export const sendPushNotificationsToUserWhenUpdatedHabit = async (authToken: string) => {
+  const url = 'http://localhost:8000/api/v1/notifications/updated-habit-securely'
+
+  return secureRequest(url, {}, authToken, 'PUT')
+}
+
+export const sendPushNotificationsToUserWhenDeletedHabit = async (authToken: string) => {
+  const url = 'http://localhost:8000/api/v1/notifications/deleted-habit-securely'
+
+  return secureRequest(url, {}, authToken, 'DELETE')
+}
+
 export const sendPushNotificationsToUserWhenCompletedHabitSteps = async (authToken: string) => {
   const url = 'http://localhost:8000/api/v1/notifications/daily-habit-step-completion-securely'
 
