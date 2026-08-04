@@ -18,20 +18,46 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase only on the client-side
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
-const messaging = typeof window !== 'undefined' ? getMessaging(app) : null;
+// const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+// const messaging = typeof window !== 'undefined' ? getMessaging(app) : null;
 
-// 🔥 GLOBAL FOREGROUND LISTENER (Runs once on app load, NEVER unmounts)
-if (typeof window !== 'undefined' && messaging) {
-  onMessage(messaging, (payload) => {
-    console.log('🔥 GLOBAL FOREGROUND PAYLOAD RECEIVED:', payload);
+// // 🔥 GLOBAL FOREGROUND LISTENER (Runs once on app load, NEVER unmounts)
+// if (typeof window !== 'undefined' && messaging) {
+//   onMessage(messaging, (payload) => {
+//     console.log('🔥 GLOBAL FOREGROUND PAYLOAD RECEIVED:', payload);
     
-    if (Notification.permission === 'granted') {
-      const title = payload.notification?.title || "New Notification";
-      const body = payload.notification?.body || "Habitflow update!";
-      new Notification(title, { body, icon: '/icon.png' });
-    }
-  });
+//     if (Notification.permission === 'granted') {
+//       const title = payload.notification?.title || "New Notification";
+//       const body = payload.notification?.body || "Habitflow update!";
+//       new Notification(title, { body, icon: '/icon.png' });
+//     }
+//   });
+// }
+
+let messaging = null;
+if (typeof window !== 'undefined') {
+  try {
+    const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+    messaging = getMessaging(app);
+
+    // Global foreground handler
+    onMessage(messaging, (payload) => {
+      // console.log('🔥 FOREGROUND MESSAGE CAPTURED LIVE:', payload);
+      
+      if (Notification.permission === 'granted') {
+        const title = payload.notification?.title || payload.data?.title || "Habitflow Update";
+        const body = payload.notification?.body || payload.data?.body || "You have a new notification!";
+        
+        // Force the system banner to appear
+        new Notification(title, {
+          body: body,
+          icon: '/icon.png',
+        });
+      }
+    });
+  } catch (error) {
+    console.error("Firebase initialization error:", error);
+  }
 }
 
 export { messaging, onMessage, register, onRegistered, getToken };

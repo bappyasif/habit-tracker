@@ -17,6 +17,11 @@ export default function useFcmToken() {
       return;
     }
 
+    if (!messaging!) {
+      console.error('Firebase messaging is not initialized.');
+      return;
+    }
+
     try {
       const permission = await Notification.requestPermission();
       if (permission === 'granted' && messaging) {
@@ -24,7 +29,9 @@ export default function useFcmToken() {
         // Register the service worker explicitly from the public directory
         let swRegistration: ServiceWorkerRegistration | undefined;
         if ('serviceWorker' in navigator) {
-          swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+          // swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+          // to make sure the service worker is registered at the root scope, we can specify the scope explicitly otherwise it defaults to the path of the script which is '/firebase-messaging-sw.js' in this case. To ensure it works correctly, we can set the scope to '/'.
+          swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' });
         }
 
         // Retrieve the FCM token (bypassing the TS deprecation warning safely)
