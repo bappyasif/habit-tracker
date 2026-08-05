@@ -17,6 +17,7 @@ import { useToFetchHabitDailyTimeline } from "./_hooks/fetchHabitDailyTimeline"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { NotificationsTray } from "@/components/NotificationsTray"
 import { sendPushNotificationsToUserWhenDeletedHabit } from "@/app/server-actions/notifications"
+import { useToFetchNotifications } from "@/hooks/useToFetchNotifications"
 
 export default function DashboardPage() {
   const { state } = useTrackCtx()
@@ -94,12 +95,19 @@ const HabitLists = () => {
 
   const { state: authState } = useUserAuthCtx()
 
+  const { fetchNotifications } = useToFetchNotifications()
+
   const deleteHabitFromDb = async (id: string) => {
     try {
       const token = authState?.user?.token!
       await deleteHabitSecurely(id, token)
       // send notification to user that habit is deleted successfully
       sendPushNotificationsToUserWhenDeletedHabit(token)
+      .then(res => {
+        // console.log(res)
+        fetchNotifications(token)
+      })
+      .catch(err => console.log(err))
       console.log("successfully deleted")
     } catch (error) {
       console.log(error)

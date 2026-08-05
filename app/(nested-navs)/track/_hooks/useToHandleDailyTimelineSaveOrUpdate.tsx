@@ -1,4 +1,4 @@
-import { sendPushNotificationsToUserWhenCompletedHabitSteps } from "@/app/server-actions/notifications"
+import { sendPushNotificationsToUserWhenCompletedHabitSteps, sendPushNotificationsToUserWhenUpdatedHabitSteps } from "@/app/server-actions/notifications"
 import { Steps, TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { createHabitWeeklyTimeline, securelyCreateHabitDailyTimeline, securelyUpdateHabitDailyTimeline } from "@/server-calls/habits"
@@ -65,7 +65,7 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
 
             if (dataUpdated) {
                 // lets send a notification to user for updating steps for the habit for today
-                sendPushNotificationsToUserWhenCompletedHabitSteps(authState?.user?.token!)
+                sendPushNotificationsToUserWhenUpdatedHabitSteps(authState?.user?.token!)
                 
                 dispatch({
                     type: "ADJUST_DAILY_TRACKING_LOG",

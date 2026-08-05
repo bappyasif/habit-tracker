@@ -1,7 +1,9 @@
 "use client"
 
-import { fetchNotificationsFromBackend, updatePushNotificationIsRead } from "@/app/server-actions/notifications"
+import { updatePushNotificationIsRead } from "@/app/server-actions/notifications"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
+import { useUserNotificationsCtx } from "@/context-reducers/userNotificationsCtx"
+import { useToFetchNotifications } from "@/hooks/useToFetchNotifications"
 import { useState, useEffect } from "react"
 
 interface NotificationTrayItemProps {
@@ -15,25 +17,34 @@ interface NotificationTrayItemProps {
 export const NotificationsTray = () => {
     const { state: authState } = useUserAuthCtx()
 
-    const [notifications, setNotifications] = useState<NotificationTrayItemProps[]>([])
+    // const [notifications, setNotifications] = useState<NotificationTrayItemProps[]>([])
+
+    const { state: { notifications }, dispatch } = useUserNotificationsCtx()
 
     const [isOpen, setIsOpen] = useState(false)
     const [unreadCount, setUnreadCount] = useState(0)
 
     const [showAllNotifications, setShowAllNotifications] = useState(false)
 
+    useToFetchNotifications()
+
     useEffect(() => {
-        if (authState.user?.token) {
-            fetchNotificationsFromBackend(authState.user.token)
-                .then(data => {
-                    const notifications = data?.notifications
-                    if (notifications?.length) {
-                        setNotifications(notifications);
-                        setUnreadCount(notifications?.filter((n: NotificationTrayItemProps) => !n.isRead).length);
-                    }
-                }).catch(err => console.log(err))
-        }
-    }, [authState.user?.token])
+        setUnreadCount(notifications?.filter((n: NotificationTrayItemProps) => !n.isRead).length)
+    }, [notifications])
+
+    // useEffect(() => {
+    //     if (authState.user?.token) {
+    //         fetchNotificationsFromBackend(authState.user.token)
+    //             .then(data => {
+    //                 const notifications = data?.notifications
+    //                 if (notifications?.length) {
+    //                     // setNotifications(notifications);
+    //                     dispatch({ type: "SET_NOTIFICATIONS", payload: notifications })
+    //                     setUnreadCount(notifications?.filter((n: NotificationTrayItemProps) => !n.isRead).length);
+    //                 }
+    //             }).catch(err => console.log(err))
+    //     }
+    // }, [authState.user?.token])
 
     const filteredNotifications = showAllNotifications ? notifications : notifications?.filter((n: NotificationTrayItemProps) => !n.isRead)
 
@@ -100,7 +111,8 @@ export const NotificationsTray = () => {
                                                 .then(() => {
                                                     console.log(`Notification ${notif.id} marked as read in the database.`);
                                                     // Mark as read logic here
-                                                    setNotifications(prevNotifs => prevNotifs.map(n => n.id === notif.id ? { ...n, isRead: true } : n));
+                                                    // setNotifications(prevNotifs => prevNotifs.map(n => n.id === notif.id ? { ...n, isRead: true } : n));
+                                                    dispatch({ type: "MARK_NOTIFICATION_AS_READ", payload: notif.id });
                                                     setUnreadCount(prevCount => prevCount - 1);
                                                 })
                                                 .catch(err => {

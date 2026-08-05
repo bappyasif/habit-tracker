@@ -24,7 +24,9 @@ export const TodaysFocus = () => {
 
   useEffect(() => {
     if (percentile == 100) {
-      sendPushNotificationsToUserWhenFullyCompletedHabitStepsForDay(authState?.user?.token!, "Congrats!", "You have completed your habit for today!").then(res => console.log(res)).catch(err => console.log(err))
+      sendPushNotificationsToUserWhenFullyCompletedHabitStepsForDay(authState?.user?.token!, "Congrats!", "You have completed all of your habit steps for today!")
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
     }
   }, [percentile, authState])
 

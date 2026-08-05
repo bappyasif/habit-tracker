@@ -12,6 +12,7 @@ import { createHabitSecurely, updateHabitSecurely } from "@/server-calls/habits"
 import Link from "next/link"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { sendPushNotificationsToUserWhenCreatedNewHabit, sendPushNotificationsToUserWhenUpdatedHabit } from "@/app/server-actions/notifications"
+import { useToFetchNotifications } from "@/hooks/useToFetchNotifications"
 
 interface Step {
   id: string
@@ -115,6 +116,10 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
       if (data) {
         // lets show a notification to user that habit is created successfully
         sendPushNotificationsToUserWhenCreatedNewHabit(token)
+        .then(res => {
+          console.log(res)
+          fetchNotifications(token)
+        }).catch(err => console.log(err))
         onSave(habitData)
       }
     }).catch(err => console.log(err))
@@ -124,6 +129,8 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     onClose()
     saveToDb(habit)
   }
+
+  const {fetchNotifications} = useToFetchNotifications()
 
   const handleUpdate = () => {
     // alert("update")
@@ -160,6 +167,12 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     updateHabitSecurely(updatedHabit).then(data => {
       // lets send a notification to user that habit is updated successfully
       sendPushNotificationsToUserWhenUpdatedHabit(authState?.user?.token!)
+      .then(res => {
+        // console.log(res)
+        fetchNotifications(authState?.user?.token!)        
+      })
+      .catch(err => console.log(err))
+      onSave(updatedHabit)
     })
     onClose()
     // cleaning out old insights data for the habit being updated, we can choose to keep old insights data or not after update, if we want to keep then we can remove this dispatch call
