@@ -1,8 +1,12 @@
-// Inside your Next.js hook or component after getting the token
+const getBackendUrl = () => {
+  const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
+  return backendUrl;
+}
+
 export const registerOrUpdateFcmTokenWithBackend = async (fcmToken: string, authToken: string) => {
   try {
     // 0.0.0.0:8000 will throw an CORS error
-    const url = 'http://localhost:8000/api/v1/notifications/fcm-token-save-or-update-securely'
+    const url = getBackendUrl() + '/api/v1/notifications/fcm-token-save-or-update-securely'
 
     const response = await fetch(url, {
       method: 'POST',
@@ -55,43 +59,43 @@ const secureRequest = async (url: string, data: any, authToken: string, method: 
 };
 
 export const sendPushNotificationsToUserWhenCreatedNewHabit = async (authToken: string) => {
-  const url = 'http://localhost:8000/api/v1/notifications/created-new-habit-securely'
+  const url = getBackendUrl() + '/api/v1/notifications/created-new-habit-securely'
 
   return secureRequest(url, {}, authToken, 'POST')
 }
 
 export const sendPushNotificationsToUserWhenUpdatedHabit = async (authToken: string) => {
-  const url = 'http://localhost:8000/api/v1/notifications/updated-habit-securely'
+  const url = getBackendUrl() + '/api/v1/notifications/updated-habit-securely'
 
   return secureRequest(url, {}, authToken, 'PUT')
 }
 
 export const sendPushNotificationsToUserWhenDeletedHabit = async (authToken: string) => {
-  const url = 'http://localhost:8000/api/v1/notifications/deleted-habit-securely'
+  const url = getBackendUrl() + '/api/v1/notifications/deleted-habit-securely'
 
   return secureRequest(url, {}, authToken, 'DELETE')
 }
 
 export const sendPushNotificationsToUserWhenCompletedHabitSteps = async (authToken: string) => {
-  const url = 'http://localhost:8000/api/v1/notifications/daily-habit-step-completion-securely'
+  const url = getBackendUrl() + '/api/v1/notifications/daily-habit-step-completion-securely'
 
   return secureRequest(url, {}, authToken, 'POST')
 }
 
 export const sendPushNotificationsToUserWhenUpdatedHabitSteps = async (authToken: string) => {
-  const url = 'http://localhost:8000/api/v1/notifications/daily-habit-step-updates-securely'
+  const url = getBackendUrl() + '/api/v1/notifications/daily-habit-step-updates-securely'
 
   return secureRequest(url, {}, authToken, 'POST')
 }
 
 export const updatePushNotificationIsRead = async (authToken: string, notificationId: number) => {
-  const url = 'http://localhost:8000/api/v1/notifications/mark-notification-as-read-securely/' + notificationId
+  const url = getBackendUrl() + '/api/v1/notifications/mark-notification-as-read-securely/' + notificationId
 
   return secureRequest(url, {}, authToken, 'PUT')
 }
 
 export const sendPushNotificationsToUserWhenFullyCompletedHabitStepsForDay = async (authToken: string, title: string, body: string) => {
-  const url = 'http://localhost:8000/api/v1/notifications/habit-daily-total-steps-completion-securely'
+  const url = getBackendUrl() + '/api/v1/notifications/habit-daily-total-steps-completion-securely'
 
   return secureRequest(url, { message_title: title, message_body: body }, authToken, 'POST')
 }
@@ -103,7 +107,7 @@ export const fetchNotificationsFromBackend = async (authToken: string) => {
       return;
     }
 
-    const url = 'http://localhost:8000/api/v1/notifications/tray-list-securely'
+    const url = getBackendUrl() + '/api/v1/notifications/tray-list-securely'
 
     const response = await fetch(url, {
       method: 'GET',

@@ -13,8 +13,6 @@ export const getAllHabits = async () => {
         console.warn("Backend offline during build, returning empty habits.");
         return [];
     }
-    // const res = await fetch(baseUrl+"/api/habits/")
-    // return res.json()
 }
 
 export const createHabit = async (habit: TrackTypes & { userId: number }) => {
@@ -140,7 +138,6 @@ export const authorizeUserInDb = async (user: { email: string; name: string; ima
     const url = `${getBaseUrl()}/api/user/authorize`;
     
     const res = await fetch(
-        // "/api/user/authorize", 
         url,
         {
         method: "POST",
@@ -161,8 +158,6 @@ export const authorizeUserInDb = async (user: { email: string; name: string; ima
 // get a user habits from db
 export const getUserHabitsFromDb = async (userId: number, token: string) => {
     const url = `${getBaseUrl()}/api/user/habits`;
-    // const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-    // const url = `${baseUrl}/api/user/habits`
 
     const res = await fetch(url, {
         headers: {
@@ -236,10 +231,7 @@ export const securelyCreateHabitDailyTimeline = async (habit: TrackTypes, token:
 }
 
 export const securelyGetHabitDailyTimeline = async (habitId: string, token: string) => {
-    // const endpoint = `/api/user/habits/timeline?habitId=${habitId}`
     const endpoint = `${getBaseUrl()}/api/user/habits/timeline?habitId=${habitId}`
-    // const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-    // const endpoint = `${baseUrl}/api/user/habits/timeline?habitId=${habitId}`
 
     const res = await fetch(endpoint, {
         headers: {

@@ -17,23 +17,6 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase only on the client-side
-// const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
-// const messaging = typeof window !== 'undefined' ? getMessaging(app) : null;
-
-// // 🔥 GLOBAL FOREGROUND LISTENER (Runs once on app load, NEVER unmounts)
-// if (typeof window !== 'undefined' && messaging) {
-//   onMessage(messaging, (payload) => {
-//     console.log('🔥 GLOBAL FOREGROUND PAYLOAD RECEIVED:', payload);
-    
-//     if (Notification.permission === 'granted') {
-//       const title = payload.notification?.title || "New Notification";
-//       const body = payload.notification?.body || "Habitflow update!";
-//       new Notification(title, { body, icon: '/icon.png' });
-//     }
-//   });
-// }
-
 let messaging = null;
 if (typeof window !== 'undefined') {
   try {

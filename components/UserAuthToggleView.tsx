@@ -46,7 +46,6 @@ export function UserAuthToggleView() {
                 <span className="text-lg">Signed in as {session.user?.name}</span>
                 <br />
                 <Button onClick={() => handleSignOut()}>Sign out</Button>
-                {/* <TestFcmPushNotification /> */}
             </div>
         )
     }
@@ -58,16 +57,3 @@ export function UserAuthToggleView() {
         </div>
     )
 }
-
-// const TestFcmPushNotification = () => {
-//     const {  requestPermission, token } = useFcmToken();
-
-//     return (
-//         <div>
-//             <button onClick={requestPermission} className="p-2 bg-blue-600">
-//                 Enable Push Notifications!!
-//             </button>
-//             {token && <p className="text-xs text-green-600 mt-2">Notifications Enabled!</p>}
-//         </div>
-//     );
-// }

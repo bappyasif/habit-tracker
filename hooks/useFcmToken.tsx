@@ -29,7 +29,6 @@ export default function useFcmToken() {
         // Register the service worker explicitly from the public directory
         let swRegistration: ServiceWorkerRegistration | undefined;
         if ('serviceWorker' in navigator) {
-          // swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
           // to make sure the service worker is registered at the root scope, we can specify the scope explicitly otherwise it defaults to the path of the script which is '/firebase-messaging-sw.js' in this case. To ensure it works correctly, we can set the scope to '/'.
           swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', { scope: '/' });
         }
@@ -47,7 +46,8 @@ export default function useFcmToken() {
 
           // Send token immediately to your Python FastAPI backend
           if (currentToken) {
-            const response = await registerOrUpdateFcmTokenWithBackend(currentToken, authToken);
+            await registerOrUpdateFcmTokenWithBackend(currentToken, authToken);
+            console.log('FCM token saved to server.');
           }
         } else {
           console.log('No FCM registration token available.');
