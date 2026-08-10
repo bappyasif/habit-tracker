@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server"
 
+const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
+
 export const GET = async (request: Request) => {
     const token = request.headers.get("authorization")
 
@@ -10,7 +12,7 @@ export const GET = async (request: Request) => {
     // Clean the header string to remove any escaped or accidental double quotes
     const authHeader = token.replace(/"/g, '');
 
-    const url = `http://0.0.0.0:8000/api/v1/user-habits/secured`
+    const url = `${backendUrl}/api/v1/user-habits/secured`
 
     const res = await fetch(url, {
         headers: {
@@ -54,7 +56,7 @@ export const POST = async (request: Request) => {
 
     const authToken = bearerToken.replace(/"/g, '');
 
-    const res = await fetch("http://0.0.0.0:8000/api/v1/user-habits/create-securely", {
+    const res = await fetch(`${backendUrl}/api/v1/user-habits/create-securely`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -103,7 +105,7 @@ export const PUT = async (request: Request) => {
 
     const authToken = bearerToken.replace(/"/g, '');
 
-    const url = `http://0.0.0.0:8000/api/v1/user-habits/update-securely`
+    const url = `${backendUrl}/api/v1/user-habits/update-securely`
 
     const res = await fetch(url, {
         method: "PUT",
@@ -139,7 +141,7 @@ export const DELETE = async (request: Request) => {
 
     const authToken = bearerToken.replace(/"/g, '');
 
-    const url = `http://0.0.0.0:8000/api/v1/user-habits/delete-securely/${id}`
+    const url = `${backendUrl}/api/v1/user-habits/delete-securely/${id}`
 
     const res = await fetch(url, {
         method: "DELETE",

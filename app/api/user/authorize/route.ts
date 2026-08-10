@@ -9,7 +9,9 @@ export const POST = async (request: Request) => {
         name: usrInp.name
     }
 
-    const url = "http://0.0.0.0:8000/api/v1/user-authorize/with-jwt"
+    // const url = "http://0.0.0.0:8000/api/v1/user-authorize/with-jwt"
+    const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
+    const url = `${backendUrl}/api/v1/user-authorize/with-jwt`;
     
     const res = await fetch(url, {
         method: "POST",

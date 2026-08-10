@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server"
 
+const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
+
 export const GET = async () => {
-    const res = await fetch("http://0.0.0.0:8000/api/v1/habits/all")
+    const res = await fetch(`${backendUrl}/api/v1/habits/all`)
     const data = await res.json()
 
     return NextResponse.json({
@@ -24,7 +26,7 @@ export const POST = async (request: Request) => {
         userId: usrInp.userId
     }
 
-    const res = await fetch("http://0.0.0.0:8000/api/v1/habits/create", {
+    const res = await fetch(`${backendUrl}/api/v1/habits/create`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -57,7 +59,7 @@ export const PUT = async (request: Request) => {
         }))
     }
 
-    const res = await fetch("http://0.0.0.0:8000/api/v1/habits/update", {
+    const res = await fetch(`${backendUrl}/api/v1/habits/update`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -76,7 +78,7 @@ export const PUT = async (request: Request) => {
 export const DELETE = async (request: Request) => {
     const { id } = await request.json()
 
-    const res = await fetch("http://0.0.0.0:8000/api/v1/habits/delete/" + id, {
+    const res = await fetch(`${backendUrl}/api/v1/habits/delete/` + id, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json"

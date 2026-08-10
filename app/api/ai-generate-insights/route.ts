@@ -1,6 +1,11 @@
 // write a post request for next js api endpoint that accepts hobbyName, hobbyDescription, hobbyFeedback in the request body and returns ai generated insights as response
 import { NextRequest, NextResponse } from 'next/server';
 
+const getBackendUrl = () => {
+  const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
+  return backendUrl;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { hobbyName, hobbyDescription, hobbyFeedback } = await request.json();
@@ -9,7 +14,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const insights = await fetch("http://127.0.0.1:8000/api/v1/genai/inference", {
+    const insights = await fetch(`${getBackendUrl()}/api/v1/genai/inference`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

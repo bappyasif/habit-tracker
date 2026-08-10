@@ -8,7 +8,9 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        const trends = await fetch("http://127.0.0.1:8000/api/v1/genai/monthly-trends", {
+        const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
+
+        const trends = await fetch(`${backendUrl}/api/v1/genai/monthly-trends`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

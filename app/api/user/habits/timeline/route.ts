@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
+
 export const GET = async (request: Request) => {
     const url = new URL(request.url)
     const habitId = url.searchParams.get('habitId') || "";
@@ -17,7 +19,7 @@ export const GET = async (request: Request) => {
 
     const authToken = token.replace(/"/g, '');
     
-    const apiUrl = `http://0.0.0.0:8000/api/v1/user-habit-daily-tracking/timeline/${habitId}`
+    const apiUrl = `${backendUrl}/api/v1/user-habit-daily-tracking/timeline/${habitId}`
 
     const res = await fetch(apiUrl, {
         method: "GET",
@@ -45,7 +47,7 @@ export const POST = async (request: Request) => {
 
     const userInp = await request.json()
 
-    const res = await fetch("http://0.0.0.0:8000/api/v1/user-habit-daily-tracking/timeline/", {
+    const res = await fetch(`${backendUrl}/api/v1/user-habit-daily-tracking/timeline/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -85,7 +87,7 @@ export const PUT = async (request: Request) => {
 
     const authToken = token.replace(/"/g, '');
 
-    const res = await fetch("http://0.0.0.0:8000/api/v1/user-habit-daily-tracking/timeline/"+usrInp.habitId, {
+    const res = await fetch(`${backendUrl}/api/v1/user-habit-daily-tracking/timeline/`+usrInp.habitId, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
