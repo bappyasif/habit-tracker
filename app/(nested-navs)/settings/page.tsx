@@ -7,8 +7,15 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { mockHabits } from "@/lib/mock-data"
-import { Edit2, LogOut, Bell, Globe, Eye } from "lucide-react"
+import { Edit2, LogOut, Bell, Globe, Eye, Trash2 } from "lucide-react"
 import { HabitEditorModal } from "./_components/habit-editor-modal"
+import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
+import { signOut } from "next-auth/react"
+import { useTrackCtx } from "@/context-reducers/trackCtx"
+import { useRouter } from "next/navigation"
+import { deleteHabitSecurely } from "@/server-calls/habits"
+import { sendPushNotificationsToUserWhenDeletedHabit } from "@/app/server-actions/notifications"
+import { useToFetchNotifications } from "@/hooks/useToFetchNotifications"
 
 export default function SettingsPage() {
   const [habits, setHabits] = useState(mockHabits)
@@ -36,6 +43,12 @@ export default function SettingsPage() {
         </div>
 
         <div className="grid grid-cols-1 gap-6">
+          {/* Account */}
+          <AccountSettings />
+
+          {/* Habit Management */}
+          <HabitsManagement />
+
           {/* Preferences */}
           <Card>
             <CardHeader>
@@ -141,7 +154,8 @@ export default function SettingsPage() {
           </Card>
 
           {/* Habit Management */}
-          <Card>
+          {/* <HabitsManagement /> */}
+          {/* <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Edit2 className="w-5 h-5" />
@@ -170,27 +184,11 @@ export default function SettingsPage() {
                 ))}
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Account */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Account</CardTitle>
-              <CardDescription>Manage your account</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm font-semibold">Email</p>
-                  <p className="text-sm text-muted-foreground">alex@example.com</p>
-                </div>
-                <Button variant="destructive" className="w-full">
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sign Out
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          {/* <AccountSettings /> */}
+
         </div>
       </main>
 
@@ -204,5 +202,128 @@ export default function SettingsPage() {
         />
       )}
     </>
+  )
+}
+
+const HabitsManagement = () => {
+  const { state, dispatch } = useTrackCtx()
+  const { habits } = state
+
+  const router = useRouter()
+
+  const handleEdit = (habitId: number) => {
+    dispatch({
+      type: 'UPDATE_HABIT_VIEWING',
+      payload: habitId
+    })
+
+    router.push(`/create-habit`)
+  }
+
+  const { state: authState } = useUserAuthCtx()
+
+  const { fetchNotifications } = useToFetchNotifications()
+
+  const deleteHabitFromDb = async (id: string) => {
+    try {
+      const token = authState?.user?.token!
+      await deleteHabitSecurely(id, token)
+      // send notification to user that habit is deleted successfully
+      sendPushNotificationsToUserWhenDeletedHabit(token)
+        .then(res => {
+          // console.log(res)
+          fetchNotifications(token)
+        })
+        .catch(err => console.log(err))
+      console.log("successfully deleted")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleDelete = (habitId: number) => {
+    dispatch({
+      type: 'DELETE_HABIT',
+      payload: habitId
+    })
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Edit2 className="w-5 h-5" />
+          Your Habits
+        </CardTitle>
+        <CardDescription>Edit or delete your habits</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          {habits.map((habit) => (
+            <div
+              key={habit.id}
+              className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border hover:border-primary/50 transition"
+            >
+              <div>
+                <p className="font-semibold">{habit.title}</p>
+                <p className="text-sm text-muted-foreground">
+                  {habit.frequency} • {habit.currentStreak} day streak
+                </p>
+              </div>
+              <div className="flex justify-center gap-2">
+                <Button size="sm" variant="outline"
+                // onClick={() => setSelectedEditHabit(habit)}
+                // onClick={() => dispatch({
+                //   type: 'UPDATE_HABIT_VIEWING',
+                //   payload: Number(habit.id)
+                // })}
+                onClick={() => handleEdit(Number(habit.id))}
+              >
+                <Edit2 className="w-4 h-4" />
+                {/* Edit */}
+              </Button>
+              <Button size="sm" variant="destructive" onClick={() => handleDelete(Number(habit.id))}>
+                <Trash2 className="w-4 h-4" />
+                {/* Delete */}
+              </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+
+const AccountSettings = () => {
+  const { state: userState } = useUserAuthCtx()
+  const user = userState.user
+
+  const handleSignOut = () => {
+    signOut({
+      callbackUrl: "/",
+    })
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Account</CardTitle>
+        <CardDescription>Manage your account: {user?.name}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-3">
+          <div>
+            <p className="text-sm font-semibold">Email</p>
+            <p className="text-sm text-muted-foreground">{user?.email || 'N/A'}</p>
+          </div>
+          <Button variant="destructive" className="w-full" onClick={() => handleSignOut()}>
+            <LogOut className="w-4 h-4 mr-2" />
+            Sign Out
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   )
 }
