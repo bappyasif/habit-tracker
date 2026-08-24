@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation"
 import { deleteHabitSecurely } from "@/server-calls/habits"
 import { sendPushNotificationsToUserWhenDeletedHabit } from "@/app/server-actions/notifications"
 import { useToFetchNotifications } from "@/hooks/useToFetchNotifications"
+import { useUserNotificationsCtx } from "@/context-reducers/userNotificationsCtx"
 
 export default function SettingsPage() {
   const [habits, setHabits] = useState(mockHabits)
@@ -42,7 +43,7 @@ export default function SettingsPage() {
           <p className="text-muted-foreground">Manage your preferences and habits</p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-2 gap-6">
           {/* Account */}
           <AccountSettings />
 
@@ -91,7 +92,8 @@ export default function SettingsPage() {
           </Card>
 
           {/* Notifications */}
-          <Card>
+          <Notifications />
+          {/* <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Bell className="w-5 h-5" />
@@ -124,10 +126,12 @@ export default function SettingsPage() {
                 <Switch defaultChecked />
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Privacy */}
-          <Card>
+          {/* <Privacy /> */}
+
+          {/* <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Eye className="w-5 h-5" />
@@ -151,7 +155,7 @@ export default function SettingsPage() {
                 Delete Account
               </Button>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Habit Management */}
           {/* <HabitsManagement /> */}
@@ -190,6 +194,8 @@ export default function SettingsPage() {
           {/* <AccountSettings /> */}
 
         </div>
+        {/* Privacy */}
+        <Privacy />
       </main>
 
       {/* Habit Editor Modal */}
@@ -202,6 +208,68 @@ export default function SettingsPage() {
         />
       )}
     </>
+  )
+}
+
+const Privacy = () => {
+  const handleDeleteAccount = () => {
+    const prompt = window.confirm("Are you sure you want to delete your account? This action cannot be undone.")
+
+    console.log("Delete account", prompt)
+  }
+
+  return (
+    <Card className="mt-7">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-destructive">
+          <Eye className="w-5 h-5" />
+          Dangerous Zone
+        </CardTitle>
+        <CardDescription>Control your account with us</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <Button variant="secondary" className="w-full bg-transparent hover:bg-destructive cursor-pointer hover:text-secondary" onClick={handleDeleteAccount}>
+          <span>Delete Account</span>
+        </Button>
+      </CardContent>
+    </Card>
+  )
+}
+
+const Notifications = () => {
+  const {state, dispatch} = useUserNotificationsCtx()
+  const { emailNotifications } = state
+
+  console.log(emailNotifications, "emailNotifications")
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Bell className="w-5 h-5" />
+          Notifications
+        </CardTitle>
+        <CardDescription>Control how you receive updates</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <Label className="font-semibold">Email Notifications</Label>
+            <p className="text-sm text-muted-foreground mt-1">Receive weekly summaries via email</p>
+          </div>
+          <Switch 
+            checked={emailNotifications}
+            // defaultChecked={emailNotifications}
+            onCheckedChange={() => {
+              dispatch({
+                type: 'TOGGLE_EMAIL_NOTIFICATIONS'
+              })
+              console.log(emailNotifications, "emailNotifications")
+            }} 
+          />
+        </div>
+      </CardContent>
+    </Card>
   )
 }
 
@@ -224,17 +292,21 @@ const HabitsManagement = () => {
 
   const { fetchNotifications } = useToFetchNotifications()
 
+  const sendNotificationOnDelete = () => {
+    const token = authState?.user?.token!
+    // send notification to user that habit is deleted successfully
+    sendPushNotificationsToUserWhenDeletedHabit(token)
+      .then(res => {
+        // console.log(res)
+        fetchNotifications(token)
+      })
+      .catch(err => console.log(err))
+  }
+
   const deleteHabitFromDb = async (id: string) => {
     try {
       const token = authState?.user?.token!
       await deleteHabitSecurely(id, token)
-      // send notification to user that habit is deleted successfully
-      sendPushNotificationsToUserWhenDeletedHabit(token)
-        .then(res => {
-          // console.log(res)
-          fetchNotifications(token)
-        })
-        .catch(err => console.log(err))
       console.log("successfully deleted")
     } catch (error) {
       console.log(error)
@@ -246,6 +318,8 @@ const HabitsManagement = () => {
       type: 'DELETE_HABIT',
       payload: habitId
     })
+    // deleteHabitFromDb(habitId.toString())
+    sendNotificationOnDelete()
   }
 
   return (
@@ -272,20 +346,20 @@ const HabitsManagement = () => {
               </div>
               <div className="flex justify-center gap-2">
                 <Button size="sm" variant="outline"
-                // onClick={() => setSelectedEditHabit(habit)}
-                // onClick={() => dispatch({
-                //   type: 'UPDATE_HABIT_VIEWING',
-                //   payload: Number(habit.id)
-                // })}
-                onClick={() => handleEdit(Number(habit.id))}
-              >
-                <Edit2 className="w-4 h-4" />
-                {/* Edit */}
-              </Button>
-              <Button size="sm" variant="destructive" onClick={() => handleDelete(Number(habit.id))}>
-                <Trash2 className="w-4 h-4" />
-                {/* Delete */}
-              </Button>
+                  // onClick={() => setSelectedEditHabit(habit)}
+                  // onClick={() => dispatch({
+                  //   type: 'UPDATE_HABIT_VIEWING',
+                  //   payload: Number(habit.id)
+                  // })}
+                  onClick={() => handleEdit(Number(habit.id))}
+                >
+                  <Edit2 className="w-4 h-4" />
+                  {/* Edit */}
+                </Button>
+                <Button size="sm" variant="destructive" onClick={() => handleDelete(Number(habit.id))}>
+                  <Trash2 className="w-4 h-4" />
+                  {/* Delete */}
+                </Button>
               </div>
             </div>
           ))}

@@ -9,7 +9,8 @@ type UserNotification = {
 }
 
 type UserNotificationsCtxState = {
-  notifications: UserNotification[]
+  notifications: UserNotification[],
+  emailNotifications: boolean
 }
 
 const userNotificationsCtxReducer = (state: UserNotificationsCtxState, action: { type: string; payload?: any }): UserNotificationsCtxState => {
@@ -37,13 +38,20 @@ const userNotificationsCtxReducer = (state: UserNotificationsCtxState, action: {
                 ...state,
                 notifications: state.notifications.filter(notification => notification.id !== action.payload)
             }
+
+        case 'TOGGLE_EMAIL_NOTIFICATIONS':
+            return {
+                ...state,
+                emailNotifications: !state.emailNotifications
+            }
         default:
             return state
     }
 }
 
 const initialUserNotificationsCtxState: UserNotificationsCtxState = {
-    notifications: []
+    notifications: [],
+    emailNotifications: true
 }
 
 const UserNotificationsCtx = createContext<{
