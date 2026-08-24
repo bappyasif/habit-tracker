@@ -32,11 +32,11 @@ export default function DashboardPage() {
   // fetching habit daily timeline from server
   useToFetchHabitDailyTimeline()
 
+  const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
+
   const { state: authState } = useUserAuthCtx()
 
   if (!state.habits?.length) return null
-
-  const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
 
   if (!habit) return <WhenEmpty />
 

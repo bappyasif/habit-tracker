@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
@@ -240,6 +240,10 @@ const Notifications = () => {
   const {state, dispatch} = useUserNotificationsCtx()
   const { emailNotifications } = state
 
+  useEffect(() => {
+    localStorage.setItem('emailNotifications', emailNotifications.toString())
+  }, [emailNotifications])
+
   console.log(emailNotifications, "emailNotifications")
 
   return (
@@ -318,7 +322,7 @@ const HabitsManagement = () => {
       type: 'DELETE_HABIT',
       payload: habitId
     })
-    // deleteHabitFromDb(habitId.toString())
+    deleteHabitFromDb(habitId.toString())
     sendNotificationOnDelete()
   }
 

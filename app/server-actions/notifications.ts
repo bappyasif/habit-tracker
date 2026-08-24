@@ -4,6 +4,13 @@ const getBackendUrl = () => {
   return backendUrl;
 }
 
+const getLocallyStoredEmailNotificationsPermission = () => {
+  const emailNotificationsPermission = localStorage.getItem('emailNotifications');
+  return emailNotificationsPermission;
+}
+
+// we could do something similar getLocallyStoredEmailNotificationsPermission for authToken, if thats needed and secured to do so.
+
 export const registerOrUpdateFcmTokenWithBackend = async (fcmToken: string, authToken: string) => {
   try {
     // 0.0.0.0:8000 will throw an CORS error
@@ -73,6 +80,8 @@ export const sendPushNotificationsToUserWhenUpdatedHabit = async (authToken: str
 
 export const sendPushNotificationsToUserWhenDeletedHabit = async (authToken: string) => {
   const url = getBackendUrl() + '/api/v1/notifications/deleted-habit-securely'
+
+  getLocallyStoredEmailNotificationsPermission()
 
   return secureRequest(url, {}, authToken, 'DELETE')
 }
