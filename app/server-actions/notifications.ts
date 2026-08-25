@@ -6,7 +6,7 @@ const getBackendUrl = () => {
 
 const getLocallyStoredEmailNotificationsPermission = () => {
   const emailNotificationsPermission = localStorage.getItem('emailNotifications');
-  return emailNotificationsPermission;
+  return emailNotificationsPermission === 'true';
 }
 
 // we could do something similar getLocallyStoredEmailNotificationsPermission for authToken, if thats needed and secured to do so.
@@ -22,7 +22,7 @@ export const registerOrUpdateFcmTokenWithBackend = async (fcmToken: string, auth
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + authToken
       },
-      
+
       body: JSON.stringify({
         fcm_token: fcmToken,
         device_type: navigator.userAgent, // automatically grabs browser info
@@ -33,7 +33,7 @@ export const registerOrUpdateFcmTokenWithBackend = async (fcmToken: string, auth
       console.error('Failed to save FCM token to server');
       throw new Error('Failed to save FCM token to server');
     }
-    
+
     return response.json();
 
   } catch (error) {
@@ -57,7 +57,7 @@ const secureRequest = async (url: string, data: any, authToken: string, method: 
       body: JSON.stringify(data)
     });
     if (!response.ok) {
-      console.error('Failed to send push notifications');
+      console.log('Failed to send push notifications');
       // throw new Error('Failed to send push notifications');
     }
     return response.json();
@@ -65,6 +65,16 @@ const secureRequest = async (url: string, data: any, authToken: string, method: 
     console.error('Network error sending push notifications:', error);
   }
 };
+
+export const toggleUserEmailNotificationsPermission = async (authToken: string) => {
+  const url = getBackendUrl() + '/api/v1/settings/toggle-send-emails-notifications-securely'
+
+  const emailNotificationsPermission = getLocallyStoredEmailNotificationsPermission();
+
+  console.log(emailNotificationsPermission, "!!console!!")
+
+  return secureRequest(url, { "email_permission":  emailNotificationsPermission}, authToken, 'PUT')
+}
 
 export const sendPushNotificationsToUserWhenCreatedNewHabit = async (authToken: string) => {
   const url = getBackendUrl() + '/api/v1/notifications/created-new-habit-securely'
@@ -131,7 +141,7 @@ export const fetchNotificationsFromBackend = async (authToken: string) => {
       console.error('Failed to fetch notifications');
       throw new Error('Failed to fetch notifications');
     }
-    
+
     return response.json();
 
   } catch (error) {

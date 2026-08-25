@@ -18,6 +18,7 @@ import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { NotificationsTray } from "@/components/NotificationsTray"
 import { sendPushNotificationsToUserWhenDeletedHabit } from "@/app/server-actions/notifications"
 import { useToFetchNotifications } from "@/hooks/useToFetchNotifications"
+import { useToToggleUserPermission } from "./_hooks/useToToggleUserPermission"
 
 export default function DashboardPage() {
   const { state } = useTrackCtx()
@@ -31,6 +32,9 @@ export default function DashboardPage() {
 
   // fetching habit daily timeline from server
   useToFetchHabitDailyTimeline()
+
+  // updating user email notifications
+  useToToggleUserPermission()
 
   const habit = state.habits.find(habit => Number(habit.id) === state.habitViewing)
 
