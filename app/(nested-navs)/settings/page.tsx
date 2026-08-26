@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { mockHabits } from "@/lib/mock-data"
-import { Edit2, LogOut, Bell, Globe, Eye, Trash2 } from "lucide-react"
+import { Edit2, LogOut, Bell, Globe, Eye, Trash2, Sun, Moon, Cog } from "lucide-react"
 import { HabitEditorModal } from "./_components/habit-editor-modal"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { signOut } from "next-auth/react"
@@ -17,6 +17,8 @@ import { deleteHabitSecurely } from "@/server-calls/habits"
 import { sendPushNotificationsToUserWhenDeletedHabit } from "@/app/server-actions/notifications"
 import { useToFetchNotifications } from "@/hooks/useToFetchNotifications"
 import { useUserNotificationsCtx } from "@/context-reducers/userNotificationsCtx"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useTheme } from "next-themes"
 
 export default function SettingsPage() {
   const [habits, setHabits] = useState(mockHabits)
@@ -75,8 +77,9 @@ export default function SettingsPage() {
               </div>
 
               {/* Theme */}
-              <div>
-                <Label className="mb-2 block font-semibold">Theme</Label>
+              {/* <div> */}
+              {/* <ThemeMode /> */}
+              {/* <Label className="mb-2 block font-semibold">Theme</Label>
                 <Select value={theme} onValueChange={(v: any) => setTheme(v)}>
                   <SelectTrigger className="w-full md:w-48">
                     <SelectValue />
@@ -86,8 +89,8 @@ export default function SettingsPage() {
                     <SelectItem value="dark">Dark</SelectItem>
                     <SelectItem value="system">System</SelectItem>
                   </SelectContent>
-                </Select>
-              </div>
+                </Select> */}
+              {/* </div> */}
             </CardContent>
           </Card>
 
@@ -194,6 +197,7 @@ export default function SettingsPage() {
           {/* <AccountSettings /> */}
 
         </div>
+        <ThemeMode />
         {/* Privacy */}
         <Privacy />
       </main>
@@ -210,6 +214,133 @@ export default function SettingsPage() {
     </>
   )
 }
+
+const ThemeMode = () => {
+  const { setTheme, themes, theme } = useTheme()
+
+  // check system theme
+  useEffect(() => {
+    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+    setTheme(systemTheme)
+  }, [])
+
+  const nextTheme =
+    theme === "dark" ? "light" : theme === "light" ? "system" : "dark"
+
+  return (
+    <Card className="mt-6">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Sun className="w-5 h-5" />
+          Theme Mode
+        </CardTitle>
+        <CardDescription>Control your theme by toggling</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4 text-accent">
+        {
+          theme === "dark" ? (
+            <p className="text-sm text-muted-foreground">Dark Mode</p>
+          ) : theme === "light" ? (
+            <p className="text-sm text-muted-foreground">Light Mode</p>
+          ) : (
+            <p className="text-sm text-muted-foreground">System Mode</p>
+          )
+        }
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setTheme(nextTheme)}
+          className="w-full"
+        >
+          {theme === "dark" ? (
+            <Moon className="h-[1.2rem] w-[1.2rem]" />
+          ) : theme === "light" ? (
+            <Sun className="h-[1.2rem] w-[1.2rem]" />
+          ) : (
+            <Cog className="h-[1.2rem] w-[1.2rem]" />
+          )}
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+        {/* <DropdownMenu>
+          <DropdownMenuTrigger asChild className="w-full">
+            <Button variant="secondary" size="icon">
+              {
+                theme === "dark" ? (
+                  <Moon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                ) : theme === "light" ? (
+                  <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                )
+                  : (
+                    // system theme
+                    <Cog className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                  )
+              }
+              {/* <span className="sr-only">Toggle theme</span> /}
+              {/* <span className="">Toggle theme</span> /}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setTheme("light")}>
+              Light
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("dark")}>
+              Dark
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("system")}>
+              System
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu> */}
+      </CardContent>
+    </Card>
+  )
+}
+
+// const ThemeMode = () => {
+//   const { setTheme, themes, theme } = useTheme()
+
+//   console.log(themes, "!!themes!!", theme)
+
+//   // check system theme
+//   useEffect(() => {
+//     const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+//     setTheme(systemTheme)
+//   }, [])
+
+//   return (
+//     <DropdownMenu>
+//       <DropdownMenuTrigger asChild>
+//         <Button variant="secondary" size="icon">
+//           {/* <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+//           <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" /> */}
+//           {
+//             theme === "dark" ? (
+//               <Moon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+//             ) : theme === "light" ? (
+//               <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+//             )
+//             : (
+//               // system theme
+//               <Cog className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+//             )
+//           }
+//           {/* <span className="sr-only">Toggle theme</span> */}
+//         </Button>
+//       </DropdownMenuTrigger>
+//       <DropdownMenuContent align="end">
+//         <DropdownMenuItem onClick={() => setTheme("light")}>
+//           Light
+//         </DropdownMenuItem>
+//         <DropdownMenuItem onClick={() => setTheme("dark")}>
+//           Dark
+//         </DropdownMenuItem>
+//         <DropdownMenuItem onClick={() => setTheme("system")}>
+//           System
+//         </DropdownMenuItem>
+//       </DropdownMenuContent>
+//     </DropdownMenu>
+//   )
+// }
 
 const Privacy = () => {
   const handleDeleteAccount = () => {
@@ -237,7 +368,7 @@ const Privacy = () => {
 }
 
 const Notifications = () => {
-  const {state, dispatch} = useUserNotificationsCtx()
+  const { state, dispatch } = useUserNotificationsCtx()
   const { emailNotifications } = state
 
   useEffect(() => {
@@ -261,7 +392,7 @@ const Notifications = () => {
             <Label className="font-semibold">Email Notifications</Label>
             <p className="text-sm text-muted-foreground mt-1">Receive weekly summaries via email</p>
           </div>
-          <Switch 
+          <Switch
             checked={emailNotifications}
             // defaultChecked={emailNotifications}
             onCheckedChange={() => {
@@ -269,7 +400,7 @@ const Notifications = () => {
                 type: 'TOGGLE_EMAIL_NOTIFICATIONS'
               })
               console.log(emailNotifications, "emailNotifications")
-            }} 
+            }}
           />
         </div>
       </CardContent>
