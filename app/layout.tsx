@@ -22,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`font-sans antialiased flex h-screen bg-background text-foreground ${_geist.className} ${_geistMono.className}`}>
         <div className="flex flex-col flex-1 w-full">
           <WrapperContextProviders>

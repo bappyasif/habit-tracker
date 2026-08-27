@@ -219,10 +219,10 @@ const ThemeMode = () => {
   const { setTheme, themes, theme } = useTheme()
 
   // check system theme
-  useEffect(() => {
-    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-    setTheme(systemTheme)
-  }, [])
+  // useEffect(() => {
+  //   const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+  //   setTheme(systemTheme)
+  // }, [])
 
   const nextTheme =
     theme === "dark" ? "light" : theme === "light" ? "system" : "dark"
