@@ -19,10 +19,10 @@ export function AppHeader() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2 font-bold text-xl">
-            <div className="w-8 h-8 rounded-lg gradient-to-br from-blue-600 to-cyan-500 text-white flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-lg gradient-to-br from-blue-600 to-cyan-500 text-primary flex items-center justify-center font-bold">
               ✓
             </div>
-            <span className="gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">HabitFlow</span>
+            <span className="gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-primary">HabitFlow</span>
           </Link>
 
           <div className="flex items-center gap-4">

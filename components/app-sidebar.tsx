@@ -57,10 +57,10 @@ export const AppSidebar = () => {
           href="/dashboard"
           className="flex items-center gap-2 font-bold text-base"
         >
-          <div className="w-8 h-8 rounded-lg bg-linear-to-br from-blue-600 to-cyan-500 text-white flex items-center justify-center font-bold text-sm">
+          <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary/40 to-secondary/40 text-primary flex items-center justify-center font-bold text-sm">
             ✓
           </div>
-          <span className="text-foreground text-2xl">HabitFlow</span>
+          <span className="text-primary text-2xl">HabitFlow</span>
         </Link>
       </div>
 

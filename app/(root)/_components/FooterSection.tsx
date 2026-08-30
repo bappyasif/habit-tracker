@@ -8,7 +8,7 @@ export const FooterSection = ({ language }: { language: "en" | "bn" }) => {
     const t = content[language]
     return (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-            <Card className="bg-linear-to-br from-blue-600 to-cyan-500 text-white border-0">
+            <Card className="bg-linear-to-br from-primary/40 to-secondary/40 text-primary border-0">
                 <CardContent className="p-12">
                     <div className="flex items-center justify-center gap-2 mb-4">
                         <Brain className="w-6 h-6" />
@@ -25,8 +25,8 @@ export const FooterSection = ({ language }: { language: "en" | "bn" }) => {
                         </Link>
                         <Button
                             size="lg"
-                            variant="outline"
-                            className="border-blue-200 text-white hover:bg-blue-700 bg-transparent"
+                            variant="default"
+                            className="border-secondary"
                         >
                             {t.signin}
                         </Button>

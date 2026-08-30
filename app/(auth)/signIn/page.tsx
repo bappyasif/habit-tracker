@@ -12,7 +12,7 @@ export default function LoginPage() {
     useToUpdateUserSession()
 
     return (
-        <main className="flex-1 min-h-screen">
+        <main className="flex-1 min-h-screen flex flex-col justify-center items-center">
             <section className="flex justify-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                 <h1 className="text-2xl font-bold">Login Page</h1>
             </section>
@@ -23,9 +23,9 @@ export default function LoginPage() {
                     <Button onClick={() => {
                         signIn()
                         setIsSigningIn(true)
-                    }} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"><LogInIcon className="w-4 h-4 mr-2" /> Sign In <Handshake className="w-4 h-4 ml-2" /></Button>
+                    }} className="px-4 py-2 bg-secondary/30 text-primary rounded hover:bg-secondary/50"><LogInIcon className="w-4 h-4 mr-2" /> Sign In <Handshake className="w-4 h-4 ml-2" /></Button>
                     
-                    {isSigningIn && <p className="text-sm text-gray-500">Signing in, please wait...</p>}
+                    {isSigningIn && <p className="text-sm text-muted-foreground">Signing in, please wait...</p>}
                 </div>
             </section>
         </main>

@@ -12,7 +12,7 @@ export function HabitCard({ title, icon, description, onClick }: HabitCardProps)
   return (
     <Card
       onClick={onClick}
-      className="cursor-pointer hover:shadow-lg hover:border-primary transition-all duration-200 group"
+      className="cursor-pointer hover:shadow-lg hover:border-primary transition-all duration-200 group min-h-44"
     >
       <CardContent className="p-6">
         <div className="flex items-start gap-4">

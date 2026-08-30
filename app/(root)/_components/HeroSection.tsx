@@ -9,9 +9,9 @@ export const HeroSection = ({ language }: { language: "en" | "bn" }) => {
     return (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center max-w-3xl mx-auto">
-          <div className="mb-6 inline-flex items-center gap-2 px-3 py-1 bg-blue-50 dark:bg-blue-950/30 rounded-full border border-blue-200 dark:border-blue-800">
-            <Sparkles className="w-4 h-4 text-blue-600" />
-            <span className="text-sm font-medium text-blue-600 dark:text-blue-400">AI-Powered Habit Tracking</span>
+          <div className="mb-6 inline-flex items-center gap-2 px-3 py-1 bg-secondary/30 dark:bg-secondary/50 rounded-full border border-primary/30 dark:border-secondary/70">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-primary/90 dark:text-primary">AI-Powered Habit Tracking</span>
           </div>
 
           <h1 className="text-5xl md:text-6xl font-bold mb-4 text-balance leading-tight">{t.tagline}</h1>
