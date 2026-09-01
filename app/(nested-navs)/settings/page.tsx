@@ -23,8 +23,6 @@ import { useTheme } from "next-themes"
 export default function SettingsPage() {
   const [habits, setHabits] = useState(mockHabits)
   const [selectedEditHabit, setSelectedEditHabit] = useState<any>()
-  const [language, setLanguage] = useState<"en" | "bn">("en")
-  const [theme, setTheme] = useState<"light" | "dark" | "system">("system")
 
   const handleSaveHabit = (habit: any) => {
     setHabits(habits.map((h) => (h.id === habit.id ? habit : h)))
@@ -38,14 +36,14 @@ export default function SettingsPage() {
 
   return (
     <>
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="w-full mx-auto px-4 py-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
+        <div className="my-4">
           <h1 className="text-4xl font-bold mb-2">Settings</h1>
           <p className="text-muted-foreground">Manage your preferences and habits</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Account */}
           <AccountSettings />
 
@@ -53,153 +51,16 @@ export default function SettingsPage() {
           <HabitsManagement />
 
           {/* Preferences */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Globe className="w-5 h-5" />
-                Preferences
-              </CardTitle>
-              <CardDescription>Customize your experience</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Language */}
-              <div>
-                <Label className="mb-2 block font-semibold">Language</Label>
-                <Select value={language} onValueChange={(v: any) => setLanguage(v)}>
-                  <SelectTrigger className="w-full md:w-48">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="bn">বাংলা (Bengali)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Theme */}
-              {/* <div> */}
-              {/* <ThemeMode /> */}
-              {/* <Label className="mb-2 block font-semibold">Theme</Label>
-                <Select value={theme} onValueChange={(v: any) => setTheme(v)}>
-                  <SelectTrigger className="w-full md:w-48">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="light">Light</SelectItem>
-                    <SelectItem value="dark">Dark</SelectItem>
-                    <SelectItem value="system">System</SelectItem>
-                  </SelectContent>
-                </Select> */}
-              {/* </div> */}
-            </CardContent>
-          </Card>
-
+          <Preferences />
+          
           {/* Notifications */}
           <Notifications />
-          {/* <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Bell className="w-5 h-5" />
-                Notifications
-              </CardTitle>
-              <CardDescription>Control how you receive updates</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="font-semibold">Daily Reminders</Label>
-                  <p className="text-sm text-muted-foreground mt-1">Get reminded about your daily habits</p>
-                </div>
-                <Switch defaultChecked />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="font-semibold">Email Notifications</Label>
-                  <p className="text-sm text-muted-foreground mt-1">Receive weekly summaries via email</p>
-                </div>
-                <Switch defaultChecked={false} />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="font-semibold">Streak Alerts</Label>
-                  <p className="text-sm text-muted-foreground mt-1">Get notified when a streak is at risk</p>
-                </div>
-                <Switch defaultChecked />
-              </div>
-            </CardContent>
-          </Card> */}
-
-          {/* Privacy */}
-          {/* <Privacy /> */}
-
-          {/* <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Eye className="w-5 h-5" />
-                Privacy
-              </CardTitle>
-              <CardDescription>Control your data and privacy</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="font-semibold">Analytics</Label>
-                  <p className="text-sm text-muted-foreground mt-1">Help us improve with anonymous usage data</p>
-                </div>
-                <Switch defaultChecked />
-              </div>
-
-              <Button variant="outline" className="w-full mt-4 bg-transparent">
-                Download Your Data
-              </Button>
-              <Button variant="outline" className="w-full bg-transparent">
-                Delete Account
-              </Button>
-            </CardContent>
-          </Card> */}
-
-          {/* Habit Management */}
-          {/* <HabitsManagement /> */}
-          {/* <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Edit2 className="w-5 h-5" />
-                Your Habits
-              </CardTitle>
-              <CardDescription>Edit or delete your habits</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {habits.map((habit) => (
-                  <div
-                    key={habit.id}
-                    className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border hover:border-primary/50 transition"
-                  >
-                    <div>
-                      <p className="font-semibold">{habit.title}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {habit.frequency} • {habit.currentStreak} day streak
-                      </p>
-                    </div>
-                    <Button size="sm" variant="outline" onClick={() => setSelectedEditHabit(habit)}>
-                      <Edit2 className="w-4 h-4 mr-2" />
-                      Edit
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card> */}
-
-          {/* Account */}
-          {/* <AccountSettings /> */}
 
         </div>
         <ThemeMode />
         {/* Privacy */}
         <Privacy />
+        <div className="h-10 md:hidden" />
       </main>
 
       {/* Habit Editor Modal */}
@@ -217,12 +78,6 @@ export default function SettingsPage() {
 
 const ThemeMode = () => {
   const { setTheme, themes, theme } = useTheme()
-
-  // check system theme
-  // useEffect(() => {
-  //   const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-  //   setTheme(systemTheme)
-  // }, [])
 
   const nextTheme =
     theme === "dark" ? "light" : theme === "light" ? "system" : "dark"
@@ -261,86 +116,10 @@ const ThemeMode = () => {
           )}
           <span className="sr-only">Toggle theme</span>
         </Button>
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild className="w-full">
-            <Button variant="secondary" size="icon">
-              {
-                theme === "dark" ? (
-                  <Moon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                ) : theme === "light" ? (
-                  <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                )
-                  : (
-                    // system theme
-                    <Cog className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                  )
-              }
-              {/* <span className="sr-only">Toggle theme</span> /}
-              {/* <span className="">Toggle theme</span> /}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setTheme("light")}>
-              Light
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("dark")}>
-              Dark
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("system")}>
-              System
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
       </CardContent>
     </Card>
   )
 }
-
-// const ThemeMode = () => {
-//   const { setTheme, themes, theme } = useTheme()
-
-//   console.log(themes, "!!themes!!", theme)
-
-//   // check system theme
-//   useEffect(() => {
-//     const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-//     setTheme(systemTheme)
-//   }, [])
-
-//   return (
-//     <DropdownMenu>
-//       <DropdownMenuTrigger asChild>
-//         <Button variant="secondary" size="icon">
-//           {/* <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-//           <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" /> */}
-//           {
-//             theme === "dark" ? (
-//               <Moon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-//             ) : theme === "light" ? (
-//               <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-//             )
-//             : (
-//               // system theme
-//               <Cog className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-//             )
-//           }
-//           {/* <span className="sr-only">Toggle theme</span> */}
-//         </Button>
-//       </DropdownMenuTrigger>
-//       <DropdownMenuContent align="end">
-//         <DropdownMenuItem onClick={() => setTheme("light")}>
-//           Light
-//         </DropdownMenuItem>
-//         <DropdownMenuItem onClick={() => setTheme("dark")}>
-//           Dark
-//         </DropdownMenuItem>
-//         <DropdownMenuItem onClick={() => setTheme("system")}>
-//           System
-//         </DropdownMenuItem>
-//       </DropdownMenuContent>
-//     </DropdownMenu>
-//   )
-// }
 
 const Privacy = () => {
   const handleDeleteAccount = () => {
@@ -350,7 +129,7 @@ const Privacy = () => {
   }
 
   return (
-    <Card className="mt-7">
+    <Card className="my-6">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-destructive">
           <Eye className="w-5 h-5" />
@@ -394,7 +173,6 @@ const Notifications = () => {
           </div>
           <Switch
             checked={emailNotifications}
-            // defaultChecked={emailNotifications}
             onCheckedChange={() => {
               dispatch({
                 type: 'TOGGLE_EMAIL_NOTIFICATIONS'
@@ -405,6 +183,37 @@ const Notifications = () => {
         </div>
       </CardContent>
     </Card>
+  )
+}
+
+const Preferences = () => {
+  const [language, setLanguage] = useState<"en" | "bn">("en")
+
+  return (
+    <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Globe className="w-5 h-5" />
+                Preferences
+              </CardTitle>
+              <CardDescription>Customize your experience</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Language */}
+              <div>
+                <Label className="mb-2 block font-semibold">Language</Label>
+                <Select value={language} onValueChange={(v: any) => setLanguage(v)}>
+                  <SelectTrigger className="w-full md:w-48">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="en">English</SelectItem>
+                    <SelectItem value="bn">বাংলা (Bengali)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
   )
 }
 
@@ -481,11 +290,6 @@ const HabitsManagement = () => {
               </div>
               <div className="flex justify-center gap-2">
                 <Button size="sm" variant="outline"
-                  // onClick={() => setSelectedEditHabit(habit)}
-                  // onClick={() => dispatch({
-                  //   type: 'UPDATE_HABIT_VIEWING',
-                  //   payload: Number(habit.id)
-                  // })}
                   onClick={() => handleEdit(Number(habit.id))}
                 >
                   <Edit2 className="w-4 h-4" />

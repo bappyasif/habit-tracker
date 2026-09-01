@@ -14,8 +14,8 @@ export const HeroSection = ({ language }: { language: "en" | "bn" }) => {
             <span className="text-sm font-medium text-primary/90 dark:text-primary">AI-Powered Habit Tracking</span>
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 text-balance leading-tight">{t.tagline}</h1>
-          <p className="text-xl text-muted-foreground mb-8 text-balance">{t.subtitle}</p>
+          <h1 className="text-3xl md:text-5xl xl:text-6xl font-bold mb-4 text-balance leading-tight">{t.tagline}</h1>
+          <p className="text-lg md:text-xl text-muted-foreground mb-8 text-balance">{t.subtitle}</p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">

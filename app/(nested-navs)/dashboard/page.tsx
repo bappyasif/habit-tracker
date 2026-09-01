@@ -51,7 +51,7 @@ export default function DashboardPage() {
     >
       {/* Greeting */}
       <section className="flex justify-between items-center">
-        <div className="mb-8">
+        <div className="my-8">
           <h1 className="text-4xl font-bold mb-2">Good morning, {authState?.user?.name ?? "User"}</h1>
           <p className="text-muted-foreground">
             {new Date().toLocaleDateString("en-US", {

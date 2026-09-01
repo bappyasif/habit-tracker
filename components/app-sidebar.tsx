@@ -41,10 +41,10 @@ export const AppSidebar = () => {
     ]
 
     return (
-        <div className="flex flex-col h-full w-full xl:w-1/2">
+        <div className="flex flex-col h-full w-full xl:w-1/3">
             {/* Logo — always visible */}
             <div className="flex items-center justify-center xl:justify-start gap-2 font-bold text-base border-b border-border p-4">
-                <Link href="/dashboard" className="flex items-center gap-2">
+                <Link href="/" className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary/40 to-secondary/40 text-primary flex items-center justify-center font-bold text-sm shrink-0">
                         ✓
                     </div>

@@ -43,16 +43,16 @@ export function UserAuthToggleView() {
     if (session) {
         return (
             <div className="flex items-center w-3/4 gap-4">
-                <span className="text-lg">Signed in as {session.user?.name}</span>
+                <span className="hidden xl:block text-lg">Signed in as {session.user?.name}</span>
                 <br />
-                <Button onClick={() => handleSignOut()}>Sign out</Button>
+                <Button variant="secondary" onClick={() => handleSignOut()}>Sign out</Button>
             </div>
         )
     }
 
     return (
         <div className="flex items-center w-3/4 gap-4">
-            <span className="">Not signed in</span>
+            <span className="hidden md:block">Not signed in</span>
             <Button onClick={() => handleSignIn()}>Sign in</Button>
         </div>
     )
