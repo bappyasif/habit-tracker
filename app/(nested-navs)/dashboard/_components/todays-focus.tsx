@@ -33,15 +33,15 @@ export const TodaysFocus = () => {
   return (
     <Card className="border-2 border-primary/20">
       <CardHeader>
-        <CardTitle className="text-2xl">Today's Focus: {currentHabit.title}</CardTitle>
-        <CardDescription>Complete your habit and build momentum</CardDescription>
+        <CardTitle className="text-xl md:text-2xl xl:text-3xl sm:text-left md:text-center">Current Focus: {currentHabit.title}</CardTitle>
+        <CardDescription className="sm:text-left md:text-center">Complete your habit and build momentum</CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="flex items-center justify-between mb-6">
+      <CardContent className="">
+        <div className="flex items-center justify-around xl:justify-center mb-6">
           <ProgressRing
             percentage={percentile}
           />
-          <div className="flex-1 ml-6">
+          <div className="flex flex-col ml-6">
             <h3 className="font-semibold mb-4">Next Step</h3>
             {currentHabit.steps.find((s) => !s.completed) ? (
               <div className="space-y-2">

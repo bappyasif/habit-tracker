@@ -38,7 +38,7 @@ export function ProgressRing({ radius = 60, strokeWidth = 6, percentage, label }
         />
       </svg>
       <div className="absolute text-center">
-        <p className="text-2xl font-bold">{percentage}%</p>
+        <p className="text-lg md:text-xl xl:text-2xl font-bold">{percentage}%</p>
         {label && <p className="text-xs text-muted-foreground">{label}</p>}
       </div>
     </div>

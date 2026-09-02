@@ -3,10 +3,10 @@ import Link from "next/link"
 
 export const StickyNavigationForSmallerScreen = () => {
     return (
-        <div className="xl:hidden fixed bottom-0 left-0 right-0 z-50 flex  justify-center gap-10 md:justify-around bg-card/80 border-t border-border pb-[env(safe-area-inset-bottom)]">
+        <div className="xl:hidden fixed py-1 bottom-0 left-0 right-0 z-50 flex  justify-center items-center gap-10 md:justify-around bg-card/80 border-t border-border pb-0.5">
             <Link href="/dashboard" className="md:w-80">
                 <Button variant="outline" size="lg" className="w-full">
-                    Dashboard!
+                    Dashboard
                 </Button>
             </Link>
             <Link href="/create-habit" className="md:w-80">

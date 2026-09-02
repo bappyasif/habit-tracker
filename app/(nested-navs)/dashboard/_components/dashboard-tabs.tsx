@@ -21,11 +21,14 @@ export function DashboardTabs() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>{currentHabit.title}</CardTitle>
+            <CardTitle 
+              // className="text-base md:text-lg xl:text-xl"
+              className="text-sm font-semibold md:text-base xl:text-lg"
+            >{currentHabit.title}</CardTitle>
             <CardDescription>Track your daily progress</CardDescription>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-bold text-primary">{currentHabit.currentStreak}</p>
+            <p className="text-lg md:text-xl xl:text-2xl font-bold text-primary">{currentHabit.currentStreak}</p>
             <p className="text-xs text-muted-foreground">Day Streak</p>
           </div>
         </div>
@@ -61,8 +64,11 @@ export function DashboardTabs() {
                     className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition"
                   >
                     <div className="flex-1">
-                      <p className="font-medium">{item.title}</p>
-                      <p className="text-xs text-muted-foreground">⏰ {item.time}</p>
+                      <p 
+                        // className="text-sm md:text-lg font-medium"
+                        className="text-sm font-semibold md:text-base xl:text-lg"
+                      >{item.title}</p>
+                      <p className="text-xs md:text-sm xl:text-base text-muted-foreground">⏰ {item.time}</p>
                     </div>
                     <span className={`text-sm font-semibold ${item.completed ? "text-accent" : "text-muted-foreground"}`}>
                       {item.completed ? "✓" : "[]"}

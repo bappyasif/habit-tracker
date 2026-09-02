@@ -52,7 +52,10 @@ export default function DashboardPage() {
       {/* Greeting */}
       <section className="flex justify-between items-center">
         <div className="my-8">
-          <h1 className="text-4xl font-bold mb-2">Good morning, {authState?.user?.name ?? "User"}</h1>
+          <h1 
+            // className="text-2xl md:text-3xl xl:text-4xl font-bold mb-2"
+            className="text-2xl md:text-3xl tracking-tight font-bold mb-2"
+          >Good morning, {authState?.user?.name ?? "User"}</h1>
           <p className="text-muted-foreground">
             {new Date().toLocaleDateString("en-US", {
               weekday: "long",
@@ -71,7 +74,11 @@ export default function DashboardPage() {
 
           <TodaysFocus />
 
-          <h2 className="text-3xl font-bold my-10">Snapshots of your habits</h2>
+          <h2 
+            // className="text-lg md:text-xl xl:text-2xl font-bold my-10 mb-12"
+            // className="text-lg md:text-xl font-semibold my-10 mb-12"
+            className="text-lg font-semibold md:text-xl xl:text-2xl text-muted-foreground my-10"
+          >Snapshots of your habits</h2>
 
           {/* Dashboard Tabs */}
           <DashboardTabs />
@@ -140,7 +147,10 @@ const HabitLists = () => {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Your Habits</CardTitle>
+          <CardTitle 
+            // className="text-base md:text-lg xl:xl"
+            className="text-base font-medium md:text-lg xl:text-xl text-foreground"
+          >Your Habits</CardTitle>
           <Link href="/create-habit" onClick={() => {
             dispatch({
               type: 'UPDATE_HABIT_VIEWING',
@@ -164,8 +174,8 @@ const HabitLists = () => {
                   : "border-border hover:border-primary/50"
                   }`}
               >
-                <p className="font-semibold text-sm">{habit.title}</p>
-                <p className="text-xs text-muted-foreground mt-1">🔥 {habit.currentStreak} day streak</p>
+                <p className="font-semibold text-sm md:text-base xl:text-lg">{habit.title}</p>
+                <p className="text-xs md:text-sm xl:text-base text-muted-foreground mt-1">🔥 {habit.currentStreak} day streak</p>
               </button>
 
               <div className="absolute right-1.5 bg-secondary min-w-1/4 h-9 flex gap-2 items-center justify-evenly text-primary rounded">
@@ -230,7 +240,10 @@ const HabitNotifications = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm">Notifications</CardTitle>
+        <CardTitle 
+          // className="text-base md:text-lg xl:xl"
+          className="text-base font-medium md:text-lg xl:text-xl text-foreground"
+        >Activities</CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
         <div className="p-3 bg-accent/10 rounded-lg text-sm">

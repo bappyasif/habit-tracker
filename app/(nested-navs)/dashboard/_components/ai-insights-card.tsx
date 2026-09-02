@@ -69,7 +69,10 @@ export function AIInsightsCard({ weeklyText, suggestions }: AIInsightsCardProps)
           <div className="flex items-center gap-2">
             <Lightbulb className="w-5 h-5 text-primary" />
             <div>
-              <CardTitle>AI Insights</CardTitle>
+              <CardTitle 
+                // className="text-base md:text-lg xl:xl"
+                className="text-base font-medium md:text-lg xl:text-xl text-foreground"
+              >Smart Insights</CardTitle>
               <CardDescription>Daily summary & suggestions</CardDescription>
             </div>
           </div>
