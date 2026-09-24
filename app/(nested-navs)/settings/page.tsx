@@ -19,6 +19,7 @@ import { useToFetchNotifications } from "@/hooks/useToFetchNotifications"
 import { useUserNotificationsCtx } from "@/context-reducers/userNotificationsCtx"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useTheme } from "next-themes"
+import { sendRequestToDeleteUserAccount } from "@/app/server-actions"
 
 export default function SettingsPage() {
   const [habits, setHabits] = useState(mockHabits)
@@ -122,10 +123,22 @@ const ThemeMode = () => {
 }
 
 const Privacy = () => {
+  const { state: authState } = useUserAuthCtx()
+
   const handleDeleteAccount = () => {
     const prompt = window.confirm("Are you sure you want to delete your account? This action cannot be undone.")
 
-    console.log("Delete account", prompt)
+    if (!prompt) return
+
+    const token = authState?.user?.token!
+
+    sendRequestToDeleteUserAccount(token)
+      .then(async res => {
+        console.log(res)
+        await signOut({callbackUrl: "/"})
+        console.log("Account deleted successfully.")
+      })
+      .catch(err => console.log(err))
   }
 
   return (
