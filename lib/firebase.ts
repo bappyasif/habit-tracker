@@ -24,9 +24,7 @@ if (typeof window !== 'undefined') {
     messaging = getMessaging(app);
 
     // Global foreground handler
-    onMessage(messaging, (payload) => {
-      // console.log('🔥 FOREGROUND MESSAGE CAPTURED LIVE:', payload);
-      
+    onMessage(messaging, (payload) => {      
       if (Notification.permission === 'granted') {
         const title = payload.notification?.title || payload.data?.title || "Habitflow Update";
         const body = payload.notification?.body || payload.data?.body || "You have a new notification!";

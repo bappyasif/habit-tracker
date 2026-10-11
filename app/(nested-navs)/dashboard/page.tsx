@@ -46,14 +46,12 @@ export default function DashboardPage() {
 
   return (
     <main 
-      // className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
       className="px-4 sm:px-6 lg:px-8 pb-20 md:py-8"
     >
       {/* Greeting */}
       <section className="flex justify-between items-center">
         <div className="my-8">
           <h1 
-            // className="text-2xl md:text-3xl xl:text-4xl font-bold mb-2"
             className="text-2xl md:text-3xl tracking-tight font-bold mb-2"
           >Good morning, {authState?.user?.name ?? "User"}</h1>
           <p className="text-muted-foreground">
@@ -75,8 +73,6 @@ export default function DashboardPage() {
           <TodaysFocus />
 
           <h2 
-            // className="text-lg md:text-xl xl:text-2xl font-bold my-10 mb-12"
-            // className="text-lg md:text-xl font-semibold my-10 mb-12"
             className="text-lg font-semibold md:text-xl xl:text-2xl text-muted-foreground my-10"
           >Snapshots of your habits</h2>
 
@@ -118,7 +114,6 @@ const HabitLists = () => {
       // send notification to user that habit is deleted successfully
       sendPushNotificationsToUserWhenDeletedHabit(token)
       .then(res => {
-        // console.log(res)
         fetchNotifications(token)
       })
       .catch(err => console.log(err))
@@ -148,7 +143,6 @@ const HabitLists = () => {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle 
-            // className="text-base md:text-lg xl:xl"
             className="text-base font-medium md:text-lg xl:text-xl text-foreground"
           >Your Habits</CardTitle>
           <Link href="/create-habit" onClick={() => {
@@ -241,7 +235,6 @@ const HabitNotifications = () => {
     <Card>
       <CardHeader>
         <CardTitle 
-          // className="text-base md:text-lg xl:xl"
           className="text-base font-medium md:text-lg xl:text-xl text-foreground"
         >Activities</CardTitle>
       </CardHeader>

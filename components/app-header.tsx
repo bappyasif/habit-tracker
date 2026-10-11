@@ -18,12 +18,6 @@ export function AppHeader() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-center xl:justify-between">
-          {/* <Link href="/" className="flex items-center gap-2 font-bold text-xl">
-            <div className="w-8 h-8 rounded-lg gradient-to-br from-primary/30 to-secondary/60 text-primary flex items-center justify-center font-bold">
-              ✓
-            </div>
-            <span className="gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-primary">HabitFlow</span>
-          </Link> */}
           <div className="flex items-center justify-center xl:justify-between gap-2 font-bold text-base border-b border-border p-4">
             <Link href="/" className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary/40 to-secondary/40 text-primary flex items-center justify-center font-bold text-sm shrink-0">

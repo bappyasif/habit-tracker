@@ -11,7 +11,6 @@ export const useToToggleUserPermission = () => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            // localStorage.setItem('emailNotifications', emailNotifications.toString())
             toggleUserEmailNotificationsPermission(authState?.user?.token ?? '')
         }, 2000)
         return () => clearTimeout(timer)

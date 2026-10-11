@@ -1,5 +1,4 @@
 const getBackendUrl = () => {
-  // const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
   return backendUrl;
 }
@@ -58,7 +57,6 @@ const secureRequest = async (url: string, data: any, authToken: string, method: 
     });
     if (!response.ok) {
       console.log('Failed to send push notifications');
-      // throw new Error('Failed to send push notifications');
     }
     return response.json();
   } catch (error) {
@@ -70,8 +68,6 @@ export const toggleUserEmailNotificationsPermission = async (authToken: string) 
   const url = getBackendUrl() + '/api/v1/settings/toggle-send-emails-notifications-securely'
 
   const emailNotificationsPermission = getLocallyStoredEmailNotificationsPermission();
-
-  console.log(emailNotificationsPermission, "!!console!!")
 
   return secureRequest(url, { "email_permission":  emailNotificationsPermission}, authToken, 'PUT')
 }

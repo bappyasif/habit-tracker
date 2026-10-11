@@ -17,7 +17,6 @@ import { deleteHabitSecurely } from "@/server-calls/habits"
 import { sendPushNotificationsToUserWhenDeletedHabit } from "@/app/server-actions/notifications"
 import { useToFetchNotifications } from "@/hooks/useToFetchNotifications"
 import { useUserNotificationsCtx } from "@/context-reducers/userNotificationsCtx"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useTheme } from "next-themes"
 import { sendRequestToDeleteUserAccount } from "@/app/server-actions"
 
@@ -53,7 +52,7 @@ export default function SettingsPage() {
 
           {/* Preferences */}
           <Preferences />
-          
+
           {/* Notifications */}
           <Notifications />
 
@@ -135,7 +134,7 @@ const Privacy = () => {
     sendRequestToDeleteUserAccount(token)
       .then(async res => {
         console.log(res)
-        await signOut({callbackUrl: "/"})
+        await signOut({ callbackUrl: "/" })
         console.log("Account deleted successfully.")
       })
       .catch(err => console.log(err))
@@ -204,29 +203,29 @@ const Preferences = () => {
 
   return (
     <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Globe className="w-5 h-5" />
-                Preferences
-              </CardTitle>
-              <CardDescription>Customize your experience</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Language */}
-              <div>
-                <Label className="mb-2 block font-semibold">Language</Label>
-                <Select value={language} onValueChange={(v: any) => setLanguage(v)}>
-                  <SelectTrigger className="w-full md:w-48">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="bn">বাংলা (Bengali)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Globe className="w-5 h-5" />
+          Preferences
+        </CardTitle>
+        <CardDescription>Customize your experience</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Language */}
+        <div>
+          <Label className="mb-2 block font-semibold">Language</Label>
+          <Select value={language} onValueChange={(v: any) => setLanguage(v)}>
+            <SelectTrigger className="w-full md:w-48">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="en">English</SelectItem>
+              <SelectItem value="bn">বাংলা (Bengali)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </CardContent>
+    </Card>
   )
 }
 
@@ -254,7 +253,6 @@ const HabitsManagement = () => {
     // send notification to user that habit is deleted successfully
     sendPushNotificationsToUserWhenDeletedHabit(token)
       .then(res => {
-        // console.log(res)
         fetchNotifications(token)
       })
       .catch(err => console.log(err))

@@ -1,7 +1,7 @@
 import { sendPushNotificationsToUserWhenCompletedHabitSteps, sendPushNotificationsToUserWhenUpdatedHabitSteps } from "@/app/server-actions/notifications"
 import { Steps, TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
-import { createHabitWeeklyTimeline, securelyCreateHabitDailyTimeline, securelyUpdateHabitDailyTimeline } from "@/server-calls/habits"
+import { securelyCreateHabitDailyTimeline, securelyUpdateHabitDailyTimeline } from "@/server-calls/habits"
 import { useState } from "react"
 
 export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updateSteps }: { habit: TrackTypes, date: Date, steps: Steps[], updateSteps: (ids: (number | string)[]) => void }) => {
@@ -12,10 +12,6 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
     const { state: authState } = useUserAuthCtx()
 
     const { dailyLogs } = state
-    const saveWeeklyTrackingTodb = async (data: any) => {
-        const response = await createHabitWeeklyTimeline(data)
-        console.log(response, "response from saving timeline data for weekly tracking")
-    }
 
     const saveDailyTrackingTodb = async (data: any) => {
         const token = authState?.user?.token!
@@ -82,18 +78,6 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
     }
 
     const saveDailyTimelineInDb = (totalSteps: Steps[], percentile: number, completedSteps: Boolean[]) => {
-        // const dbrq = {
-        //     habitId: habit.id,
-        //     week: {
-        //         weekStart: new Date(date.getTime() - (date.getDay() - 1) * 24 * 60 * 60 * 1000),
-        //         weekEnd: new Date(date.getTime() + (6 - date.getDay()) * 24 * 60 * 60 * 1000),
-        //         totalCompleted: completedSteps.length,
-        //         totalSteps: totalSteps.length,
-        //         percentile: percentile
-        //     }
-        // }
-        // saveWeeklyTrackingTodb(dbrq)
-
         // save to db for daily tracking as well
         saveDailyTrackingTodb({
             habitId: habit.id.toString(),

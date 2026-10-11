@@ -32,7 +32,6 @@ export const AppSidebar = () => {
         dispatch({ type: "UPDATE_HABIT_VIEWING", payload: -1 })
     }
 
-    // <FIX> single source of truth for active-route logic, used everywhere
     const isActiveRoute = (href: string) => pathname.startsWith(href)
 
     const grps = [
@@ -52,10 +51,6 @@ export const AppSidebar = () => {
                 </Link>
             </div>
 
-            {/* ── MOBILE (< md, ~<768px): fixed bottom tab bar ───────────────── */}
-            {/* <FIX> real mobile pattern instead of squeezing labeled nav into a
-          narrow column. Icon + tiny label, fixed to viewport bottom, safe
-          area aware. Escapes the sidebar's own width constraints entirely. */}
             <nav
                 aria-label="Primary"
                 className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex items-stretch justify-around
@@ -78,10 +73,6 @@ export const AppSidebar = () => {
                 })}
             </nav>
 
-            {/* ── TABLET (md–lg, ~768–1024px): icon-only rail ─────────────────── */}
-            {/* <FIX> was previously undefined territory (1024-1279 duplicate-render
-          bug). Now a distinct, deliberate collapsed state: icons only,
-          titles as native tooltips, no wrapping/overflow risk. */}
             <nav aria-label="Primary" className="hidden md:flex xl:hidden items-center justify-center gap-2 py-4">
                 <div className="mt-auto flex items-center justify-center gap-2 pb-4 border-b border-border w-full">
                     {navigationItems.map((item) => {
@@ -125,7 +116,6 @@ export const AppSidebar = () => {
                 </div>
             </nav>
 
-            {/* ── DESKTOP (lg+, ≥1024px): full labeled sidebar ────────────────── */}
             <nav aria-label="Primary" className="hidden xl:flex flex-col justify-around flex-1 overflow-hidden p-4">
                 <div className="space-y-1 h-2/3 flex flex-col justify-center">
                     {navigationItems.map((item) => {
@@ -146,8 +136,6 @@ export const AppSidebar = () => {
                 </div>
 
                 <div className="space-y-1 pt-4 border-t border-border flex flex-col justify-center h-1/3">
-                    {/* <FIX> single Link, no wrapping onClick div -> no duplicate
-              navigate+dispatch race condition */}
                     {grps.map((grp) => {
                         const active = pathname === grp.path
                         return (
@@ -174,9 +162,6 @@ export const AppSidebar = () => {
                     </Button>
                 </div>
             </nav>
-
-            {/* Spacer so page content isn't hidden behind the fixed mobile tab bar */}
-            {/* <div className="md:hidden h-16 shrink-0" aria-hidden="true" /> */}
         </div>
     )
 }

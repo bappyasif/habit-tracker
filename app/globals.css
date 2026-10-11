@@ -4,21 +4,18 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Primary gradient colors - deep blue to cyan */
   --background: oklch(0.98 0 0);
   --foreground: oklch(0.12 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.12 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.12 0 0);
-  /* <CHANGE> Updated primary to vibrant blue for habit tracking energy */
   --primary: oklch(0.45 0.22 264);
   --primary-foreground: oklch(0.98 0 0);
   --secondary: oklch(0.92 0 0);
   --secondary-foreground: oklch(0.12 0 0);
   --muted: oklch(0.92 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  /* <CHANGE> Accent color for progress indicators and success states */
   --accent: oklch(0.62 0.22 150);
   --accent-foreground: oklch(0.98 0 0);
   --destructive: oklch(0.577 0.245 27.325);
@@ -43,19 +40,9 @@
 }
 
 .dark {
-  /* <FIX> flat zero-chroma near-black backgrounds read harsh/lifeless
-     (see: the notifications dropdown, which is lighter AND has a soft
-     tint, looks noticeably nicer than the page bg). Reworked the whole
-     dark surface stack to a "tinted charcoal" hierarchy - small chroma
-     matching the primary hue (264) instead of pure grayscale - and
-     increased separation between page / card / popover / muted so
-     nothing looks flat or crushed together. */
   --background: oklch(0.19 0.006 264);
   --foreground: oklch(0.92 0.002 264);
 
-  /* <FIX> card lightness bumped 0.17 -> 0.21 so cards visibly lift off
-     the page instead of nearly blending into --background on dense
-     dashboards (Dashboard / Reports / Settings all stack cards). */
   --card: oklch(0.24 0.007 264);
   --card-foreground: oklch(0.92 0.002 264);
   --popover: oklch(0.26 0.008 264);
@@ -70,11 +57,6 @@
   --accent: oklch(0.7 0.22 150);
   --accent-foreground: oklch(0.12 0 0);
 
-  /* <FIX> destructive-foreground was oklch(0.637 0.237 25.331) - another
-     saturated red, nearly the same hue/lightness as --destructive itself.
-     Text on a red "Sign Out" / "Delete Account" button was low-contrast.
-     Foreground on a solid fill should be near-white, not another chroma-
-     heavy color from the same ramp. */
   --destructive: oklch(0.55 0.22 25.331);
   --destructive-foreground: oklch(0.92 0.002 264);
 
@@ -87,9 +69,6 @@
   --chart-4: oklch(0.75 0.18 280);
   --chart-5: oklch(0.68 0.2 320);
 
-  /* <FIX> sidebar tokens brought in line with the new --card value so
-     that IF any component does read --sidebar-*, it won't mismatch
-     the rest of the dark surface hierarchy. */
   --sidebar: oklch(0.21 0.006 264);
   --sidebar-foreground: oklch(0.92 0.002 264);
   --sidebar-primary: oklch(0.65 0.22 264);
@@ -99,41 +78,6 @@
   --sidebar-border: oklch(0.32 0.008 264);
   --sidebar-ring: oklch(0.5 0.01 264);
 }
-
-/* .dark {
-  --background: oklch(0.12 0 0);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.17 0 0);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.17 0 0);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.65 0.22 264);
-  --primary-foreground: oklch(0.12 0 0);
-  --secondary: oklch(0.25 0 0);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.25 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.7 0.22 150);
-  --accent-foreground: oklch(0.12 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.25 0 0);
-  --input: oklch(0.25 0 0);
-  --ring: oklch(0.65 0.22 264);
-  --chart-1: oklch(0.65 0.22 264);
-  --chart-2: oklch(0.7 0.22 150);
-  --chart-3: oklch(0.85 0.15 40);
-  --chart-4: oklch(0.75 0.18 280);
-  --chart-5: oklch(0.68 0.2 320);
-  --sidebar: oklch(0.15 0 0);
-  --sidebar-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.65 0.22 264);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.25 0 0);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(0.25 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
-} */
 
 @theme inline {
   --font-sans: "Geist", "Geist Fallback";
