@@ -11,7 +11,8 @@ import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { useToBooleanLock } from "@/hooks/useToBooleanLock"
 import { useToHandleMappingHabitSteps } from "./_hooks/handleMappingHabitSteps"
-import { updateHabit } from "@/server-calls/habits"
+import { updateHabitSecurely } from "@/server-calls/habits"
+import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 
 interface Suggestion {
   id: string
@@ -21,6 +22,8 @@ interface Suggestion {
 
 export default function ReportsPage() {
   const { state, dispatch } = useTrackCtx()
+
+  const {state: authState} = useUserAuthCtx()
 
   const suggs = state?.habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.suggestions
 
@@ -58,7 +61,15 @@ export default function ReportsPage() {
 
     habit?.steps.push(newStep)
 
-    updateHabit(habit)
+    if(!authState?.user || !authState?.user?.token) return
+
+    const params = {
+      ...habit,
+      userId: authState.user?.id,
+      token: authState.user?.token
+    }
+
+    updateHabitSecurely(params)
 
   }
 
@@ -182,7 +193,7 @@ export default function ReportsPage() {
   }, [state.dailyLogs])
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2">Reports & Insights</h1>
