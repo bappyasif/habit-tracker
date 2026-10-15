@@ -20,7 +20,7 @@ export function UserAuthToggleView() {
         signOut()
     }
 
-    const {  requestPermission } = useFcmToken();
+    const { requestPermission } = useFcmToken();
 
     useEffect(() => {
         if (session && session.user) {
@@ -30,7 +30,7 @@ export function UserAuthToggleView() {
                 image: session.user.image ?? ""
             }).then((data) => {
                 authDispatch({ type: "SET_AUTHENTICATED", payload: { ...data.data.user, token: data.data.access_token } })
-                requestPermission() // Request permission for push notifications after successful authentication
+                authState.user && requestPermission() // Request permission for push notifications after successful authentication
             }).catch((error) => {
                 console.error("Error authorizing user:", error)
                 authDispatch({ type: "SET_UNAUTHENTICATED" })
