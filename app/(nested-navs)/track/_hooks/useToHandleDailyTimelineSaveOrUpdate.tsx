@@ -2,6 +2,7 @@ import { sendPushNotificationsToUserWhenCompletedHabitSteps, sendPushNotificatio
 import { Steps, TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { securelyCreateHabitDailyTimeline, securelyUpdateHabitDailyTimeline } from "@/server-calls/habits"
+import { markAnnouncementIfNeeded } from "@/utils/focus-celebration"
 import { useState } from "react"
 
 export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updateSteps }: { habit: TrackTypes, date: Date, steps: Steps[], updateSteps: (ids: (number | string)[]) => void }) => {
@@ -100,10 +101,12 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
     const handleSaveLog = async () => {
         setIsSaving(true)
         // Simulate saving
-        await new Promise((resolve) => setTimeout(resolve, 500))
+        // await new Promise((resolve) => setTimeout(resolve, 500))
 
         // update on daily tracking as well
         beginWeeklyCompletionRate()
+
+        let savedEntry: any = null
 
         const checkIfHabitStepFoundInDailyLogs = dailyLogs.find((dlog) => {
             const findDate = dlog.logs.find(entry => {
@@ -112,8 +115,10 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
             })
 
             if (findDate) {
+                savedEntry = findDate
                 updateSteps(findDate.log_ids_with_notes.map((obj: { id: string; notes: string }) => obj.id))
             }
+
             return findDate
         })
 
@@ -129,6 +134,10 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
         const completedSteps = totalSteps.map(step => step.completed).filter(step => step)
         
         const percentile = Math.round((completedSteps.length / totalSteps.length) * 100)
+        
+        const isAllDone = totalSteps.length > 0 && completedSteps.length === totalSteps.length
+
+        const wasAllDone = savedEntry?.totalSteps === totalSteps.length && savedEntry?.percentile === percentile
 
         if (checkIfHabitStepFoundInDailyLogs) {
             // update the existing log in db
@@ -137,6 +146,9 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
             // save to db too
             saveDailyTimelineInDb(totalSteps, percentile, completedSteps)
         }
+
+        // consume util method for announcement
+        markAnnouncementIfNeeded({wasAllDone, isAllDone, date})
 
         // Show success message
         alert("Log saved successfully!")

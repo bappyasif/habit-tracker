@@ -8,6 +8,7 @@ import { useToUpdateHabitStepsCompletion } from "../_hooks/useToUpdateHabitSteps
 import { sendPushNotificationsToUserWhenFullyCompletedHabitStepsForDay } from "@/app/server-actions/notifications"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { useEffect } from "react"
+import { useToAnnounceHabitFullyCompleted } from "../_hooks/useToAnnounceHabitFullyCompleted"
 
 export const TodaysFocus = () => {
   const { state } = useTrackCtx()
@@ -20,15 +21,17 @@ export const TodaysFocus = () => {
     (currentHabit.steps.filter((s) => s.completed).length / currentHabit.steps.length) * 100,
   )
 
-  const { state: authState } = useUserAuthCtx()
+  useToAnnounceHabitFullyCompleted()
 
-  useEffect(() => {
-    if (percentile == 100) {
-      sendPushNotificationsToUserWhenFullyCompletedHabitStepsForDay(authState?.user?.token!, "Congrats!", "You have completed all of your habit steps for today!")
-      .then(res => console.log(res))
-      .catch(err => console.log(err))
-    }
-  }, [percentile, authState])
+  // const { state: authState } = useUserAuthCtx()
+
+  // useEffect(() => {
+  //   if (percentile == 100) {
+  //     sendPushNotificationsToUserWhenFullyCompletedHabitStepsForDay(authState?.user?.token!, "Congrats!", "You have completed all of your habit steps for today!")
+  //     .then(res => console.log(res))
+  //     .catch(err => console.log(err))
+  //   }
+  // }, [percentile, authState])
 
   return (
     <Card className="border-2 border-primary/20">
