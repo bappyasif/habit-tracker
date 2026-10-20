@@ -7,16 +7,25 @@ import { ChevronDown, Lightbulb, RotateCw } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import Link from "next/link"
 import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
+import { mockInsights } from "@/lib/mock-data"
 
-interface AIInsightsCardProps {
-  weeklyText: string
-  suggestions: string[]
-}
+// interface AIInsightsCardProps {
+//   weeklyText: string
+//   suggestions: string[]
+// }
 
-export function AIInsightsCard({ weeklyText, suggestions }: AIInsightsCardProps) {
+export function AIInsightsCard(
+  // { weeklyText, suggestions }: AIInsightsCardProps
+) {
   const [isLoading, setIsLoading] = useState(false)
 
   const { state } = useTrackCtx()
+
+  const { habitInsights } = state
+
+  const weeklyText = habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.dailySummary
+
+  const suggestions = habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.suggestions || mockInsights.suggestions
 
   const { dailyLogs } = state
 

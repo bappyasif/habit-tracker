@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardTabs } from "@/app/(nested-navs)/dashboard/_components/dashboard-tabs"
 import { AIInsightsCard } from "@/app/(nested-navs)/dashboard/_components/ai-insights-card"
-import { mockInsights } from "@/lib/mock-data"
+// import { mockInsights } from "@/lib/mock-data"
 import Link from "next/link"
 import { Plus, Pencil, Trash, Sparkles, ArrowRight } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
@@ -46,7 +46,7 @@ export default function DashboardPage() {
 
   return (
     <main 
-      className="px-4 sm:px-6 lg:px-8 pb-20 md:py-8"
+      className="px-4 sm:px-6 lg:px-8 pb-20 md:py-8 md: w-full mx-auto"
     >
       {/* Greeting */}
       <section className="flex justify-between items-center">
@@ -87,8 +87,8 @@ export default function DashboardPage() {
 
           {/* AI Insights */}
           <AIInsightsCard
-            weeklyText={weeklyText || mockInsights.weeklyText}
-            suggestions={mockInsights.suggestions}
+            // weeklyText={weeklyText || mockInsights.weeklyText}
+            // suggestions={mockInsights.suggestions}
           />
 
           {/* Notifications */}
