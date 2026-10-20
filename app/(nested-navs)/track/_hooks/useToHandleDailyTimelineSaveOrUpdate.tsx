@@ -2,7 +2,7 @@ import { sendPushNotificationsToUserWhenCompletedHabitSteps, sendPushNotificatio
 import { Steps, TrackTypes, useTrackCtx } from "@/context-reducers/trackCtx"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { securelyCreateHabitDailyTimeline, securelyUpdateHabitDailyTimeline } from "@/server-calls/habits"
-import { markAnnouncementIfNeeded } from "@/utils/focus-celebration"
+import { markAnnouncementIfNeeded } from "@/utils/focus-announcement"
 import { useState } from "react"
 
 export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updateSteps }: { habit: TrackTypes, date: Date, steps: Steps[], updateSteps: (ids: (number | string)[]) => void }) => {

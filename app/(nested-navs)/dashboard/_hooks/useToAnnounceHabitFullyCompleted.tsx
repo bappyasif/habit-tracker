@@ -1,6 +1,6 @@
 import { sendPushNotificationsToUserWhenFullyCompletedHabitStepsForDay } from "@/app/server-actions/notifications"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
-import { announceHabitFullyCompleted } from "@/utils/focus-celebration"
+import { announceHabitFullyCompleted } from "@/utils/focus-announcement"
 import { useEffect } from "react"
 
 export const useToAnnounceHabitFullyCompleted = () => {
