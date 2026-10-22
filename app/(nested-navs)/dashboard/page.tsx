@@ -23,9 +23,9 @@ import { useToToggleUserPermission } from "./_hooks/useToToggleUserPermission"
 export default function DashboardPage() {
   const { state } = useTrackCtx()
 
-  const { habitInsights } = state
+  // const { habitInsights } = state
 
-  const weeklyText = habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.dailySummary
+  // const weeklyText = habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.dailySummary
 
   // fetching habits from server
   useToFetchHabits()

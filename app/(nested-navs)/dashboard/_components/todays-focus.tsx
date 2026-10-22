@@ -5,17 +5,20 @@ import { Button } from "@/components/ui/button"
 import { CheckCircle2 } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { useToUpdateHabitStepsCompletion } from "../_hooks/useToUpdateHabitStepsCompletion"
-import { sendPushNotificationsToUserWhenFullyCompletedHabitStepsForDay } from "@/app/server-actions/notifications"
-import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
-import { useEffect } from "react"
+// import { sendPushNotificationsToUserWhenFullyCompletedHabitStepsForDay } from "@/app/server-actions/notifications"
+// import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
+// import { useEffect } from "react"
 import { useToAnnounceHabitFullyCompleted } from "../_hooks/useToAnnounceHabitFullyCompleted"
 
 export const TodaysFocus = () => {
-  const { state } = useTrackCtx()
+  // const { state } = useTrackCtx()
 
-  const { habits } = state
+  // const { habits } = state
 
-  const currentHabit = useToUpdateHabitStepsCompletion().updatedHabit || habits[0]
+  // const currentHabit = useToUpdateHabitStepsCompletion().updatedHabit || habits[0]
+  const currentHabit = useToUpdateHabitStepsCompletion().updatedHabit 
+
+  // console.log(currentHabit, "currentHabit")
 
   const percentile = Math.round(
     (currentHabit.steps.filter((s) => s.completed).length / currentHabit.steps.length) * 100,
