@@ -90,6 +90,32 @@ export type initialStateTypes = {
 
 
 const trackReducer = (state: initialStateTypes, action: { type: string, payload: any }) => {
+    const updateCorrectly = () => {
+        const existing = state.habitInsights
+        const payload = action.payload
+
+        const updateExistingWhenMatchesPayload = existing.map((ins) => {
+            if(ins.habitId == payload.habitId) {
+                return {
+                    ...ins,
+                    insights: payload.insights
+                }
+            }
+            return ins
+        })
+
+        const whenNotFoundInExistingAddPayload = updateExistingWhenMatchesPayload.findIndex((ins) => ins.habitId == payload.habitId) == -1 ? [...updateExistingWhenMatchesPayload, {
+                    insights: payload.insights,
+                    habitId: payload.habitId,
+                    weekly: state.habitInsights.find(insight => insight.habitId === payload.habitId)?.weekly || null,
+                    monthly: state.habitInsights.find(insight => insight.habitId === payload.habitId)?.monthly || null,
+                    daily: state.habitInsights.find(insight => insight.habitId === payload.habitId)?.daily || null,
+                    dailySummary: state.habitInsights.find(insight => insight.habitId === payload.habitId)?.dailySummary || null
+                }] : updateExistingWhenMatchesPayload
+
+        return whenNotFoundInExistingAddPayload
+    }
+
     switch (action.type) {
         case 'IINITIALIZE':
             return {
@@ -172,17 +198,21 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
 
 
         case "SET_INSIGHTS":
+            // console.log("SET_INSIGHTS", action.payload)
             return {
                 ...state,
-                habitInsights: state.habitInsights.length > 0 ? state.habitInsights.map((insight) => {
-                    if (insight.habitId === action.payload.habitId) {
-                        return {
-                            ...insight,
-                            insights: action.payload.insights
-                        }
-                    }
-                    return insight
-                }) : [{
+                // habitInsights: state.habitInsights.length > 0 ? state.habitInsights.map((insight) => {
+                //     console.log(Number(insight.habitId) === Number(action.payload.habitId), "insight.habitId === action.payload.habitId", insight)
+                //     if (insight.habitId === action.payload.habitId) {
+                //         return {
+                //             ...insight,
+                //             insights: action.payload.insights
+                //         }
+                //     }
+
+                //     return insight
+                // }) : [{
+                habitInsights: state.habitInsights.length > 0 ? updateCorrectly() : [{
                     insights: action.payload.insights,
                     habitId: action.payload.habitId,
                     weekly: state.habitInsights.find(insight => insight.habitId === action.payload.habitId)?.weekly || null,
