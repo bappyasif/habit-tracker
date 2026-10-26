@@ -7,6 +7,7 @@ export const useToUpdateHabitStepsCompletion = () => {
   const { state } = useTrackCtx()
   const { habitViewing, dailyLogs } = state
 
+  // const habit = state.habits.find((h) => Number(h.id) === Number(habitViewing)) || state.habits[0]
   const habit = state.habits.find((h) => Number(h.id) === Number(habitViewing))
 
   const updatedHabit = useMemo(() => {
@@ -31,10 +32,10 @@ export const useToUpdateHabitStepsCompletion = () => {
         completed: completedIds.includes(String(step.id)),
       })),
     }
-  }, [habit, dailyLogs])
+  }, [habitViewing, dailyLogs, habit])
 
   // undefined when no habit is selected yet, so `updatedHabit || habits[0]` falls back correctly
-  return { updatedHabit: updatedHabit! }
+  return { updatedHabit }
 }
 
 
