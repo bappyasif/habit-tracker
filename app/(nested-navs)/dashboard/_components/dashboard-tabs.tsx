@@ -68,7 +68,7 @@ export function DashboardTabs() {
                         // className="text-sm md:text-lg font-medium"
                         className="text-sm font-semibold md:text-base xl:text-lg"
                       >{item.title}</p>
-                      <p className="text-xs md:text-sm xl:text-base text-muted-foreground">⏰ {item.time}</p>
+                      <p className="text-xs md:text-sm xl:text-base text-muted-foreground">⏰ {new Date(item.time).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour12: false, hour: "numeric", minute: "numeric" })}</p>
                     </div>
                     <span className={`text-sm font-semibold ${item.completed ? "text-accent" : "text-muted-foreground"}`}>
                       {item.completed ? "✓" : "[]"}

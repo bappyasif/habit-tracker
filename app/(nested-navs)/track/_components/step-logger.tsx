@@ -100,7 +100,7 @@ const StepLog = ({ step, expandedStepId, setExpandedStepId, handleToggleStep, ha
             >
               {idx + 1}. {step.title}
             </p>
-            <p className="text-sm text-muted-foreground">⏰ {step.time}</p>
+            <p className="text-sm text-muted-foreground">⏰ {new Date(step.time).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour12: false, hour: "numeric", minute: "numeric" })}</p>
           </div>
 
           <ChevronDown
