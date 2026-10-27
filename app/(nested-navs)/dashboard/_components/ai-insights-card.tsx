@@ -9,14 +9,7 @@ import Link from "next/link"
 import { useToFetchInsights } from "@/hooks/use-to-fetch-insights"
 import { mockInsights } from "@/lib/mock-data"
 
-// interface AIInsightsCardProps {
-//   weeklyText: string
-//   suggestions: string[]
-// }
-
-export function AIInsightsCard(
-  // { weeklyText, suggestions }: AIInsightsCardProps
-) {
+export function AIInsightsCard() {
   const [isLoading, setIsLoading] = useState(false)
 
   const { state } = useTrackCtx()
@@ -79,7 +72,6 @@ export function AIInsightsCard(
             <Lightbulb className="w-5 h-5 text-primary" />
             <div>
               <CardTitle 
-                // className="text-base md:text-lg xl:xl"
                 className="text-base font-medium md:text-lg xl:text-xl text-foreground"
               >Smart Insights</CardTitle>
               <CardDescription>Daily summary & suggestions</CardDescription>

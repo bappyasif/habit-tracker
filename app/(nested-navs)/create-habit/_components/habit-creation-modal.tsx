@@ -168,7 +168,6 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
       // lets send a notification to user that habit is updated successfully
       sendPushNotificationsToUserWhenUpdatedHabit(authState?.user?.token!)
       .then(res => {
-        // console.log(res)
         fetchNotifications(authState?.user?.token!)        
       })
       .catch(err => console.log(err))

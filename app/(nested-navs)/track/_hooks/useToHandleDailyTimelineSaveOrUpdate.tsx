@@ -45,12 +45,10 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
             steps: totalSteps.map(step => ({
                 ...step,
                 id: step.id.toString()
-                // note: "None",
             })),
             completedSteps: totalSteps.filter(step => step.completed).map(step => ({
                 ...step,
-                id: step.id.toString(),
-                // note: "None",
+                id: step.id.toString()
             })),
         }
 
@@ -100,8 +98,6 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
 
     const handleSaveLog = async () => {
         setIsSaving(true)
-        // Simulate saving
-        // await new Promise((resolve) => setTimeout(resolve, 500))
 
         // update on daily tracking as well
         beginWeeklyCompletionRate()

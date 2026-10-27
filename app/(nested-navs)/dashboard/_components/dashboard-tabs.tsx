@@ -21,8 +21,7 @@ export function DashboardTabs() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle 
-              // className="text-base md:text-lg xl:text-xl"
+            <CardTitle
               className="text-sm font-semibold md:text-base xl:text-lg"
             >{currentHabit.title}</CardTitle>
             <CardDescription>Track your daily progress</CardDescription>
@@ -64,8 +63,7 @@ export function DashboardTabs() {
                     className="flex items-center gap-4 p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition"
                   >
                     <div className="flex-1">
-                      <p 
-                        // className="text-sm md:text-lg font-medium"
+                      <p
                         className="text-sm font-semibold md:text-base xl:text-lg"
                       >{item.title}</p>
                       <p className="text-xs md:text-sm xl:text-base text-muted-foreground">⏰ {new Date(item.time).toLocaleString("en-US", { year: "numeric", month: "short", day: "numeric", hour12: false, hour: "numeric", minute: "numeric" })}</p>

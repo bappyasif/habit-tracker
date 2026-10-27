@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardTabs } from "@/app/(nested-navs)/dashboard/_components/dashboard-tabs"
 import { AIInsightsCard } from "@/app/(nested-navs)/dashboard/_components/ai-insights-card"
-// import { mockInsights } from "@/lib/mock-data"
 import Link from "next/link"
 import { Plus, Pencil, Trash, Sparkles, ArrowRight } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
@@ -22,10 +21,6 @@ import { useToToggleUserPermission } from "./_hooks/useToToggleUserPermission"
 
 export default function DashboardPage() {
   const { state } = useTrackCtx()
-
-  // const { habitInsights } = state
-
-  // const weeklyText = habitInsights?.find(insight => Number(insight.habitId) === state.habitViewing)?.insights?.dailySummary
 
   // fetching habits from server
   useToFetchHabits()
@@ -86,10 +81,7 @@ export default function DashboardPage() {
           <HabitLists />
 
           {/* AI Insights */}
-          <AIInsightsCard
-            // weeklyText={weeklyText || mockInsights.weeklyText}
-            // suggestions={mockInsights.suggestions}
-          />
+          <AIInsightsCard />
 
           {/* Notifications */}
           <HabitNotifications />
