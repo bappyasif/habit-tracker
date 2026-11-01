@@ -13,6 +13,7 @@ import { useToBooleanLock } from "@/hooks/useToBooleanLock"
 import { useToHandleMappingHabitSteps } from "./_hooks/handleMappingHabitSteps"
 import { updateHabitSecurely } from "@/server-calls/habits"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
+import { WhenNoHabitIsCreated } from "@/components/WhenNoHabitIsCreated"
 
 interface Suggestion {
   id: string
@@ -191,6 +192,10 @@ export default function ReportsPage() {
       handleRegenerateMonthlyTrend()
     }
   }, [state.dailyLogs])
+
+  if(!habit) {
+    return <WhenNoHabitIsCreated />
+  }
 
   return (
     <main className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">

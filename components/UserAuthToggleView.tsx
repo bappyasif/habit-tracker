@@ -3,11 +3,14 @@
 import { signIn, signOut, useSession } from "next-auth/react"
 import { Button } from "./ui/button"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { authorizeUserInDb } from "@/server-calls/habits"
 import useFcmToken from "@/hooks/useFcmToken"
+import { set } from "date-fns"
 
 export function UserAuthToggleView() {
+    const [loading, setLoading] = useState(false)
+
     const { data: session } = useSession()
 
     const { state: authState, dispatch: authDispatch } = useUserAuthCtx()
@@ -24,6 +27,8 @@ export function UserAuthToggleView() {
 
     useEffect(() => {
         if (session && session.user) {
+            setLoading(true)
+
             authorizeUserInDb({
                 email: session.user.email ?? "",
                 name: session.user.name ?? "",
@@ -34,11 +39,21 @@ export function UserAuthToggleView() {
             }).catch((error) => {
                 console.error("Error authorizing user:", error)
                 authDispatch({ type: "SET_UNAUTHENTICATED" })
+            }).finally(() => {
+                setLoading(false)
             })
         } else {
             authDispatch({ type: "SET_UNAUTHENTICATED" })
         }
     }, [session, authDispatch])
+
+    if (loading) {
+        return (
+            <div className="flex items-center w-3/4 gap-4">
+                <span className="hidden md:block">Notification Authorization Is Loading...</span>
+            </div>
+        )
+    }
 
     if (session) {
         return (

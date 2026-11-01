@@ -9,6 +9,7 @@ import { Save } from "lucide-react"
 import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { LogRendering } from "./_components/log-rendering"
 import { useToHandleDailyTimelineSaveOrUpdate } from "./_hooks/useToHandleDailyTimelineSaveOrUpdate"
+import { WhenNoHabitIsCreated } from "@/components/WhenNoHabitIsCreated"
 
 export default function TrackPage() {
   const { state } = useTrackCtx()
@@ -16,7 +17,7 @@ export default function TrackPage() {
   const habit = state.habits.find((habit) => Number(habit.id) == state.habitViewing)
 
   if (!habit) {
-    return <div>Loading...</div>
+    return <WhenNoHabitIsCreated />
   }
 
   const [date, setDate] = useState(new Date())
