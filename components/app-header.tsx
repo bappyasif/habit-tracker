@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
 
 export function AppHeader() {
   const pathname = usePathname()
@@ -20,9 +21,13 @@ export function AppHeader() {
         <div className="flex h-16 items-center justify-center xl:justify-between">
           <div className="flex items-center justify-center xl:justify-between gap-2 font-bold text-base border-b border-border p-4">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary/40 to-secondary/40 text-primary flex items-center justify-center font-bold text-sm shrink-0">
-                ✓
-              </div>
+              <Image
+                src="/logo.png"
+                alt="HabitFlow Logo"
+                width={80}
+                height={20}
+                className="rounded-lg blend-multiply"
+              />
               <span className="text-primary text-xl">HabitFlow</span>
             </Link>
           </div>

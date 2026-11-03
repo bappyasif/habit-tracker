@@ -7,6 +7,7 @@ import { useTrackCtx } from "@/context-reducers/trackCtx"
 import { signOut } from "next-auth/react"
 import { useUserAuthCtx } from "@/context-reducers/userAuthCtx"
 import { Button } from "./ui/button"
+import Image from "next/image"
 
 const navigationItems = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -44,9 +45,13 @@ export const AppSidebar = () => {
             {/* Logo — always visible */}
             <div className="flex items-center justify-center xl:justify-start gap-2 font-bold text-base border-b border-border p-4">
                 <Link href="/" className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary/40 to-secondary/40 text-primary flex items-center justify-center font-bold text-sm shrink-0">
-                        ✓
-                    </div>
+                    <Image
+                        src="/logo.png"
+                        alt="HabitFlow Logo"
+                        width={80}
+                        height={20}
+                        className="rounded-lg"
+                    />
                     <span className="text-primary text-xl">HabitFlow</span>
                 </Link>
             </div>
