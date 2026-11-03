@@ -41,7 +41,7 @@ export const AppSidebar = () => {
     ]
 
     return (
-        <div className="flex flex-col h-full w-full xl:w-1/4">
+        <div className="flex flex-col justify-between h-fit xl:h-screen w-full xl:w-1/4">
             {/* Logo — always visible */}
             <div className="flex items-center justify-center xl:justify-start gap-2 font-bold text-base border-b border-border p-4">
                 <Link href="/" className="flex items-center gap-2">
@@ -50,7 +50,7 @@ export const AppSidebar = () => {
                         alt="HabitFlow Logo"
                         width={80}
                         height={20}
-                        className="rounded-lg"
+                        className="rounded-lg w-14 h-auto xl:w-24 xl:h-auto blend-multiply"
                     />
                     <span className="text-primary text-xl">HabitFlow</span>
                 </Link>

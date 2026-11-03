@@ -26,7 +26,7 @@ export function AppHeader() {
                 alt="HabitFlow Logo"
                 width={80}
                 height={20}
-                className="rounded-lg blend-multiply"
+                className="rounded-lg w-14 h-auto xl:w-24 xl:h-auto blend-multiply"
               />
               <span className="text-primary text-xl">HabitFlow</span>
             </Link>

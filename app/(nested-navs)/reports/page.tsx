@@ -198,7 +198,7 @@ export default function ReportsPage() {
   }
 
   return (
-    <main className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main className="flex flex-col gap-4 w-full h-full overflow-auto mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2">Reports & Insights</h1>
