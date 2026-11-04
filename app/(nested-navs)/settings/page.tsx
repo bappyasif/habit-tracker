@@ -133,9 +133,9 @@ const Privacy = () => {
 
     sendRequestToDeleteUserAccount(token)
       .then(async res => {
-        console.log(res)
+        // console.log(res)
         await signOut({ callbackUrl: "/" })
-        console.log("Account deleted successfully.")
+        // console.log("Account deleted successfully.")
       })
       .catch(err => console.log(err))
   }
@@ -166,7 +166,7 @@ const Notifications = () => {
     localStorage.setItem('emailNotifications', emailNotifications.toString())
   }, [emailNotifications])
 
-  console.log(emailNotifications, "emailNotifications")
+  // console.log(emailNotifications, "emailNotifications")
 
   return (
     <Card>
@@ -189,7 +189,7 @@ const Notifications = () => {
               dispatch({
                 type: 'TOGGLE_EMAIL_NOTIFICATIONS'
               })
-              console.log(emailNotifications, "emailNotifications")
+              // console.log(emailNotifications, "emailNotifications")
             }}
           />
         </div>
@@ -262,7 +262,7 @@ const HabitsManagement = () => {
     try {
       const token = authState?.user?.token!
       await deleteHabitSecurely(id, token)
-      console.log("successfully deleted")
+      // console.log("successfully deleted")
     } catch (error) {
       console.log(error)
     }

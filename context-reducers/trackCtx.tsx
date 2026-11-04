@@ -367,14 +367,14 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                                 const weekStart = new Date(week.weekStart).getTime()
                                 const weekEnd = new Date(week.weekEnd).getTime()
                                 if (!week.weekStart || !week.weekEnd) {
-                                    console.log("weekStart or weekEnd is null, adding new week data")
+                                    // console.log("weekStart or weekEnd is null, adding new week data")
                                     return {
                                         ...week,
                                         weekStart: new Date(action.payload.dateStamp),
                                         weekEnd: new Date(action.payload.dateStamp + 7 * 24 * 60 * 60 * 1000),
                                     }
                                 } else if (dateStamp >= weekStart && dateStamp <= weekEnd) {
-                                    console.log("dateStamp is within weekStart and weekEnd, updating week data", (action.payload.data.totalCompleted + (week.totalCompleted || 0)), Number(action.payload.data.totalSteps) + (Number(week.totalSteps) || 0) * 100)
+                                    // console.log("dateStamp is within weekStart and weekEnd, updating week data", (action.payload.data.totalCompleted + (week.totalCompleted || 0)), Number(action.payload.data.totalSteps) + (Number(week.totalSteps) || 0) * 100)
                                     // return action.payload.data
                                     return {
                                         ...week,
@@ -383,7 +383,7 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
                                         percentile: Math.round((action.payload.data.totalCompleted + (week.totalCompleted || 0) / action.payload.data.totalSteps + (week.totalSteps || 0)) * 100)
                                     }
                                 } else if (dateStamp > weekEnd) {
-                                    console.log("dateStamp is greater than weekEnd, adding new week data to the end of weeks array")
+                                    // console.log("dateStamp is greater than weekEnd, adding new week data to the end of weeks array")
                                     const prevWeek = rate.weeks[rate.weeks.length - 1]
                                     return [...rate.weeks, {
                                         weekStart: new Date((new Date(prevWeek.weekEnd).getTime() + (24 * 60 * 60 * 1000))), // setting new week start to 1 day after previous week end to avoid overlap

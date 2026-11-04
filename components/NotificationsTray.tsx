@@ -93,7 +93,7 @@ export const NotificationsTray = () => {
                                         if (authState.user?.token) {
                                             updatePushNotificationIsRead(authState.user.token, notif.id as number)
                                                 .then(() => {
-                                                    console.log(`Notification ${notif.id} marked as read in the database.`);
+                                                    // console.log(`Notification ${notif.id} marked as read in the database.`);
                                                     // Mark as read logic here
                                                     dispatch({ type: "MARK_NOTIFICATION_AS_READ", payload: notif.id });
                                                     setUnreadCount(prevCount => prevCount - 1);

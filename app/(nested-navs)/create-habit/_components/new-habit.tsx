@@ -55,7 +55,7 @@ export const NewHabit = () => {
         }
 
         createHabitSecurely(moddedData).then(data => {
-          console.log("created a habit successfully")
+        //   console.log("created a habit successfully")
         }).catch(err => console.log(err))
       }
 

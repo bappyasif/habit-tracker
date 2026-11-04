@@ -100,7 +100,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     fetchAiInsightsData(props)
       .then(async (data) => {
         setIsLoading(false)
-        console.log("AI insights data")
+        // console.log("AI insights data")
       })
   }
 
@@ -112,7 +112,7 @@ export function HabitCreationModal({ onClose, onSave }: HabitCreationModalProps)
     const updatedData = { ...habitData, userId, token }
 
     createHabitSecurely(updatedData).then(data => {
-      console.log("created habit")
+      // console.log("created habit")
       if (data) {
         // lets show a notification to user that habit is created successfully
         sendPushNotificationsToUserWhenCreatedNewHabit(token)

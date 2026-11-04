@@ -5,11 +5,11 @@ const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
 export const GET = async (req: NextRequest) => {
     // const { id } = await req.json()
     const id = req.nextUrl.searchParams.get('id')
-    console.log(id, "!!id!!")
+    // console.log(id, "!!id!!")
 
     const res = await fetch(`${backendUrl}/api/v1/weekly-timeline/habit-timeline/` + id)
     const data = await res.json()
-    console.log(data, "!!data!!")
+    // console.log(data, "!!data!!")
 
     return NextResponse.json({
         message: "Habits route",
@@ -19,7 +19,7 @@ export const GET = async (req: NextRequest) => {
 
 export const POST = async (request: Request) => {
     const userInp = await request.json()
-    console.log(userInp, "!!userinput data!!")
+    // console.log(userInp, "!!userinput data!!")
 
     const res = await fetch(`${backendUrl}/api/v1/weekly-timeline/habit-timeline/`, {
         method: "POST",

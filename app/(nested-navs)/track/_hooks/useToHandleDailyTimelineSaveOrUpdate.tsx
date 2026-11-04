@@ -87,7 +87,7 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
             percentile: percentile,
         }).then((resp) => {
             // problem is here on initial save after loading of today's log it creates a record in db apparently but not sending back a response from server!!
-            console.log("saved daily timeline in db and got returned this resp: ", resp)
+            // console.log("saved daily timeline in db and got returned this resp: ", resp)
 
             // add a notification for step completed successfully
             sendPushNotificationsToUserWhenCompletedHabitSteps(authState?.user?.token!)

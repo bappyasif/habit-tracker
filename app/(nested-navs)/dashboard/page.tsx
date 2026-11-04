@@ -109,7 +109,7 @@ const HabitLists = () => {
         fetchNotifications(token)
       })
       .catch(err => console.log(err))
-      console.log("successfully deleted")
+      // console.log("successfully deleted")
     } catch (error) {
       console.log(error)
     }

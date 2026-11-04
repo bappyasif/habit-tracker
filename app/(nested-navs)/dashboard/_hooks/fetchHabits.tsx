@@ -16,7 +16,7 @@ export const useToFetchHabits = () => {
                         dispatch({ type: "IINITIALIZE", payload: payload?.data?.habits })
                         dispatch({ type: "UPDATE_HABIT_VIEWING", payload: payload?.data?.habits[0]?.id })
                     } else {
-                        console.log("no habits found")
+                        // console.log("no habits found")
                         dispatch({ type: "IINITIALIZE", payload: mockHabits })
                     }
                 }).catch(err => console.log(err))
