@@ -31,7 +31,7 @@ export const GET = async (request: Request) => {
 export const POST = async (request: Request) => {
     const usrInp = await request.json()
 
-    if(!usrInp.userId) {
+    if (!usrInp.userId) {
         return NextResponse.json({
             message: "User ID is required"
         })
@@ -76,7 +76,7 @@ export const POST = async (request: Request) => {
 export const PUT = async (request: Request) => {
     const userInp = await request.json()
 
-    if(!userInp.userId) {
+    if (!userInp.userId) {
         return NextResponse.json({
             message: "User ID is required"
         })
@@ -92,6 +92,7 @@ export const PUT = async (request: Request) => {
         measurement: userInp.measurement,
         steps: userInp.steps.map((step: any) => ({
             id: step.id.toString(),
+            // id: step.id,
             title: step.title,
             time: step.time
         }))
@@ -115,6 +116,14 @@ export const PUT = async (request: Request) => {
         },
         body: JSON.stringify(siphenedData)
     })
+
+    if (!res.ok) {
+        const details = await res.text()
+        return NextResponse.json(
+            { error: "Backend request failed", details },
+            { status: res.status }
+        )
+    }
 
     const data = await res.json()
 
