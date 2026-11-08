@@ -224,40 +224,118 @@ const trackReducer = (state: initialStateTypes, action: { type: string, payload:
 
             }
 
-        case "ADJUST_DAILY_TRACKING_LOG":
+        // case "ADJUST_DAILY_TRACKING_LOG":
+        //     return {
+        //         ...state,
+        //         dailyLogs: state.dailyLogs.length == 0 ? [{
+        //             habitId: action.payload.habitId,
+        //             logs: [{
+        //                 log_ids_with_notes: action.payload.log_ids_with_notes || [],
+        //                 date: action.payload.date,
+        //                 notes: action.payload.notes,
+        //                 totalSteps: action.payload.totalSteps,
+        //                 percentile: action.payload.percentile
+        //             }]
+        //         }] : state.dailyLogs.map((log) => {
+        //             if (log.habitId == action.payload.habitId) {
+        //                 return {
+        //                     ...log,
+        //                     logs: log.logs.map((entry) => {
+        //                         if (new Date(entry.date).toDateString() == new Date(action.payload.date).toDateString()) {
+        //                             return {
+        //                                 log_ids_with_notes: action.payload.log_ids_with_notes || [],
+        //                                 totalSteps: action.payload.totalSteps,
+        //                                 percentile: action.payload.percentile,
+        //                                 date: action.payload.date,
+        //                                 habitId: action.payload.habitId
+        //                             }
+        //                         }
+        //                         return entry
+        //                     })
+        //                 }
+        //             }
+        //             return log
+        //         })
+
+        //     }
+
+        // case "ADJUST_DAILY_TRACKING_LOG": {
+        //     const { habitId, date, log_ids_with_notes, totalSteps, percentile } = action.payload;
+        //     const targetDateStr = new Date(date).toDateString();
+
+        //     // 1. Check if the habit already exists in the logs
+        //     const habitExists = state.dailyLogs.some(log => log.habitId == habitId);
+
+        //     if (!habitExists) {
+        //         // ADD NEW HABIT to the list
+        //         return {
+        //             ...state,
+        //             dailyLogs: [
+        //                 ...state.dailyLogs,
+        //                 {
+        //                     habitId: habitId,
+        //                     logs: [{
+        //                         date: date,
+        //                         log_ids_with_notes: log_ids_with_notes || [],
+        //                         totalSteps: totalSteps,
+        //                         percentile: percentile
+        //                     }]
+        //                 }
+        //             ]
+        //         };
+        //     }
+
+        //     // 2. HABIT EXISTS, so update the specific date entry inside that habit
+        //     return {
+        //         ...state,
+        //         dailyLogs: state.dailyLogs.map((log) => {
+        //             if (log.habitId == habitId) {
+        //                 return {
+        //                     ...log,
+        //                     logs: log.logs.map((entry) => {
+        //                         if (new Date(entry.date).toDateString() === targetDateStr) {
+        //                             return {
+        //                                 ...entry, // Keep other existing entry fields
+        //                                 log_ids_with_notes: log_ids_with_notes || [],
+        //                                 totalSteps: totalSteps,
+        //                                 percentile: percentile,
+        //                                 date: date
+        //                             };
+        //                         }
+        //                         return entry;
+        //                     })
+        //                 };
+        //             }
+        //             return log;
+        //         })
+        //     };
+        // }
+
+        case "ADJUST_DAILY_TRACKING_LOG": {
+            const { habitId, date, log_ids_with_notes, totalSteps, percentile } = action.payload
+            const target = new Date(date).toDateString()
+            const newEntry = { date, log_ids_with_notes: log_ids_with_notes || [], totalSteps, percentile }
+
+            const habitLog = state.dailyLogs.find(l => l.habitId == habitId)
+            if (!habitLog) {
+                return { ...state, dailyLogs: [...state.dailyLogs, { habitId, logs: [newEntry] }] }
+            }
+
+            const hasEntry = habitLog.logs.some(e => new Date(e.date).toDateString() === target)
+
             return {
                 ...state,
-                dailyLogs: state.dailyLogs.length == 0 ? [{
-                    habitId: action.payload.habitId,
-                    logs: [{
-                        log_ids_with_notes: action.payload.log_ids_with_notes || [],
-                        date: action.payload.date,
-                        notes: action.payload.notes,
-                        totalSteps: action.payload.totalSteps,
-                        percentile: action.payload.percentile
-                    }]
-                }] : state.dailyLogs.map((log) => {
-                    if (log.habitId == action.payload.habitId) {
-                        return {
-                            ...log,
-                            logs: log.logs.map((entry) => {
-                                if (new Date(entry.date).toDateString() == new Date(action.payload.date).toDateString()) {
-                                    return {
-                                        log_ids_with_notes: action.payload.log_ids_with_notes || [],
-                                        totalSteps: action.payload.totalSteps,
-                                        percentile: action.payload.percentile,
-                                        date: action.payload.date,
-                                        habitId: action.payload.habitId
-                                    }
-                                }
-                                return entry
-                            })
-                        }
+                dailyLogs: state.dailyLogs.map(l =>
+                    l.habitId != habitId ? l : {
+                        ...l,
+                        logs: hasEntry
+                            ? l.logs.map(e => new Date(e.date).toDateString() === target ? { ...e, ...newEntry } : e)
+                            : [...l.logs, newEntry],
                     }
-                    return log
-                })
-
+                ),
             }
+        }
+
 
         case "UPDATE_HABIT_DAILY_TIMELINE":
             return {

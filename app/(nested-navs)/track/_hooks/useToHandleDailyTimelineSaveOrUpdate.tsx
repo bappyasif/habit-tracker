@@ -55,25 +55,25 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
         const token = authState?.user?.token!
 
         securelyUpdateHabitDailyTimeline(tt, token)
-        .then((resp) => {
-            const dataUpdated = resp?.data?.entry?.filter((item: any) => item.habit_id == habit.id && new Date(item.date_stamp).toDateString() == date.toDateString())?.[0] || null
+            .then((resp) => {
+                const dataUpdated = resp?.data?.entry?.filter((item: any) => item.habit_id == habit.id && new Date(item.date_stamp).toDateString() == date.toDateString())?.[0] || null
 
-            if (dataUpdated) {
-                // lets send a notification to user for updating steps for the habit for today
-                sendPushNotificationsToUserWhenUpdatedHabitSteps(authState?.user?.token!)
-                
-                dispatch({
-                    type: "ADJUST_DAILY_TRACKING_LOG",
-                    payload: {
-                        habitId: habit.id,
-                        date: date,
-                        log_ids_with_notes: dataUpdated?.steps_completed_with_notes || [],
-                        totalSteps: totalSteps.length,
-                        percentile: percentile
-                    }
-                })
-            }
-        })
+                if (dataUpdated) {
+                    // lets send a notification to user for updating steps for the habit for today
+                    sendPushNotificationsToUserWhenUpdatedHabitSteps(authState?.user?.token!)
+
+                    dispatch({
+                        type: "ADJUST_DAILY_TRACKING_LOG",
+                        payload: {
+                            habitId: habit.id,
+                            date: date,
+                            log_ids_with_notes: dataUpdated?.steps_completed_with_notes || [],
+                            totalSteps: totalSteps.length,
+                            percentile: percentile
+                        }
+                    })
+                }
+            })
     }
 
     const saveDailyTimelineInDb = (totalSteps: Steps[], percentile: number, completedSteps: Boolean[]) => {
@@ -96,59 +96,96 @@ export const useToHandleDailyTimelineSaveOrUpdate = ({ habit, date, steps, updat
         })
     }
 
+    // const handleSaveLog = async () => {
+    //     setIsSaving(true)
+
+    //     // update on daily tracking as well
+    //     beginWeeklyCompletionRate()
+
+    //     let savedEntry: any = null
+
+    //     const checkIfHabitStepFoundInDailyLogs = dailyLogs.find((dlog) => {
+    //         const findDate = dlog.logs.find(entry => {
+    //             const logDate = new Date(entry.date).toDateString()
+    //             return logDate === date.toDateString()
+    //         })
+
+    //         if (findDate) {
+    //             savedEntry = findDate
+    //             updateSteps(findDate.log_ids_with_notes.map((obj: { id: string; notes: string }) => obj.id))
+    //         }
+
+    //         return findDate
+    //     })
+
+    //     const totalSteps = steps.map(step => {
+    //         // as we are currently keeping track of completed status in steps themselves, we can directly use that to update the totalSteps for daily timeline instead of mapping through daily logs again to find the completed status for each step as that will be redundant and can cause confusion as well
+
+    //         return {
+    //             ...step,
+    //             completed: step.completed
+    //         }
+    //     })
+
+    //     const completedSteps = totalSteps.map(step => step.completed).filter(step => step)
+
+    //     const percentile = Math.round((completedSteps.length / totalSteps.length) * 100)
+
+    //     const isAllDone = totalSteps.length > 0 && completedSteps.length === totalSteps.length
+
+    //     const wasAllDone = savedEntry?.totalSteps === totalSteps.length && savedEntry?.percentile === percentile
+
+    //     if (checkIfHabitStepFoundInDailyLogs) {
+    //         // update the existing log in db
+    //         updateDailyTimeline(totalSteps, percentile)
+    //     } else {
+    //         // save to db too
+    //         saveDailyTimelineInDb(totalSteps, percentile, completedSteps)
+    //     }
+
+    //     // consume util method for announcement
+    //     markAnnouncementIfNeeded({wasAllDone, isAllDone, date})
+
+    //     // Show success message
+    //     alert("Log saved successfully!")
+    //     setIsSaving(false)
+    // }
+
     const handleSaveLog = async () => {
         setIsSaving(true)
+        try {
+            const dateStr = date.toDateString()
+            const existing = dailyLogs
+                .find(d => d.habitId == habit.id)
+                ?.logs.find(e => new Date(e.date).toDateString() === dateStr)
 
-        // update on daily tracking as well
-        beginWeeklyCompletionRate()
+            const completed = steps.filter(s => s.completed)
+            const percentile = steps.length ? Math.round((completed.length / steps.length) * 100) : 0
+            const isAllDone = steps.length > 0 && completed.length === steps.length
+            const wasAllDone = existing?.percentile === 100
 
-        let savedEntry: any = null
+            if (existing) updateDailyTimeline(steps, percentile)
+            else saveDailyTimelineInDb(steps, percentile, completed.map(s => s.completed))
 
-        const checkIfHabitStepFoundInDailyLogs = dailyLogs.find((dlog) => {
-            const findDate = dlog.logs.find(entry => {
-                const logDate = new Date(entry.date).toDateString()
-                return logDate === date.toDateString()
+            dispatch({
+                type: "ADJUST_DAILY_TRACKING_LOG",
+                payload: {
+                    habitId: habit.id,
+                    date,
+                    log_ids_with_notes: completed.map(s => ({ id: s.id.toString(), notes: s.notes })),
+                    totalSteps: steps.length,
+                    percentile,
+                },
             })
 
-            if (findDate) {
-                savedEntry = findDate
-                updateSteps(findDate.log_ids_with_notes.map((obj: { id: string; notes: string }) => obj.id))
-            }
-
-            return findDate
-        })
-
-        const totalSteps = steps.map(step => {
-            // as we are currently keeping track of completed status in steps themselves, we can directly use that to update the totalSteps for daily timeline instead of mapping through daily logs again to find the completed status for each step as that will be redundant and can cause confusion as well
-
-            return {
-                ...step,
-                completed: step.completed
-            }
-        })
-
-        const completedSteps = totalSteps.map(step => step.completed).filter(step => step)
-        
-        const percentile = Math.round((completedSteps.length / totalSteps.length) * 100)
-        
-        const isAllDone = totalSteps.length > 0 && completedSteps.length === totalSteps.length
-
-        const wasAllDone = savedEntry?.totalSteps === totalSteps.length && savedEntry?.percentile === percentile
-
-        if (checkIfHabitStepFoundInDailyLogs) {
-            // update the existing log in db
-            updateDailyTimeline(totalSteps, percentile)
-        } else {
-            // save to db too
-            saveDailyTimelineInDb(totalSteps, percentile, completedSteps)
+            markAnnouncementIfNeeded({ wasAllDone, isAllDone, date })
+            alert("Log saved successfully!")
+        } catch (err) {
+            console.log("error while saving daily timeline:", err)
+            alert("Failed to save log")
+        } finally {
+            setIsSaving(false)
         }
-
-        // consume util method for announcement
-        markAnnouncementIfNeeded({wasAllDone, isAllDone, date})
-
-        // Show success message
-        alert("Log saved successfully!")
-        setIsSaving(false)
     }
 
     return { handleSaveLog, isSaving }

@@ -34,7 +34,7 @@ export default function TrackPage() {
   const updateSteps = (ids: (number | string)[]) => {
     const tempSteps = backup.map(step => {
       const sid = ids?.findIndex(v => v == step.id)
-      
+
       const notesFromDailyLog = dailyLogs?.find(dlog => dlog.habitId == habit.id)?.logs?.find(log => new Date(log.date).toDateString() == date.toDateString())?.log_ids_with_notes?.find((obj: { id: string; notes: string }) => obj.id == step.id)?.notes
 
       return {
@@ -85,7 +85,7 @@ export default function TrackPage() {
       resetSteps()
     }
 
-  }, [date, dailyLogs])
+  }, [date, dailyLogs, habit.id])
 
   if (!habit) {
     return <div>Loading...</div>
