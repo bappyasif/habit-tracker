@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { use, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardTabs } from "@/app/(nested-navs)/dashboard/_components/dashboard-tabs"
@@ -129,6 +129,15 @@ const HabitLists = () => {
       payload: Number(selectedHabitId)
     })
   }, [selectedHabitId, state.habits])
+
+  // if no habit is selected and there are habits available, select the first habit
+  useEffect(() => {
+    if(!selectedHabitId && state.habits.length) {
+      setSelectedHabitId(state.habits[0].id)
+    }
+  }, [state.habits, selectedHabitId])
+
+  // console.log("selectedHabitId", selectedHabitId)
 
   return (
     <Card>
