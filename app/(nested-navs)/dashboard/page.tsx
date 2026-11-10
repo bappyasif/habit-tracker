@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardTabs } from "@/app/(nested-navs)/dashboard/_components/dashboard-tabs"
@@ -40,13 +40,13 @@ export default function DashboardPage() {
   if (!habit) return <WhenEmpty />
 
   return (
-    <main 
+    <main
       className="px-4 sm:px-6 lg:px-8 pb-20 md:py-8 md: w-full mx-auto"
     >
       {/* Greeting */}
       <section className="flex justify-between items-center">
         <div className="my-8">
-          <h1 
+          <h1
             className="text-2xl md:text-3xl tracking-tight font-bold mb-2"
           >Good morning, {authState?.user?.name ?? "User"}</h1>
           <p className="text-muted-foreground">
@@ -67,7 +67,7 @@ export default function DashboardPage() {
 
           <TodaysFocus />
 
-          <h2 
+          <h2
             className="text-lg font-semibold md:text-xl xl:text-2xl text-muted-foreground my-10"
           >Snapshots of your habits</h2>
 
@@ -105,10 +105,10 @@ const HabitLists = () => {
       await deleteHabitSecurely(id, token)
       // send notification to user that habit is deleted successfully
       sendPushNotificationsToUserWhenDeletedHabit(token)
-      .then(res => {
-        fetchNotifications(token)
-      })
-      .catch(err => console.log(err))
+        .then(res => {
+          fetchNotifications(token)
+        })
+        .catch(err => console.log(err))
       // console.log("successfully deleted")
     } catch (error) {
       console.log(error)
@@ -122,28 +122,57 @@ const HabitLists = () => {
     router.push("/create-habit")
   }
 
+  // useEffect(() => {
+  //   if (!state.habitViewing) {
+  //     if (state.habits.length) {
+  //       // setSelectedHabitId(state.habits[0].id)
+  //       // dispatch({
+  //       //   type: 'UPDATE_HABIT_VIEWING',
+  //       //   payload: state.habits[0].id
+  //       // })
+  //       setSelectedHabitId(state.habitViewing.toString())
+  //     }
+  //   } else {
+  //     console.log("state.habitViewing!!!!", state.habitViewing)
+  //     // setSelectedHabitId(state.habitViewing.toString())
+  //     setSelectedHabitId(state.habits[0].id)
+  //     dispatch({
+  //       type: 'UPDATE_HABIT_VIEWING',
+  //       payload: state.habits[0].id
+  //     })
+  //   }
+  // }, [state.habitViewing, selectedHabitId])
+
   useEffect(() => {
     if (!selectedHabitId) return
+    // if (!state.habitViewing) return
+    // console.log("selectedHabitId", selectedHabitId)
     dispatch({
       type: 'UPDATE_HABIT_VIEWING',
       payload: Number(selectedHabitId)
     })
-  }, [selectedHabitId, state.habits])
+  }, [selectedHabitId, state.habitViewing])
 
   // if no habit is selected and there are habits available, select the first habit
+  // useEffect(() => {
+  //   if(!selectedHabitId && state.habits.length) {
+  //     setSelectedHabitId(state.habits[0].id)
+  //   }
+  // }, [state.habits, selectedHabitId])
+
+  // on default set the selected habit id to the habit viewing id from state
   useEffect(() => {
-    if(!selectedHabitId && state.habits.length) {
-      setSelectedHabitId(state.habits[0].id)
-    }
-  }, [state.habits, selectedHabitId])
+    setSelectedHabitId(state.habitViewing.toString())
+  }, [])
 
   // console.log("selectedHabitId", selectedHabitId)
+  // console.log("state.habitViewing", state.habitViewing)
 
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle 
+          <CardTitle
             className="text-base font-medium md:text-lg xl:text-xl text-foreground"
           >Your Habits</CardTitle>
           <Link href="/create-habit" onClick={() => {
@@ -164,7 +193,7 @@ const HabitLists = () => {
             <div key={habit.id} className="relative flex flex-col self-center justify-center">
               <button
                 onClick={() => setSelectedHabitId(habit.id)}
-                className={`w-full text-left p-3 rounded-lg border-2 transition-colors ${selectedHabitId === habit.id
+                className={`w-full text-left p-3 rounded-lg border-2 transition-colors ${selectedHabitId === habit.id || state.habitViewing === Number(habit.id)
                   ? "border-primary bg-primary/5"
                   : "border-border hover:border-primary/50"
                   }`}
@@ -235,7 +264,7 @@ const HabitNotifications = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle 
+        <CardTitle
           className="text-base font-medium md:text-lg xl:text-xl text-foreground"
         >Activities</CardTitle>
       </CardHeader>
