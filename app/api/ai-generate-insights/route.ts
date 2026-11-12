@@ -1,5 +1,7 @@
 // write a post request for next js api endpoint that accepts hobbyName, hobbyDescription, hobbyFeedback in the request body and returns ai generated insights as response
 import { NextRequest, NextResponse } from 'next/server';
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const getBackendUrl = () => {
   const backendUrl = process.env.BACKEND_URL || 'http://localhost:8000';
@@ -11,24 +13,68 @@ export async function POST(request: NextRequest) {
     const { hobbyName, hobbyDescription, hobbyFeedback } = await request.json();
 
     if (!hobbyName || !hobbyDescription || !hobbyFeedback) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
     }
 
-    const insights = await fetch(`${getBackendUrl()}/api/v1/genai/inference`, {
-      method: "POST",
+    const res = await fetch(`${getBackendUrl()}/api/v1/genai/inference`, {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
+      cache: 'no-store',
       body: JSON.stringify({
         hobby: hobbyName,
         description: hobbyDescription,
         feedback: hobbyFeedback,
       }),
-    }).then((res) => res.json());
+    });
 
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error('Backend GenAI error:', res.status, errorText);
+      return NextResponse.json(
+        { error: 'Backend inference failed', details: errorText },
+        { status: res.status }
+      );
+    }
+
+    const insights = await res.json();
     return NextResponse.json(insights, { status: 200 });
-    } catch (error) {
+  } catch (error) {
     console.error('Error generating AI insights:', error);
-    return NextResponse.json({ error: 'Failed to generate AI insights' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to generate AI insights' },
+      { status: 500 }
+    );
   }
 }
+
+// export async function POST(request: NextRequest) {
+//   try {
+//     const { hobbyName, hobbyDescription, hobbyFeedback } = await request.json();
+
+//     if (!hobbyName || !hobbyDescription || !hobbyFeedback) {
+//       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+//     }
+
+//     const insights = await fetch(`${getBackendUrl()}/api/v1/genai/inference`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         hobby: hobbyName,
+//         description: hobbyDescription,
+//         feedback: hobbyFeedback,
+//       }),
+//     }).then((res) => res.json());
+
+//     return NextResponse.json(insights, { status: 200 });
+//     } catch (error) {
+//     console.error('Error generating AI insights:', error);
+//     return NextResponse.json({ error: 'Failed to generate AI insights' }, { status: 500 });
+//   }
+// }

@@ -29,6 +29,14 @@ export const GET = async (request: Request) => {
         }
     })
 
+    if (!res.ok) {
+        const details = await res.text()
+        return NextResponse.json(
+            { error: "Backend request failed", details },
+            { status: res.status }
+        )
+    }
+
     const data = await res.json()
 
     return NextResponse.json({

@@ -20,6 +20,15 @@ export const GET = async (request: Request) => {
             "Content-Type": "application/json"
         }
     })
+    
+    if (!res.ok) {
+        const details = await res.text()
+        return NextResponse.json(
+            { error: "Backend request failed", details },
+            { status: res.status }
+        )
+    }
+
     const data = await res.json()
 
     return NextResponse.json({
@@ -64,6 +73,14 @@ export const POST = async (request: Request) => {
         },
         body: JSON.stringify(siphenedData)
     })
+
+    if (!res.ok) {
+        const details = await res.text()
+        return NextResponse.json(
+            { error: "Backend request failed", details },
+            { status: res.status }
+        )
+    }
 
     const data = await res.json()
 
@@ -159,6 +176,14 @@ export const DELETE = async (request: Request) => {
             "Authorization": authToken
         }
     })
+
+    if (!res.ok) {
+        const details = await res.text()
+        return NextResponse.json(
+            { error: "Backend request failed", details },
+            { status: res.status }
+        )
+    }
 
     const data = await res.json()
 
